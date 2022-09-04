@@ -133,3 +133,7 @@ h4{
     margin-top: 0;
     font-size: 14px;
 }
+
+.rightJustified{
+    float: right
+}
