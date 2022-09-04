@@ -26,9 +26,12 @@ body{
     font-size: 18px;
     line-height: 1.5;
     display: grid;
-    grid-template-areas: "head head" "nav nav" "main main" "foot foot";
-    grid-template-columns: 1fr 4fr 1fr;
-    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas: 
+        "head head head" 
+        ". main ." 
+        "foot foot foot";
+    grid-template-columns: 1fr 5fr 1fr;
+    grid-template-rows: auto 1fr auto;
     /* font-family: 'Joan', serif; */
     font-family: 'Tiro Devanagari Marathi', serif;
     background-color: white;
@@ -36,13 +39,6 @@ body{
 }
 
 @media screen and (min-width:25em) {
-    body{
-        grid-template-areas: 
-        "head head head" 
-        ". main ." 
-        "foot foot foot";
-        grid-template-rows: auto 1fr auto ;
-    }
     body#portfolio ul#portfolioItems li{
         flex-basis: 48%;
         padding-right: 2%;
