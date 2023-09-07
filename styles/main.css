@@ -5,7 +5,10 @@
     --vertical-space:2rem;
     --horizontal-space:3rem;
 }
-
+#canvas{
+    width: 100vh;
+    height: 100vh;
+}
 p{
     /* max-width: 50em; */
 }
