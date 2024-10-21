@@ -1,17 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+var path = require('path')
+const express = require("express");
+const app = express();
+app.use(express.static(__dirname + "/public"))
+app.get("/", function (req, res) {
+    res.sendFile(__dirname + "/public/homepage.html");
+});
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
+
+app.listen(3000, function () {
+    console.log("Server is running on localhost3000");
+});
