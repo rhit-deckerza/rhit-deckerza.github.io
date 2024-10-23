@@ -187,7 +187,7 @@ class ProjectsPage extends React.Component{
     render(){
         return(
             <div className="ProjectsPage">
-                <ProjectItems isUnmounting={this.props.isUnmounting} path={'information/projects.json'} backgroundIsStill={this.props.backgroundIsStill}></ProjectItems>
+                <ProjectItems isUnmounting={this.props.isUnmounting} path={'src/information/projects.json'} backgroundIsStill={this.props.backgroundIsStill}></ProjectItems>
             </div>
         )
     }
@@ -202,7 +202,7 @@ class ExpirencesPage extends React.Component{
         return(
             <div className="ProjectsPage">
                 
-                <ProjectItems isUnmounting={this.props.isUnmounting} path={'information/expirences.json'} backgroundIsStill={this.props.backgroundIsStill}></ProjectItems>
+                <ProjectItems isUnmounting={this.props.isUnmounting} path={'src/information/expirences.json'} backgroundIsStill={this.props.backgroundIsStill}></ProjectItems>
             </div>
         )
     }
