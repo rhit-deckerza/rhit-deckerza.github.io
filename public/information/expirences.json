@@ -3,24 +3,24 @@
         "name": "DEKA",
         "date": "Winter 2022 - Present",
         "body": "Designed and implemented terrain mapping algorithm on wheeled autonomous robot. Engineered solutions utilizing the popular Robot Operating System (ROS) library in C++. Gained experience in both software development and robotic systems integration.",
-        "image_src": "src/images/DEKA.jpg"
+        "image_src": "public/images/DEKA.jpg"
     },
     {
         "name": "AON Devices",
         "date": "Summer 2022",
         "body": "Facilitated research into and development of neural networks for speech and motion recognition. Gained practical experience in Python including writing efficient algorithms and managing software development environments.",
-        "image_src": "src/images/aondevices.jpg"
+        "image_src": "public/images/aondevices.jpg"
     },
     {
         "name": "Litrinium",
         "date": "Summer 2021",
         "body": "Collaborated with a team of employees in a design and testing lab. Designed semiconductor optical communication product validation tests that generated performance test reports and implemented them in Python. Developed skills in programming, soldering, and integrated circuit design.",
-        "image_src": "src/images/lit.jpg"
+        "image_src": "public/images/lit.jpg"
     },
     {
         "name": "Spectra-7",
         "date": "Summer 2019",
         "body": "Collaborated with Spectra-7 employees in a remote product testing and customer support center. Participated in meetings with customers and suppliers. Developed procedures to test signal integrity in copper cables for high-speed connection between servers in data centers.",
-        "image_src": "src/images/Spectra7_Logo.jpg"
+        "image_src": "public/images/Spectra7_Logo.jpg"
     }
 ]
