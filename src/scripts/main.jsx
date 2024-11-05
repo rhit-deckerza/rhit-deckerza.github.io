@@ -141,23 +141,14 @@ class AboutMePage extends React.Component {
         super(props);
         this.state = {
             displayedText: '',
-            fullText: " Hello! My name is Zachary Decker, and I am a passionate Computer Science and Software Engineering double major at Rose-Hulman Institute of Technology, where I maintain a 3.71 GPA. With a strong foundation in software development and artificial intelligence, I have gained valuable experience through internships at companies like DEKA and AON Devices, where I worked on innovative projects involving terrain mapping algorithms and neural networks. My research endeavors include collaborating on deep learning applications and contributing to publications in artificial life. In addition to my technical skills in languages like Python, Java, and C++, I thrive in team environments and enjoy tackling complex problems. Outside of academics, I am an avid basketball player and enjoy staying active through CrossFit and outdoor activities. I am excited to continue exploring the intersection of technology and creativity in my future endeavors!",
+            fullText: "My name is Zachary Decker, and I am currently pursuing a master's degree in computer science at Cornell Tech, with a strong focus on artificial intelligence and robotics. Previously, I completed my undergraduate studies as a double major in Computer Science and Software Engineering at Rose-Hulman Institute of Technology, where I graduated magna cum laude. \n I have gained valuable experience through internships at companies like DEKA and AON Devices, working on innovative projects that involved terrain mapping algorithms and neural networks. My research endeavors include collaborating on deep learning applications and contributing to publications in artificial life. \n In addition to my technical skills in languages such as Python, Java, and C++, I thrive in team environments and enjoy tackling complex problems. Outside of academics, I am an avid basketball player and stay active through CrossFit and outdoor activities. I am excited to continue exploring the intersection of technology and creativity in my future endeavors!",
         };
     }
 
     componentDidMount() {
-        this.typeWriterEffect();
+        // Set the displayedText immediately to the fullText without the typewriter effect
+        this.setState({ displayedText: this.state.fullText });
     }
-
-    typeWriterEffect = (index = 0) => {
-        if (index < this.state.fullText.length) {
-            this.setState(prevState => ({
-                displayedText: prevState.displayedText + prevState.fullText.charAt(index)
-            }));
-            index++;
-            setTimeout(() => this.typeWriterEffect(index), 10); // Adjust typing speed here
-        }
-    };
 
     render() {
         const { isUnmounting } = this.props;
@@ -177,6 +168,7 @@ class AboutMePage extends React.Component {
         );
     }
 }
+
 
 
 class ProjectsPage extends React.Component{
