@@ -7,7 +7,7 @@ function sleep(milliseconds) {
   }
 
 function main(){
-    root.render(<RootPage></RootPage>)
+    root.render(<RootPage> </RootPage>)
 }
 
 class RootPage extends React.Component{
