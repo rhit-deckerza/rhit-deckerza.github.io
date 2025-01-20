@@ -3,8 +3,9 @@ import Homepage from '../Homepage/HomePage';
 import ProjectsPage from '../ProjectsPage/ProjectsPage';
 import AboutMePage from '../AboutMePage/AboutMePage';
 import ExpirencesPage from '../ExpirencesPage/ExpirencesPage';
-import SwitchBar from '../SwitchBar/SwitchBar';
+import HomePageButtons from '../HomePageButtons/HomePageButtons';
 import ConwayBackground from '../ConwayBackground/ConwayBackground';
+
 
 class RootPage extends React.Component{
   constructor(props){
@@ -59,11 +60,10 @@ class RootPage extends React.Component{
 
       return(
           <div className="RootPage">
-              {this.state.currentPage == 0 ? <Homepage switchToProjects={this.switchToProjects.bind(this)} switchToAboutMe={this.switchToAboutMe.bind(this)} switchToExpirences={this.switchToExpirences.bind(this)} isUnmounting={this.state.isUnmounting}></Homepage> : null}
+              {/* {this.state.currentPage == 0 ? <AboutMePage backgroundIsStill={this.state.backgroundIsStill} isUnmounting={this.state.isUnmounting}></AboutMePage> : null}
               {this.state.currentPage == 1 ? <ProjectsPage backgroundIsStill={this.state.backgroundIsStill} isUnmounting={this.state.isUnmounting}></ProjectsPage> : null}
-              {this.state.currentPage == 2 ? <AboutMePage backgroundIsStill={this.state.backgroundIsStill} isUnmounting={this.state.isUnmounting}></AboutMePage> : null}
-              {this.state.currentPage == 3 ? <ExpirencesPage backgroundIsStill={this.state.backgroundIsStill} isUnmounting={this.state.isUnmounting}></ExpirencesPage> : null}
-              {this.state.currentPage != 0 ? <SwitchBar switchToProjects={this.switchToProjects.bind(this)} switchToAboutMe={this.switchToAboutMe.bind(this)} switchToExpirences={this.switchToExpirences.bind(this)}></SwitchBar> : null}
+              {this.state.currentPage == 3 ? <ExpirencesPage backgroundIsStill={this.state.backgroundIsStill} isUnmounting={this.state.isUnmounting}></ExpirencesPage> : null} */}
+              {/* <HomePageButtons switchToProjects={this.switchToProjects.bind(this)} switchToAboutMe={this.switchToAboutMe.bind(this)} switchToExpirences={this.switchToExpirences.bind(this)}></HomePageButtons> */}
               <ConwayBackground gameMode={this.state.fillTime} isStillCallback={this.isStillCallback.bind(this)}></ConwayBackground>
           </div>
       )
