@@ -5,7 +5,7 @@ function Resume() {
   return (
     <Container maxWidth="xl" sx={{ py: 4, height: 'calc(100vh - 100px)' }}>
       <object
-        data="RESUME_02-20-2025.pdf"
+        data="resume.pdf"
         type="application/pdf"
         width="100%"
         height="100%"
@@ -17,7 +17,7 @@ function Resume() {
       >
         <p>
           It appears your browser doesn't support PDFs.
-          <a href="RESUME_02-20-2025.pdf"> Download the PDF</a> instead.
+          <a href="resume.pdf"> Download the PDF</a> instead.
         </p>
       </object>
     </Container>
