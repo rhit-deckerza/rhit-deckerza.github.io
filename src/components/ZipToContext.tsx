@@ -252,6 +252,23 @@ function App() {
         <Typography variant="h3" component="h1" gutterBottom>
           ZIP to Context
         </Typography>
+        
+        <Paper elevation={1} sx={{ p: 3, mb: 3, backgroundColor: '#f8f9fa', textAlign: 'left' }}>
+          <Typography variant="h6" gutterBottom>How to Use This Tool</Typography>
+          <Typography variant="body1" paragraph>
+            This tool helps you easily provide code context to Large Language Models (LLMs) like ChatGPT, Claude, or Bard:
+          </Typography>
+          <Box component="ol" sx={{ pl: 2 }}>
+            <Box component="li" sx={{ mb: 1 }}>Upload a ZIP file containing your codebase or project files</Box>
+            <Box component="li" sx={{ mb: 1 }}>Browse and select the files you want to include as context</Box>
+            <Box component="li" sx={{ mb: 1 }}>Edit the generated context text if needed</Box>
+            <Box component="li" sx={{ mb: 1 }}>Download the context as a text file or copy it directly to your clipboard</Box>
+            <Box component="li">Paste the context into your LLM conversation for more accurate and relevant responses</Box>
+          </Box>
+          <Typography variant="body2" sx={{ mt: 2, fontStyle: 'italic' }}>
+            The tool automatically formats your code files with clear headers and skips binary or unsupported files to ensure optimal context quality.
+          </Typography>
+        </Paper>
       </Box>
 
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
