@@ -1,0 +1,226 @@
+/* Resume Styles */
+.resume {
+  font-family: "EB Garamond", "Garamond", serif;
+  font-size: 10pt;
+  width: 8.5in;
+  height: 11in;
+  padding: 0.5in;
+  box-sizing: border-box;
+  margin: 0 auto;
+  line-height: 1;
+  color: #000000;
+}
+
+.resume h1 {
+  font-family: "EB Garamond", "Garamond", serif;
+  font-size: 16pt;
+  margin-top: 0;
+}
+
+.resume h2 {
+  font-family: "EB Garamond", "Garamond", serif;
+  font-size: 12pt;
+  margin-top: 0;
+}
+
+.section {
+  margin-bottom: 16px;
+}
+
+.section h2 {
+  text-transform: uppercase;
+  border-bottom: 2px solid #666;
+  padding-bottom: 3px;
+  margin-bottom: 6px;
+  margin-top: 0;
+  font-size: 12pt;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.job-title, .project-title, .publication-title {
+  font-weight: 600;
+}
+
+.project-subtitle {
+  margin-top: 0;
+  margin-bottom: 3px;
+  margin-left: 4px;
+  font-style: normal;
+}
+
+.date-range {
+  font-style: normal;
+  font-size: 0.9rem;
+  color: #000000;
+  float: right;
+}
+
+.publication-date {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #000000;
+}
+
+ul {
+  margin: 0;
+  padding-left: 48px;
+  list-style-type: circle;
+}
+
+li {
+  margin-bottom: 3px;
+  line-height: 1;
+  padding-left: 8px;
+  text-indent: -8px;
+}
+
+li strong {
+  font-weight: 600;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 3px;
+  line-height: 1;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* New Layout */
+.new-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Resume container at the top */
+.resume-container {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+/* Bottom row with editor and chat */
+.bottom-row {
+  display: flex;
+  gap: 20px;
+  min-height: 500px;
+}
+
+.editor-container, .chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Ensures columns can shrink below their content size */
+}
+
+/* JSON Editor styles */
+.json-editor {
+  font-family: 'Courier New', monospace;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  resize: none;
+  font-size: 14px;
+}
+
+/* Chat styles */
+.chat-messages {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow-y: auto;
+}
+
+.message {
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 80%;
+  word-break: break-word;
+}
+
+.message-user {
+  background-color: #e3f2fd;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.message-ai {
+  background-color: white;
+  align-self: flex-start;
+}
+
+/* Responsive layout */
+@media (max-width: 1000px) {
+  .bottom-row {
+    flex-direction: column;
+  }
+  
+  .editor-container, .chat-container {
+    min-height: 400px;
+    margin-bottom: 16px;
+  }
+}
+
+/* Print styles for PDF export */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  .resume, .resume * {
+    visibility: visible;
+  }
+  
+  .resume {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 8.5in;
+    height: 11in;
+    padding: 0.5in;
+    box-sizing: border-box;
+    margin: 0;
+    box-shadow: none;
+    line-height: 1;
+  }
+  
+  .upload-section, .download-section, button {
+    display: none;
+  }
+
+  /* Ensure page breaks don't occur in the middle of sections */
+  .section {
+    page-break-inside: avoid;
+  }
+}
+
+/* Ensure the resume has proper page dimensions */
+@media screen and (min-width: 1000px) {
+  .resume {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Technical skills styling */
+.skills-container {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-gap: 2px 14px;
+  width: 100%;
+}
+
+.skill-category-title {
+  font-weight: 600;
+  padding-right: 5px;
+}
+
+.skill-items {
+  padding-left: 0;
+} 

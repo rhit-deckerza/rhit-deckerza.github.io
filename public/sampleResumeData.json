@@ -1,0 +1,106 @@
+{
+  "name": "ZACHARY DECKER",
+  "location": "New York, NY",
+  "phone": "714-475-8849",
+  "email": "zad25@cornell.edu",
+  "website": "zacharydecker.com",
+
+  "education": [
+    {
+      "institution": "Cornell Tech (Cornell University)",
+      "location": "New York, NY",
+      "graduationDate": "May 2025",
+      "degree": "Master of Engineering in Computer Science",
+      "gpa": "4.0"
+    },
+    {
+      "institution": "Rose-Hulman Institute of Technology",
+      "location": "Terre Haute, IN",
+      "graduationDate": "May 2024",
+      "degree": "Bachelor of Science in Computer Science and Software Engineering",
+      "gpa": "3.71"
+    }
+  ],
+
+  "technicalSkills": [
+    "Languages: Python, JavaScript, TypeScript, C++, Java, SQL",
+    "Frameworks: React, Node.js, Express, Flask, Django, TensorFlow",
+    "Tools: Git, Docker, AWS, Azure, GCP, CI/CD",
+    "Databases: MongoDB, PostgreSQL, MySQL, Redis",
+    "Other: RESTful APIs, GraphQL, Microservices, Agile/Scrum"
+  ],
+
+  "experience": [
+    {
+      "title": "Software Engineering Intern",
+      "company": "DEKA",
+      "location": "Manchester, NH",
+      "dateRange": "Fall 2022 – Spring 2024",
+      "bullets": [
+        "Contributed to an **autonomous wheeled robot's embedded software** using C/C++ on a **Linux-based platform (ROS)**.",
+        "Researched, designed, and integrated **real-time localization and mapping algorithm** that reduced CPU usage by **30%**.",
+        "Worked closely with hardware and product teams to define feature specs, debug **low-level firmware issues**, and push **OTA updates**."
+      ]
+    },
+    {
+      "title": "Machine Learning Intern",
+      "company": "AON Devices",
+      "location": "Irvine, CA",
+      "dateRange": "Summer 2022",
+      "bullets": [
+        "Investigated and validated **transformer-based models** for motion and speech recognition on **low-power wearable devices**.",
+        "Developed **scalable data processing pipelines**, ensuring clean, high-quality input for **machine learning experiments**."
+      ]
+    },
+    {
+      "title": "Embedded Systems Intern",
+      "company": "Litrinium",
+      "location": "Mission Viejo, CA",
+      "dateRange": "Summer 2021",
+      "bullets": [
+        "Created Python scripts to validate optical communication products with integrated circuit designs, performing performance test reports and debugging."
+      ]
+    }
+  ],
+
+  "projects": [
+    {
+      "name": "World Seed: Augmented 3D Environment Generation (PyTorch)",
+      "dateRange": "Winter 2024 - Present",
+      "bullets": [
+        "Augmenting **image-to-image diffusion models** trained in 3D video games with **SLAM algorithms** to increase consistency.",
+        "Collaborating with a team of researchers to document findings, demonstrating the potential for **next-gen immersive game design** workflows.",
+        "Applied **prompt engineering** to guide the diffusion model's 3D scene construction, reducing 'hallucinated' geometry by **25%**."
+      ]
+    },
+    {
+      "name": "Course Registration Chatbot (PyTorch, Langchain)",
+      "dateRange": "Spring 2024",
+      "bullets": [
+        "Engineered a Retrieval Augmented Generation (RAG) pipeline, enabling pretrained LLMs to accurately reference university-specific course data.",
+        "Coordinated user testing with real students, collecting feedback to refine natural language understanding (NLU) and enhance user satisfaction."
+      ]
+    },
+    {
+      "name": "Organize My Life File Organization App (Matlab, PyTorch, YOLO)",
+      "dateRange": "Fall 2023 – Spring 2024",
+      "bullets": [
+        "Built a cross-platform file management solution for iOS and Android.",
+        "Implemented a serverless backend with AWS Amplify, ensuring secure multi-file storage and robust scalability.",
+        "Integrated CI/CD pipelines (GitHub Actions + Amplify) to automate testing and deployment.",
+        "Collaborated directly with clients to refine features, incorporate feedback, and optimize UX flows—delivering an end-to-end production-ready product."
+      ]
+    }
+  ],
+
+  "publications": [
+    {
+      "title": "Ashworth, J., Lee, Y., Shen, J., Kim, E., Decker, Z., & Yoder, J. (2022). Evolution of Developmental Strategies in NK Fitness Landscapes. ALIFE 2022: The 2022 Conference on Artificial Life, 59.",
+      "citation": "Studied the relationship between the evolution and development of organisms through computer simulation.",
+      "bullets": [
+        "Designed an abstract computational model integrating NK fitness landscapes with genotype-encoded developmental programs to simulate organism trajectories and developmental processes.",
+        "Presented findings indicating evolved developmental strategies mirror biological phenomena such as sensitive periods, providing insights into the evolutionary origins of complex developmental patterns."
+      ]
+    }
+  ]
+} 
