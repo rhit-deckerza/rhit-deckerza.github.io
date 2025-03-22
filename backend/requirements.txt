@@ -1,0 +1,10 @@
+flask
+flask-cors
+flask-sqlalchemy
+flask-migrate
+gunicorn
+python-docx
+PyPDF2
+Flask-Limiter
+pyjwt
+werkzeug

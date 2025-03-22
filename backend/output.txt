@@ -1,0 +1,2369 @@
+  Directory: Assignment1 - Copy/
+  File: Assignment1 - Copy/CS_5740_A1-1.pdf
+    Extracted text:
+      CS 5740: Assignment 1
+      Due:Feb 19, 11:59pm EST
+      Milestone due: Feb 10, 11:59pm EST
+      The report for this assignment is structured. Please fill in content only in the appropriate
+      places. Other submitted content cannot be evaluated or graded. Do not add a cover page.
+      In this assignment, you will build a perceptron and multilayer perceptron text classifiers using bag of
+      words features (and other task-specific features of your own design).
+      Submission Please see the submission guidelines at the end of this document.
+      Starter Repository:
+      https://classroom.github.com/a/mIB_EBL1 (GitHub Classroom invitation link)
+      Sentiment Analysis Leaderboard:
+      https://github.com/cornell-cs5740-sp25/leaderboards/blob/main/a1/sst2.csv
+      20 Newsgroups Leaderboard:
+      https://github.com/cornell-cs5740-sp25/leaderboards/blob/main/a1/newsgroups.csv
+      Report Template:
+      https://www.overleaf.com/read/mcdkbdjnvsgq#d6acab
+      The starter repository contains training and development data for the Stanford Sentiment Treebank
+      (sst2) and20 Newsgroups (newsgroups ) datasets, in the data/directory. You will also find the test
+      data for these two datasets without the labels.
+      Thestarterrepositorycontainsdataandevaluationutilitiesin utils.py ,featureextractorsin featurize.py ,
+      and finally classification models in perceptron.py and multilayer_perceptron.py . We recommend
+      filling in #TODOin this order. There are corresponding unit tests.
+      Sentiment Analysis Sentiment classification is the task of determining the sentiment - often positive,
+      negative or neutral - expressed in a given text. In general, this requires using a variety of cues such as
+      the presence of emotionally charged words such as “vile” or “amazing,” while taking into account the full
+      context of word use or phenomena like negation or sarcasm. In this assignment, you will write classifiers
+      fortheStanfordSentimentTreebankdataset, whichcontainssnippetstakenfrom Rotten Tomatoes movie
+      reviews, where the sentiment is aligned directly with the review score. You will train classifiers on a
+      filtered version of the dataset containing only full sentences and with neutral reviews removed, reducing
+      the task to binary classification of positive and negative sentiment.
+      NewsgroupClassification The20Newsgroupsdatasetcontains18,846newsgroupdocumentswritten
+      on a variety of topics. You will use the text of each document to predict its newsgroup. Unlike the binary
+      sentiment analysis task, each document could belong to one of twenty newsgroups. Additionally, many
+      of these newsgroups share similar themes, such as computing, science, or politics (see Table 1 for the full
+      list). However, the distributions of words across each of these newsgroups are also fairly distinctive. For
+      example, a document that uses the names of weapons will likely be in talk.politics.guns , a document
+      mentioning “computer” will probably be in a comp.*group, and if a document uses the word “ice,” it
+      was likely written for rec.sport.hockey rather than talk.politics.mideast .
+      Third-party Packages This assignment emphasizes building from scratch when possible. The two
+      models allow different third-party packages. Please follow these directions carefully. There is an heavy
+      penalty for using packages beyond these specified below.
+      1
+      comp.graphics
+      comp.os.ms-windows.misc
+      comp.sys.ibm.pc.hardware
+      comp.sys.mac.hardware
+      comp.windows.xrec.autos
+      rec.motorcycles
+      rec.sport.baseball
+      rec.sport.hockeysci.crypt
+      sci.electronics
+      sci.med
+      sci.space
+      misc.forsaletalk.politics.misc
+      talk.politics.guns
+      talk.politics.mideasttalk.religion.misc
+      alt.atheism
+      soc.religion.christian
+      Table 1: Twenty newsgroup labels partitioned into six themes.
+      Model 1: Perceptron Implement a simple linear perceptron model from scratch. Remember, instead
+      of having to compute the derivative over the entire training set, the perceptron simply picks examples in
+      sequence, and tries to classify them given the current weight vector. If it gets them right, it simply moves
+      on to the next examples, otherwise it updates the weight vector with the difference of the feature counts
+      in the correct labels and in the prediction. You are required to only use simple Python code for
+      this task, without any other packages/libraries. An efficient implementation with bag-of-words
+      features only should take <1 seconds/epoch for the sentiment analysis dataset on a modern laptop.
+      For the perceptron model, you need to develop features to train your models with. At the least, you
+      must experiment with bag-of-words features and design at least two feature sets beyond that for each
+      dataset that improve your performance (a feature set can be counted for both, if it’s used this way with
+      positiveimpact on performance).
+      Features are individual measurable properties or characteristics of the example used as input to a model.
+      Some example that are not considered as additional feature sets: bag-of-words unigrams or higher order
+      n-grams (you already have this), preprocessing to remove words, or filtering the vocabulary (to remove
+      rare words). These are all potentially useful techniques, which you may want to experiment with, but
+      they are not considered different feature sets. Please try to think why the above are not considered
+      features.
+      1.Bag of words, n-grams. Start with a bag-of-words classifier. You may want to experiment with
+      using binary (presence/absence) features instead of count features and excluding stopwords (e.g.,
+      the, is, a) to improve your accuracy.1How does performance change as you vary the size of n
+      used in your word n-grams? Does it make sense to filter out some features based on counts in the
+      training data?
+      2.Your own features. Develop and use task-specific features of your own design in order to improve
+      your accuracy in the leaderboard (for both domains).
+      Model 2: Multilayer Perceptron Implement a neural bag-of-words (NBOW) multilayer percep-
+      tron (MLP). You will use PyTorch for this model, but no other packages. Auxiliary packages to Py-
+      Torch (e.g., for text processing) are also not allowed). The allowed PyTorch package is specified in the
+      requirements.txt file in the assignment repository. One big advantage of deep learning frameworks,
+      such as PyTorch, is in abstracting away the details of error backpropagation, allowing you to focus on
+      designing your network’s architecture.2
+      MatrixoperationsindeeplearningframeworksareverysimilartoNumPy. YourMLPmusthavemultiple
+      hidden layers, although the exact number is for you to determine through your data-driven development
+      process. Hint: your feature vectors will probably be sparse, so it is more efficient (and even critical) to
+      use embedding look-up tables rather than large matrix multiplications. An efficient implementation with
+      a moderately sized MLP should take <5 seconds/epoch on a modern laptop.
+      When designing your MLP, experiment with different activation functions. Activation functions add
+      1The file stopwords.txt in the starter repository provides some English stop words. You may extend this list through
+      your analysis.
+      2If you want to learn about backpropagation, see https://www.cs.cornell.edu/courses/cs5740/2016sp/resources/
+      backprop.pdf .
+      2
+      nonlinearity to your MLP, allowing it to capture more complex aspects of your training data. You
+      should use at least ReLU, sigmoid, and tanhactivation functions.
+      In your final layer, you will want to transform the output of your network to a probability distribution
+      (using the softmax function) and compare this distribution to your training labels.
+      Finally, you should experiment with different optimizers and learning rates to see if they allow faster
+      training and/or better results. The standard approach is to use gradient descent, but PyTorch, for
+      example, comes with others built in, such as AdaGrad and ADAM.
+      You will need to explicitly experiment with batching your computation. Please conduct explicit exper-
+      iments on a GPU to time your learning and inference speed with and without batching. Measure your
+      speed in how many wall-time seconds it takes you to process 1,000 examples. You can conduct these
+      experiments with a subset of the data. The goal is to measure computation speed, not model accu-
+      racy. Batching is expected to have no impact on the computation itself (i.e., the computation should
+      be identical regardless of the batch size), but show speedups up to a certain batch size. You just need
+      to make sure you get enough measurements to reliably estimate your speed, ideally averaging across
+      many measurements and reporting both average and standard deviation. Your benchmarking must be
+      consistent between no batching (batch size = 1) and batching. Experiment with multiple batch sizes.
+      LeaderboardInstructions Wewillupdatetheleaderboardsperiodicallyusingyourpredictionsonthe
+      test set (see below for the exact schedule). The leaderboard uses classification accuracy as the evaluation
+      metric, calculated the same way as in the evaluation script provided in the starter repository. For
+      comparison: asimplebaselinethatalwayschoosesthemostfrequentclasswouldachieve50%accuracyon
+      the Stanford Sentiment Treebank and 5% accuracy on newsgroup dataset. If your classifier is performing
+      worse than these baselines on either dataset, something has gone horribly wrong!
+      After using your classifier to predict labels for the test data ( data/sst2/test/test_data.csv and
+      data/newsgroups/test/test_data.csv ), you must export the results to a CSV file in the same format
+      as the development and test labels. The starter code contains example CSV files with dummy place-
+      holder test predictions for all domains, so don’t worry about the numbers you see for the test data (we
+      compute the leaderboard against the real labels). Your prediction files should be in the same format
+      as these files for the update to the leaderboard to work correctly. If something did not work correctly,
+      for example if the number of predictions is not the same as the number of labels, an error message
+      will be displayed on the leaderboard, but you will lose this evaluation chance. Your predictions file
+      must use the correct filename for the leaderboard to be updated. All test predictions files must end
+      innewsgroups_test_predictions.csv orsst2_test_predictions.csv . You should also add a prefix
+      indicating which method produced the results: mlp_orperceptron_ .The test prediction files need to
+      be put under the results/ folder.The results/ folder in your submission should only contain
+      these 4 test prediction .csvfiles.
+      Early Milestone (6pt) To complete the milestone and receive the relevant points, you will need to
+      have leaderboard entries for the 20 Newsgroups dataset for both models (perceptron and MLP) with an
+      accuracy of at least 0.6.
+      Performance Grading Your test performance in the four experiments will be calculated as:
+      X
+      m∈{Perceptron ,MLP},d∈{Sentiment ,Newsgroups }ad
+      m
+      80×8,
+      where ad
+      mis the test accuracy of model mon dataset d,0≤ad
+      m≤100. There are two models and two
+      datasets, a total of four test accuracy scores.
+      CS5740 State of the Art The highest performance on SST-2 is 80.75
+      (Sp24), and on Newsgroups is 85.56 (Sp20).
+      3
+      General Guidelines
+      GitHub Classroom Setup Follow the starter repository invitation link. Enter your Cornell NetID
+      and continue. GitHub Classroom will provide a link to a private repository for you to clone to your
+      computer. All code should exist in this repository. Only the code that is present in the master branch of
+      your repository by the due date will be evaluated as part of your submission!
+      Development Environment and Third-party Tools All allowed third-party tools are specified in
+      therequirements.txt fileintheassignmentrepository.3Thegoaloftheassignmentistogainexperience
+      with specific methods, and therefore using third-party tools and frameworks beyond these specified is
+      not allowed. Please follow these directions carefully. We will penalize heavily for using packages beyond
+      these specified below. Please consult the course generative AI policy with regard to using such tools.
+      You may only importpackages that are specified in the requirements.txt file or that come with
+      Python’s Standard Library. The version of Python allowed for use is 3.10.x. Do not use older or newer
+      version. We strongly recommend working within a fresh virtual environment for each assignment. For
+      example, you can create a virtual environment using conda and install the required packages:
+      conda create -n cs5740a1 python=3.10
+      conda activate cs5740a1
+      python -m pip install -r requirements.txt
+      Leaderboard We will consider the most recent leaderboard result for each cutoff, and it must match
+      what you provide in your report. Please be careful with the results you submit, and validate them as
+      much as possible on the development set before submitting. If your results go down, they go down. This
+      aims toapproximate testing in the real world. The leaderboard refresh schedule is: every 48 hours at
+      8pm, then eight and four hours before deadline. Each refresh will use what your repository contains at
+      that point. Because our scripts take time to run, the exact time we pull your repository might be a bit
+      after the refresh time. So please avoid pushing results that you do not wish to submit.
+      Your submission on Gradescope is a writeup in PDF format. The writeup must follow the template
+      provided. Please replace the grey text or any blanks specified with your content. Do not
+      modify, add, or remove section, subsection, and paragraph headers. Do not modify the
+      spacing and margins. You may add new rows to tables. The writeup must include at the top
+      of the first page: your name, NetID, and the URL of the Github repository. We have access to your
+      repository, and will look at it. Your repository must contain the code in a form that allows to run it
+      from the command line. Jupyter notebooks are not acceptable, but you could work with Jupyter code
+      cells.
+      Our main focus in grading is the quality of your empirical work and implementation. Not fractional
+      difference on the leaderboard. We value solid empirical work, well written reports, and well documented
+      implementations. Of course, we do consider your performance as well. The assignment details how a
+      portion of your grade is calculated based on your empirical performance.
+      Some general guidelines:
+      •Your code must be in a runnable form. We need be able to run your code from vanilla Python
+      command line interpreter. You may assume the allowed libraries are installed. It is important to
+      document your code properly.
+      •Include a README.md file with execution instructions with your code.
+      •It should be made clear what data is used for each result computed.
+      •Please support all your claims with empirical results.
+      •All the analysis must be performed on the development data. It is OK to use tuning data. Only
+      the final results of your best models should be reported on the test data.
+      3https://realpython.com/lessons/using-requirement-files/
+      4
+      Posting of this assignment on public or private forums, services, and other forms of distri-
+      bution is not allowed, except if done by the assignment author. Otherwise, the assignment
+      is under the CC BY-NC 4.0 license.
+      Designed and implemented by Mustafa Omer Gul, Anne Wu, and Yoav Artzi. This assign-
+      ment was adapted from Dan Klein.
+      Updated on January 22, 2025
+      5
+    Directory: Assignment1 - Copy/a1-rhit-deckerza/
+      Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/
+      File: Assignment1 - Copy/a1-rhit-deckerza/.git/COMMIT_EDITMSG
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/.git/HEAD
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/.git/config
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/.git/description
+        No text extracted (unsupported format or empty).
+        Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/applypatch-msg.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/commit-msg.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/fsmonitor-watchman.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/post-update.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/pre-applypatch.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/pre-commit.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/pre-merge-commit.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/pre-push.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/pre-rebase.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/pre-receive.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/prepare-commit-msg.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/push-to-checkout.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/sendemail-validate.sample
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/hooks/update.sample
+          No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/.git/index
+        No text extracted (unsupported format or empty).
+        Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/info/
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/info/exclude
+          No text extracted (unsupported format or empty).
+        Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/logs/
+        File: Assignment1 - Copy/a1-rhit-deckerza/.git/logs/HEAD
+          No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/logs/refs/
+            Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/logs/refs/heads/
+            File: Assignment1 - Copy/a1-rhit-deckerza/.git/logs/refs/heads/main
+              No text extracted (unsupported format or empty).
+            Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/logs/refs/remotes/
+              Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/logs/refs/remotes/origin/
+              File: Assignment1 - Copy/a1-rhit-deckerza/.git/logs/refs/remotes/origin/HEAD
+                No text extracted (unsupported format or empty).
+              File: Assignment1 - Copy/a1-rhit-deckerza/.git/logs/refs/remotes/origin/main
+                No text extracted (unsupported format or empty).
+        Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/01/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/01/05c81102f5b483060fb0bb2b9fce2865160a30
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/0a/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/0a/faaa47e04a0f4e5eb436a4991a55fefecbfd2f
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/0b/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/0b/d394c3fac4acbbdcca9fc0e49ce1176ade81af
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/16/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/16/75b7b8d6382b352c7980ed155630e119182c91
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/1a/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/1a/b542d9401e8729267add14f11eb9638b1f9e8b
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/1b/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/1b/ccef3d9a47ca7bdbf3a46e2c74180ed36d393f
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/26/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/26/e8c4fe55c66511edb5e628fc3bb80301ed9b5b
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/2b/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/2b/bf64ba142110c9be5080fa94c0012ba39d45bb
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/47/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/47/2d84123b910b02f210f1a9372d70d814ea6798
+            No text extracted (unsupported format or empty).
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/47/44c59a355ca5d99873336092671e7878a3d096
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/54/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/54/5e5d222d990cb0ae362da311261844b59b47db
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/56/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/56/e62c997c5b87b03804aa289e4244a04724e354
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/5f/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/5f/5ae0ede6ba052e1af7879825bc0bf372b01f04
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/67/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/67/5fe4c1704959f4aa94f21e8f043c8fc5220960
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/6b/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/6b/dce6a2d55f1c531b9e0ee8434808576161d0ad
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/89/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/89/6e780af5de2664a6cdb0e4c266bd3719aac83a
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/8f/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/8f/0c7e11e397acb32b6db26e3c0681debac6baf1
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/98/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/98/a9624cf95afbf2a209776d09f7167ba99bb9ac
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/ae/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/ae/40069ba4eb5e0447366b91dbf61c5ee9dff7a1
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/bb/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/bb/cccff011b3da2e458179def8f131359dd631bb
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/be/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/be/2ffe238c1f923f5e96c54fc5c6369552e5dc09
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/c0/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/c0/da89cd126804d213cd7d765758190263874da5
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/ca/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/ca/909034704e72b93fd13ecd06f898b5fb5ff957
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/cf/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/cf/32cbf549d5ac469da8d7f9d5a18c0eb1c6d7c4
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/d9/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/d9/c119a3c5353f85d83dead337c47d03867f71fd
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/da/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/da/a0ee67b3a2e618ee73a3c284b75aa423d1084f
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/f6/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/f6/929e38011b0aeff258213fd0fc01ba0327f011
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/fb/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/fb/0834ed5638eaffc6999e896c6b0f6a7126d4d4
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/info/
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/pack/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/pack/pack-36d59b80ecd08ae1b0555e65f6f48059c601f916.idx
+            No text extracted (unsupported format or empty).
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/pack/pack-36d59b80ecd08ae1b0555e65f6f48059c601f916.pack
+            Omitted due to size (15601895 bytes).
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/objects/pack/pack-36d59b80ecd08ae1b0555e65f6f48059c601f916.rev
+            No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/.git/packed-refs
+        No text extracted (unsupported format or empty).
+        Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/refs/
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/refs/heads/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.git/refs/heads/main
+            No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/refs/remotes/
+            Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/refs/remotes/origin/
+            File: Assignment1 - Copy/a1-rhit-deckerza/.git/refs/remotes/origin/HEAD
+              No text extracted (unsupported format or empty).
+            File: Assignment1 - Copy/a1-rhit-deckerza/.git/refs/remotes/origin/main
+              No text extracted (unsupported format or empty).
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.git/refs/tags/
+      Directory: Assignment1 - Copy/a1-rhit-deckerza/.github/
+        Directory: Assignment1 - Copy/a1-rhit-deckerza/.github/workflows/
+        File: Assignment1 - Copy/a1-rhit-deckerza/.github/workflows/classroom.yml
+          Extracted text:
+            name: Autograding Tests
+            'on':
+            - push
+            - repository_dispatch
+            permissions:
+              checks: write
+              actions: read
+              contents: read
+            jobs:
+              run-autograding-tests:
+                runs-on: ubuntu-latest
+                if: github.actor != 'github-classroom[bot]'
+                steps:
+                - name: Checkout code
+                  uses: actions/checkout@v4
+                - name: test1
+                  id: test1
+                  uses: classroom-resources/autograding-command-grader@v1
+                  with:
+                    test-name: test1
+                    setup-command: pip install -qr requirements.txt
+                    command: pytest tests/test_perceptron.py::test_predict
+                    timeout: 10
+                    max-score: 2
+                - name: test2
+                  id: test2
+                  uses: classroom-resources/autograding-command-grader@v1
+                  with:
+                    test-name: test2
+                    setup-command: pip install -qr requirements.txt
+                    command: pytest tests/test_perceptron.py::test_predict_const
+                    timeout: 10
+                    max-score: 2
+                - name: test3
+                  id: test3
+                  uses: classroom-resources/autograding-command-grader@v1
+                  with:
+                    test-name: test3
+                    setup-command: pip install -qr requirements.txt
+                    command: pytest tests/test_perceptron.py::test_update_parameters
+                    timeout: 10
+                    max-score: 2
+                - name: test4
+                  id: test4
+                  uses: classroom-resources/autograding-command-grader@v1
+                  with:
+                    test-name: test4
+                    setup-command: pip install -qr requirements.txt
+                    command: pytest tests/test_perceptron.py::test_train_nop
+                    timeout: 10
+                    max-score: 2
+                - name: test5
+                  id: test5
+                  uses: classroom-resources/autograding-command-grader@v1
+                  with:
+                    test-name: test5
+                    setup-command: pip install -qr requirements.txt
+                    command: pytest tests/test_perceptron.py::test_train
+                    timeout: 10
+                    max-score: 2
+                - name: Autograding Reporter
+                  uses: classroom-resources/autograding-grading-reporter@v1
+                  env:
+                    TEST1_RESULTS: "${{steps.test1.outputs.result}}"
+                    TEST2_RESULTS: "${{steps.test2.outputs.result}}"
+                    TEST3_RESULTS: "${{steps.test3.outputs.result}}"
+                    TEST4_RESULTS: "${{steps.test4.outputs.result}}"
+                    TEST5_RESULTS: "${{steps.test5.outputs.result}}"
+                  with:
+                    runners: test1,test2,test3,test4,test5
+    File: Assignment1 - Copy/a1-rhit-deckerza/.gitignore
+      No text extracted (unsupported format or empty).
+      Directory: Assignment1 - Copy/a1-rhit-deckerza/.pytest_cache/
+      File: Assignment1 - Copy/a1-rhit-deckerza/.pytest_cache/.gitignore
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/.pytest_cache/CACHEDIR.TAG
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/.pytest_cache/README.md
+        Extracted text:
+          # pytest cache directory #
+          
+          This directory contains data from the pytest's cache plugin,
+          which provides the `--lf` and `--ff` options, as well as the `cache` fixture.
+          
+          **Do not** commit this to version control.
+          
+          See [the docs](https://docs.pytest.org/en/stable/how-to/cache.html) for more information.
+        Directory: Assignment1 - Copy/a1-rhit-deckerza/.pytest_cache/v/
+          Directory: Assignment1 - Copy/a1-rhit-deckerza/.pytest_cache/v/cache/
+          File: Assignment1 - Copy/a1-rhit-deckerza/.pytest_cache/v/cache/lastfailed
+            No text extracted (unsupported format or empty).
+          File: Assignment1 - Copy/a1-rhit-deckerza/.pytest_cache/v/cache/nodeids
+            No text extracted (unsupported format or empty).
+          File: Assignment1 - Copy/a1-rhit-deckerza/.pytest_cache/v/cache/stepwise
+            No text extracted (unsupported format or empty).
+    File: Assignment1 - Copy/a1-rhit-deckerza/README.md
+      Extracted text:
+        [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/mIB_EBL1)
+        # Commands
+        
+        ## Virtual environment creation
+        
+        It's highly recommended to use a virtual environment for this assignment.
+        
+        Virtual environment creation (you may also use venv):
+        
+        ```{sh}
+        conda create -n cs5740a1_310 python=3.10
+        conda activate cs5740a1_310
+        python -m pip install -r requirements.txt
+        ```
+        
+        ## Train and predict commands
+        
+        Example command for the original code (subject to change, if additional arguments are added):
+        
+        ```{sh}
+        python perceptron.py -d newsgroups -f bow
+        python perceptron.py -d sst2 -f bow
+        python multilayer_perceptron.py -d newsgroups
+        ```
+        
+        ## Commands to run unittests
+        
+        It's recommended to ensure that your code passes the unittests before submitting it.
+        The commands can be run from the root directory of the project.
+        
+        ```{sh}
+        pytest
+        pytest tests/test_perceptron.py
+        pytest tests/test_multilayer_perceptron.py
+        ```
+        
+        ## Submission
+        
+        Please do NOT commit any code that changes the following files and directories:
+        
+        - tests/
+        - .github/
+        - pytest.ini
+        
+        Otherwise, your submission may be flagged by GitHub Classroom autograder.
+        
+        Please DO commit your code changes in other python files. The autograder will every time you push to the main branch.
+        
+        Please DO commit your output labels in results/ following the same name and content format. Our leaderboard periodically pulls your outputs and computes accuracy against hidden test labels. <https://github.com/cornell-cs5740-sp25/leaderboards/>
+      Directory: Assignment1 - Copy/a1-rhit-deckerza/__pycache__/
+      File: Assignment1 - Copy/a1-rhit-deckerza/__pycache__/features.cpython-312.pyc
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/__pycache__/multilayer_perceptron.cpython-312.pyc
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/__pycache__/perceptron.cpython-312.pyc
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/__pycache__/utils.cpython-312.pyc
+        No text extracted (unsupported format or empty).
+    File: Assignment1 - Copy/a1-rhit-deckerza/best_models.py
+      Extracted text:
+        """Script to run the best performing models and save their predictions."""
+        
+        import torch
+        from perceptron import DataPointWithFeatures, PerceptronModel
+        from multilayer_perceptron import BOWDataset, MultilayerPerceptronModel, Tokenizer, Trainer, get_label_mappings
+        from utils import DataType, load_data, save_results
+        from features import make_featurize
+        import os
+        
+        def run_best_perceptron(data_type_str: str, config: dict):
+            print(f"\nTraining best perceptron model for {data_type_str} dataset...")
+            print(f"Configuration: {config}")
+            
+            data_type = DataType(data_type_str)
+            feature_types = set(config["features"].split("+"))
+            
+            train_data, val_data, dev_data, test_data = load_data(data_type)
+            
+            featurize = make_featurize(feature_types)
+            
+            train_data = [DataPointWithFeatures(id=dp.id, text=dp.text, label=dp.label, features=featurize(dp.text)) 
+                          for dp in train_data]
+            val_data = [DataPointWithFeatures(id=dp.id, text=dp.text, label=dp.label, features=featurize(dp.text)) 
+                        for dp in val_data]
+            test_data = [DataPointWithFeatures(id=dp.id, text=dp.text, label=dp.label, features=featurize(dp.text)) 
+                         for dp in test_data]
+        
+            model = PerceptronModel()
+            model.train(train_data, val_data, config["epochs"], config["learning_rate"])
+            
+            _ = model.evaluate(
+                test_data,
+                save_path=os.path.join(
+                    "results",
+                    f"perceptron_{data_type_str}_test_predictions.csv"
+                )
+            )
+        
+        def run_best_mlp(data_type_str: str, config: dict):
+            print(f"\nTraining best MLP model for {data_type_str} dataset...")
+            print(f"Configuration: {config}")
+            
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            print(f"Using device: {device}")
+            
+            data_type = DataType(data_type_str)
+            
+            train_data, val_data, dev_data, test_data = load_data(data_type)
+            
+            tokenizer = Tokenizer(train_data, max_vocab_size=20000)
+            label2id, id2label = get_label_mappings(train_data)
+            
+            max_length = 100
+            train_ds = BOWDataset(train_data, tokenizer, label2id, max_length)
+            val_ds = BOWDataset(val_data, tokenizer, label2id, max_length)
+            test_ds = BOWDataset(test_data, tokenizer, label2id, max_length)
+        
+            model = MultilayerPerceptronModel(
+                vocab_size=len(tokenizer.token2id),
+                num_classes=len(label2id),
+            ).to(device)
+            
+            trainer = Trainer(model, device=device)
+            optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"])
+            trainer.train(train_ds, val_ds, optimizer, config["epochs"])
+        
+            test_preds = trainer.predict(test_ds)
+            test_preds = [id2label[pred] for pred in test_preds]
+            save_results(
+                test_data,
+                test_preds,
+                os.path.join("results", f"mlp_{data_type_str}_test_predictions.csv")
+            )
+        
+        def main():
+            os.makedirs("results", exist_ok=True)
+            
+            best_configs = {
+                "mlp": {
+                    "newsgroups": {"epochs": 10, "learning_rate": 0.001},
+                    "sst2": {"epochs": 5, "learning_rate": 0.001}
+                },
+                "perceptron": {
+                    "newsgroups": {"epochs": 10, "learning_rate": 0.1, "features": "bow+len"},
+                    "sst2": {"epochs": 10, "learning_rate": 0.01, "features": "bow"}
+                }
+            }
+            
+            for data_type in ["sst2", "newsgroups"]:
+                run_best_mlp(data_type, best_configs["mlp"][data_type])
+                run_best_perceptron(data_type, best_configs["perceptron"][data_type])
+        
+        if __name__ == "__main__":
+            main() 
+    File: Assignment1 - Copy/a1-rhit-deckerza/collect_report_data.py
+      Extracted text:
+        import torch
+        import json
+        import os
+        from collections import defaultdict
+        from typing import Dict, List
+        import matplotlib.pyplot as plt
+        from tqdm import tqdm
+        from multilayer_perceptron import BOWDataset, MultilayerPerceptronModel, Tokenizer, Trainer, get_label_mappings
+        from perceptron import PerceptronModel, DataPointWithFeatures
+        from utils import DataType, load_data
+        
+        class ReportDataCollector:
+            def __init__(self):
+                self.perceptron_results = defaultdict(list)
+                self.mlp_results = defaultdict(list)
+                self.training_history = {
+                    'sst2': {
+                        'perceptron': {'train_loss': [], 'val_acc': []},
+                        'mlp': {'train_loss': [], 'val_acc': []}
+                    },
+                    'newsgroups': {
+                        'perceptron': {'train_loss': [], 'val_acc': []},
+                        'mlp': {'train_loss': [], 'val_acc': []}
+                    }
+                }
+                self.error_examples = defaultdict(list)
+                self.batch_timings = defaultdict(list)
+        
+            def collect_feature_analysis(self):
+                """Analyze feature types used in the models"""
+                return {
+                    "bow": "Basic bag of words features",
+                    "len": "Length-based features",
+                    # Add other features found in the codebase
+                }
+        
+            def collect_model_results(self, dataset: str):
+                """Collect model results for a specific dataset"""
+                data_type = DataType(dataset)
+                train_data, val_data, dev_data, test_data = load_data(data_type)
+                
+                # Train perceptron
+                perceptron = PerceptronModel()
+                def perceptron_callback(epoch, loss, val_acc):
+                    self.training_history[dataset]['perceptron']['train_loss'].append(loss)
+                    self.training_history[dataset]['perceptron']['val_acc'].append(val_acc)
+                
+                # Train MLP
+                tokenizer = Tokenizer(train_data, max_vocab_size=20000)
+                label2id, id2label = get_label_mappings(train_data)
+                train_ds = BOWDataset(train_data, tokenizer, label2id)
+                val_ds = BOWDataset(val_data, tokenizer, label2id)
+                
+                mlp = MultilayerPerceptronModel(
+                    vocab_size=len(tokenizer.token2id),
+                    num_classes=len(label2id)
+                )
+                trainer = Trainer(mlp)
+                optimizer = torch.optim.Adam(mlp.parameters(), lr=0.001)
+                
+                def mlp_callback(epoch, loss, val_acc):
+                    self.training_history[dataset]['mlp']['train_loss'].append(loss)
+                    self.training_history[dataset]['mlp']['val_acc'].append(val_acc)
+                
+                trainer.train(train_ds, val_ds, optimizer, num_epochs=10, history_callback=mlp_callback)
+                
+                return {
+                    "perceptron": {
+                        "dev_accuracies": self.training_history[dataset]['perceptron']['val_acc'],
+                        "test_accuracy": None,
+                        "ablation_results": {}
+                    },
+                    "mlp": {
+                        "dev_accuracies": self.training_history[dataset]['mlp']['val_acc'],
+                        "test_accuracy": None,
+                        "ablation_results": {}
+                    }
+                }
+        
+            def collect_training_plots(self, dataset: str):
+                """Generate training loss and validation accuracy plots"""
+                # Get the training history for both models
+                perceptron_history = self.training_history[dataset]['perceptron']
+                mlp_history = self.training_history[dataset]['mlp']
+                
+                # Create plots
+                fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+                
+                # Plot training loss
+                epochs = range(len(perceptron_history['train_loss']))
+                ax1.plot(epochs, perceptron_history['train_loss'], 'b-o', label='Perceptron')
+                ax1.plot(epochs, mlp_history['train_loss'], 'r-o', label='MLP')
+                ax1.set_title('Training Loss')
+                ax1.set_xlabel('Epoch')
+                ax1.set_ylabel('Loss')
+                ax1.grid(True)
+                ax1.legend()
+                
+                # Plot validation accuracy
+                ax2.plot(epochs, perceptron_history['val_acc'], 'b-o', label='Perceptron')
+                ax2.plot(epochs, mlp_history['val_acc'], 'r-o', label='MLP')
+                ax2.set_title('Validation Accuracy')
+                ax2.set_xlabel('Epoch')
+                ax2.set_ylabel('Accuracy')
+                ax2.grid(True)
+                ax2.legend()
+                
+                plt.tight_layout()
+                plt.savefig(f'plots/{dataset}_training_plots.png')
+                plt.close()
+        
+            def run_batch_benchmarks(self):
+                """Run batching benchmarks for different batch sizes"""
+                # Reference multilayer_perceptron.py for model setup
+                # startLine: 381
+                # endLine: 384
+                
+                batch_sizes = [1, 2, 4, 8, 16, 32, 64]
+                datasets = ['sst2', 'newsgroups']
+                results = defaultdict(dict)
+                
+                device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+                
+                for dataset in datasets:
+                    for batch_size in batch_sizes:
+                        # Run inference timing tests
+                        # This is a placeholder - implement actual timing logic
+                        results[dataset][batch_size] = 0.0
+                        
+                return results
+        
+            def collect_all_data(self):
+                """Collect all data needed for the report"""
+                # Create output directories
+                os.makedirs('plots', exist_ok=True)
+                os.makedirs('results', exist_ok=True)
+                
+                # Collect all data
+                feature_analysis = self.collect_feature_analysis()
+                
+                datasets = ['sst2', 'newsgroups']
+                results = {}
+                for dataset in datasets:
+                    results[dataset] = self.collect_model_results(dataset)
+                    self.collect_training_plots(dataset)
+                
+                batch_results = self.run_batch_benchmarks()
+                
+                # Save results
+                with open('results/report_data.json', 'w') as f:
+                    json.dump({
+                        'features': feature_analysis,
+                        'model_results': results,
+                        'batch_results': batch_results
+                    }, f, indent=2)
+        
+        def main():
+            collector = ReportDataCollector()
+            collector.collect_all_data()
+            print("Data collection complete. Check results/report_data.json and plots/ directory.")
+        
+        if __name__ == "__main__":
+            main()
+    File: Assignment1 - Copy/a1-rhit-deckerza/features.py
+      Extracted text:
+        from collections import ChainMap
+        from typing import Callable, Dict, Set
+        
+        import pandas as pd
+        
+        
+        class FeatureMap:
+            name: str
+        
+            @classmethod
+            def featurize(self, text: str) -> Dict[str, float]:
+                pass
+        
+            @classmethod
+            def prefix_with_name(self, d: Dict) -> Dict[str, float]:
+                """just a handy shared util function"""
+                return {f"{self.name}/{k}": v for k, v in d.items()}
+        
+        # DONE
+        class BagOfWords(FeatureMap):
+            name = "bow"
+            STOP_WORDS = set(pd.read_csv("stopwords.txt", header=None)[0])
+            @classmethod
+            def featurize(self, text: str) -> Dict[str, float]:
+                words = text.lower().split()
+                words = [word for word in words if word not in self.STOP_WORDS]
+                return self.prefix_with_name({word: 1.0 for word in words})
+            
+        
+        
+        
+        class SentenceLength(FeatureMap):
+            name = "len"
+        
+            @classmethod
+            def featurize(self, text: str) -> Dict[str, float]:
+                """an example of custom feature that rewards long sentences"""
+                if len(text.split()) < 10:
+                    k = "short"
+                    v = 1.0
+                else:
+                    k = "long"
+                    v = 5.0
+                ret = {k: v}
+                return self.prefix_with_name(ret)
+        
+        
+        FEATURE_CLASSES_MAP = {c.name: c for c in [BagOfWords, SentenceLength]}
+        
+        
+        def make_featurize(
+            feature_types: Set[str],
+        ) -> Callable[[str], Dict[str, float]]:
+            featurize_fns = [FEATURE_CLASSES_MAP[n].featurize for n in feature_types]
+        
+            def _featurize(text: str):
+                f = ChainMap(*[fn(text) for fn in featurize_fns])
+                return dict(f)
+        
+            return _featurize
+        
+        
+        __all__ = ["make_featurize"]
+        
+        if __name__ == "__main__":
+            text = "I love this movie"
+            print(text)
+            print(BagOfWords.featurize(text))
+            featurize = make_featurize({"bow", "len"})
+            print(featurize(text))
+    File: Assignment1 - Copy/a1-rhit-deckerza/multilayer_perceptron.py
+      Extracted text:
+        """Multi-layer perceptron model for Assignment 1: Starter code.
+        
+        You can change this code while keeping the function giving headers. You can add any functions that will help you. The given function headers are used for testing the code, so changing them will fail testing.
+        
+        
+        We adapt shape suffixes style when working with tensors.
+        See https://medium.com/@NoamShazeer/shape-suffixes-good-coding-style-f836e72e24fd.
+        
+        Dimension key:
+        
+        b: batch size
+        l: max sequence length
+        c: number of classes
+        v: vocabulary size
+        
+        For example,
+        
+        feature_b_l means a tensor of shape (b, l) == (batch_size, max_sequence_length).
+        length_1 means a tensor of shape (1) == (1,).
+        loss means a tensor of shape (). You can retrieve the loss value with loss.item().
+        """
+        
+        import argparse
+        import os
+        from collections import Counter
+        from pprint import pprint
+        from typing import Dict, List, Tuple
+        
+        import pandas as pd
+        import torch
+        import torch.nn as nn
+        from torch.utils.data import DataLoader, Dataset
+        from tqdm import tqdm
+        from utils import DataPoint, DataType, accuracy, load_data, save_results
+        
+        
+        class Tokenizer:
+            # The index of the padding embedding.
+            # This is used to pad variable length sequences.
+            TOK_PADDING_INDEX = 0
+            STOP_WORDS = set(pd.read_csv("stopwords.txt", header=None)[0])
+        
+            def _pre_process_text(self, text: str) -> List[str]:
+                # Convert to lowercase and split into words
+                words = text.lower().strip().split()
+                
+                # Remove stop words
+                words = [word for word in words if word not in self.STOP_WORDS]
+                
+                # Remove duplicates while maintaining order
+                seen = set()
+                unique_words = [word for word in words if not (word in seen or seen.add(word))]
+                
+                return unique_words
+        
+            def __init__(self, data: List[DataPoint], max_vocab_size: int = None):
+                corpus = " ".join([d.text for d in data])
+                token_freq = Counter(self._pre_process_text(corpus))
+                token_freq = token_freq.most_common(max_vocab_size)
+                tokens = [t for t, _ in token_freq]
+                # offset because padding index is 0
+                self.token2id = {t: (i + 1) for i, t in enumerate(tokens)}
+                self.token2id["<PAD>"] = Tokenizer.TOK_PADDING_INDEX
+                self.id2token = {i: t for t, i in self.token2id.items()}
+        
+            def tokenize(self, text: str) -> List[int]:
+                # Pre-process the text to get unique words without stop words
+                words = self._pre_process_text(text)
+                
+                # Convert words to token IDs, using 0 (padding index) for unknown words
+                token_ids = [self.token2id.get(word, Tokenizer.TOK_PADDING_INDEX) for word in words]
+                
+                return token_ids
+        
+        
+        def get_label_mappings(
+            data: List[DataPoint],
+        ) -> Tuple[Dict[str, int], Dict[int, str]]:
+            """Reads the labels file and returns the mapping."""
+            labels = list(set([d.label for d in data]))
+            label2id = {label: index for index, label in enumerate(labels)}
+            id2label = {index: label for index, label in enumerate(labels)}
+            return label2id, id2label
+        
+        
+        class BOWDataset(Dataset):
+            def __init__(
+                self,
+                data: List[DataPoint],
+                tokenizer: Tokenizer,
+                label2id: Dict[str, int],
+                max_length: int = 100,
+            ):
+                super().__init__()
+                self.data = data
+                self.tokenizer = tokenizer
+                self.label2id = label2id
+                self.max_length = max_length
+        
+            def __len__(self):
+                return len(self.data)
+        
+            def __getitem__(
+                self, idx: int
+            ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+                """Returns a single example as a tuple of torch.Tensors.
+                features_l: The tokenized text of example, shaped (max_length,)
+                length: The length of the text, shaped ()
+                label: The label of the example, shaped ()
+        
+                All of have type torch.int64.
+                """
+                dp: DataPoint = self.data[idx]
+                
+                # Tokenize the text
+                token_ids = self.tokenizer.tokenize(dp.text)
+                
+                # Get the actual length before padding
+                length = len(token_ids)
+                
+                # Truncate if longer than max_length
+                if length > self.max_length:
+                    token_ids = token_ids[:self.max_length]
+                    length = self.max_length
+                
+                # Pad with zeros if shorter than max_length
+                if length < self.max_length:
+                    token_ids.extend([self.tokenizer.TOK_PADDING_INDEX] * (self.max_length - length))
+                
+                # Convert to tensors
+                features = torch.tensor(token_ids, dtype=torch.int64)
+                length_tensor = torch.tensor(length, dtype=torch.int64)
+                
+                # Handle unlabeled data by using 0 as a default label
+                label = torch.tensor(self.label2id.get(dp.label, 0), dtype=torch.int64)
+                
+                return features, length_tensor, label
+        
+        
+        class MultilayerPerceptronModel(nn.Module):
+            """Multi-layer perceptron model for classification."""
+            
+            def __init__(self, vocab_size: int, num_classes: int):
+                """Initializes the model.
+        
+                Inputs:
+                    num_classes (int): The number of classes.
+                    vocab_size (int): The size of the vocabulary.
+                    padding_index (int): Index used for padding tokens.
+                """
+                super().__init__()
+                
+                # Embedding layer to convert token IDs to dense vectors
+                embedding_dim = 100  # Standard dimension for word embeddings
+                self.embedding = nn.Embedding(
+                    num_embeddings=vocab_size,
+                    embedding_dim=embedding_dim,
+                    padding_idx=Tokenizer.TOK_PADDING_INDEX
+                )
+                
+                # Hidden layers
+                hidden_dim = 128
+                self.layers = nn.Sequential(
+                    nn.Linear(embedding_dim, hidden_dim),
+                    nn.ReLU(),
+                    nn.Dropout(0.2),
+                    nn.Linear(hidden_dim, hidden_dim),
+                    nn.ReLU(),
+                    nn.Dropout(0.2),
+                    nn.Linear(hidden_dim, num_classes)
+                )
+        
+            def forward(
+                self, input_features_b_l: torch.Tensor, input_length_b: torch.Tensor
+            ) -> torch.Tensor:
+                """Forward pass of the model.
+        
+                Inputs:
+                    input_features_b_l (tensor): Input data for an example or a batch of examples.
+                    input_length (tensor): The length of the input data.
+        
+                Returns:
+                    output_b_c: The output of the model.
+                """
+                # Get embeddings for all tokens in the batch
+                # Shape: (batch_size, sequence_length, embedding_dim)
+                embedded = self.embedding(input_features_b_l)
+                
+                # Average the embeddings across the sequence length dimension
+                # First create a mask for padding tokens
+                mask = (input_features_b_l != self.embedding.padding_idx).float()
+                mask = mask.unsqueeze(-1)  # Add dimension for broadcasting
+                
+                # Apply mask and compute mean
+                # Shape: (batch_size, embedding_dim)
+                masked_embedded = embedded * mask
+                summed = masked_embedded.sum(dim=1)
+                lengths = mask.sum(dim=1)
+                averaged = summed / (lengths + 1e-8)  # Add small epsilon to avoid division by zero
+                
+                # Pass through the rest of the network
+                # Shape: (batch_size, num_classes)
+                output = self.layers(averaged)
+                
+                return output
+        
+        
+        class Trainer:
+            def __init__(self, model: nn.Module, device: torch.device = None):
+                self.device = device if device is not None else torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+                self.model = model.to(self.device)
+        
+            def predict(self, data: BOWDataset) -> List[int]:
+                """Predicts a label for an input.
+        
+                Inputs:
+                    model_input (tensor): Input data for an example or a batch of examples.
+        
+                Returns:
+                    The predicted class indices as a list.
+                """
+                all_predictions = []
+                dataloader = DataLoader(data, batch_size=32, shuffle=False)
+                
+                # Set model to evaluation mode
+                self.model.eval()
+                
+                # Disable gradient computation for prediction
+                with torch.no_grad():
+                    for inputs_b_l, lengths_b, _ in tqdm(dataloader):
+                        # Move inputs to the correct device
+                        inputs_b_l = inputs_b_l.to(self.device)
+                        lengths_b = lengths_b.to(self.device)
+                        
+                        outputs = self.model(inputs_b_l, lengths_b)
+                        
+                        # Get the predicted class indices
+                        predictions = outputs.argmax(dim=1)
+                        
+                        # Add batch predictions to the list
+                        all_predictions.extend(predictions.tolist())
+                        
+                return all_predictions
+        
+            def evaluate(self, data: BOWDataset) -> float:
+                """Evaluates the model on a dataset.
+        
+                Inputs:
+                    data: The dataset to evaluate on.
+        
+                Returns:
+                    The accuracy of the model.
+                """
+                # Create dataloader for batch processing
+                dataloader = DataLoader(data, batch_size=32, shuffle=False)
+                
+                # Set model to evaluation mode
+                self.model.eval()
+                
+                correct = 0
+                total = 0
+                
+                # Disable gradient computation for evaluation
+                with torch.no_grad():
+                    for inputs_b_l, lengths_b, labels_b in dataloader:
+                        # Move inputs to the correct device
+                        inputs_b_l = inputs_b_l.to(self.device)
+                        lengths_b = lengths_b.to(self.device)
+                        labels_b = labels_b.to(self.device)
+                        
+                        outputs = self.model(inputs_b_l, lengths_b)
+                        
+                        # Get the predicted class indices
+                        predictions = outputs.argmax(dim=1)
+                        
+                        # Calculate number of correct predictions
+                        correct += (predictions == labels_b).sum().item()
+                        total += labels_b.size(0)
+                
+                # Calculate accuracy
+                accuracy = correct / total if total > 0 else 0.0
+                
+                return accuracy
+        
+            def train(
+                    self,
+                    training_data: BOWDataset,
+                    val_data: BOWDataset,
+                    optimizer: torch.optim.Optimizer,
+                    num_epochs: int,
+                ) -> None:
+                    """Trains the MLP.
+        
+                    Inputs:
+                        training_data: Suggested type for an individual training example is
+                            an (input, label) pair or (input, id, label) tuple.
+                            You can also use a dataloader.
+                        val_data: Validation data.
+                        optimizer: The optimization method.
+                        num_epochs: The number of training epochs.
+                    """
+                    torch.manual_seed(0)
+                    criterion = nn.CrossEntropyLoss()
+                    
+                    for epoch in range(num_epochs):
+                        self.model.train()
+                        total_loss = 0
+                        total_samples = 0
+                        dataloader = DataLoader(training_data, batch_size=4, shuffle=True)
+                        
+                        for inputs_b_l, lengths_b, labels_b in tqdm(dataloader):
+                            # Move inputs to the correct device
+                            inputs_b_l = inputs_b_l.to(self.device)
+                            lengths_b = lengths_b.to(self.device)
+                            labels_b = labels_b.to(self.device)
+                            
+                            optimizer.zero_grad()
+                            outputs = self.model(inputs_b_l, lengths_b)
+                            
+                            # Calculate loss
+                            loss = criterion(outputs, labels_b)
+                            
+                            # Backward pass and optimize
+                            loss.backward()
+                            optimizer.step()
+                            
+                            # Accumulate total loss
+                            total_loss += loss.item() * len(labels_b)
+                            total_samples += len(labels_b)
+                        
+                        # Calculate average loss per data point
+                        per_dp_loss = total_loss / total_samples
+        
+                        # Evaluate on validation set
+                        self.model.eval()
+                        val_acc = self.evaluate(val_data)
+        
+                        print(
+                            f"Epoch: {epoch + 1:<2} | Loss: {per_dp_loss:.2f} | Val accuracy: {100 * val_acc:.2f}%"
+                        )
+        
+        
+        
+        
+        if __name__ == "__main__":
+            parser = argparse.ArgumentParser(description="MultiLayerPerceptron model")
+            parser.add_argument(
+                "-d",
+                "--data",
+                type=str,
+                default="sst2",
+                help="Data source, one of ('sst2', 'newsgroups')",
+            )
+            parser.add_argument(
+                "-e", "--epochs", type=int, default=3, help="Number of epochs"
+            )
+            parser.add_argument(
+                "-l", "--learning_rate", type=float, default=0.001, help="Learning rate"
+            )
+            args = parser.parse_args()
+        
+            num_epochs = args.epochs
+            lr = args.learning_rate
+        
+            # Train models for both datasets
+            for data_type_str in ["sst2", "newsgroups"]:
+                print(f"\nTraining model for {data_type_str} dataset...")
+                data_type = DataType(data_type_str)
+        
+                train_data, val_data, dev_data, test_data = load_data(data_type)
+        
+                tokenizer = Tokenizer(train_data, max_vocab_size=20000)
+                label2id, id2label = get_label_mappings(train_data)
+                print("Id to label mapping:")
+                pprint(id2label)
+        
+                max_length = 100
+                train_ds = BOWDataset(train_data, tokenizer, label2id, max_length)
+                val_ds = BOWDataset(val_data, tokenizer, label2id, max_length)
+                dev_ds = BOWDataset(dev_data, tokenizer, label2id, max_length)
+                test_ds = BOWDataset(test_data, tokenizer, label2id, max_length)
+        
+                model = MultilayerPerceptronModel(
+                    vocab_size=len(tokenizer.token2id),
+                    num_classes=len(label2id),
+                )
+        
+                trainer = Trainer(model)
+        
+                print("Training the model...")
+                optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+                trainer.train(train_ds, val_ds, optimizer, num_epochs)
+        
+                # Evaluate on dev
+                dev_acc = trainer.evaluate(dev_ds)
+                print(f"Development accuracy: {100 * dev_acc:.2f}%")
+        
+                # Predict on test
+                test_preds = trainer.predict(test_ds)
+                test_preds = [id2label[pred] for pred in test_preds]
+                save_results(
+                    test_data,
+                    test_preds,
+                    os.path.join("results", f"mlp_{data_type_str}_test_predictions.csv"),
+                )
+    File: Assignment1 - Copy/a1-rhit-deckerza/notes.txt
+      Extracted text:
+        going through todos
+        done with utils.py
+        Did features.py bag of words thing with just binary presence for now.
+    File: Assignment1 - Copy/a1-rhit-deckerza/perceptron.py
+      Extracted text:
+        """Perceptron model model for Assignment 1: Starter code.
+        
+        You can change this code while keeping the function giving headers. You can add any functions that will help you. The given function headers are used for testing the code, so changing them will fail testing.
+        """
+        
+        import argparse
+        import json
+        import os
+        from collections import defaultdict
+        from dataclasses import dataclass
+        from typing import Dict, List, Set
+        
+        from features import make_featurize
+        from tqdm import tqdm
+        from utils import DataPoint, DataType, accuracy, load_data, save_results
+        
+        
+        @dataclass(frozen=True)
+        class DataPointWithFeatures(DataPoint):
+            features: Dict[str, float]
+        
+        # DONE
+        def featurize_data(
+            data: List[DataPoint], feature_types: Set[str]
+        ) -> List[DataPointWithFeatures]:
+            """Featurizes a list of data points."""
+            featurize = make_featurize(feature_types)
+            return [DataPointWithFeatures(id=d.id, text=d.text, label=d.label, features=featurize(d.text)) for d in data]
+        
+        
+        class PerceptronModel:
+            """Perceptron model for classification."""
+        
+            def __init__(self):
+                self.weights: Dict[str, float] = defaultdict(float)
+                self.labels: Set[str] = set()
+        
+            def _get_weight_key(self, feature: str, label: str) -> str:
+                """An internal hash function to build keys of self.weights (needed for tests)"""
+                return feature + "#" + str(label)
+        
+            # DONE
+            def score(self, datapoint: DataPointWithFeatures, label: str) -> float:
+                """Compute the score of a class given the input.
+        
+                Inputs:
+                    datapoint (Datapoint): a single datapoint with features populated
+                    label (str): label
+        
+                Returns:
+                    The output score.
+                """
+                score = 0.0
+                for feature, value in datapoint.features.items():
+                    weight_key = self._get_weight_key(feature, label)
+                    score += self.weights[weight_key] * value
+                return score
+        
+            def predict(self, datapoint: DataPointWithFeatures) -> str:
+                """Predicts a label for an input.
+        
+                Inputs:
+                    datapoint: Input data point.
+        
+                Returns:
+                    The predicted class.
+                """
+                return max(self.labels, key=lambda label: self.score(datapoint, label))
+        
+        
+        
+            def update_parameters(
+                self, datapoint: DataPointWithFeatures, prediction: str, lr: float
+            ) -> None:
+                """Update the model weights of the model using the perceptron update rule.
+        
+                Inputs:
+                    datapoint: The input example, including its label.
+                    prediction: The predicted label.
+                    lr: Learning rate.
+                """
+                if prediction == datapoint.label:
+                    return
+                    
+                for feature, value in datapoint.features.items():
+                    # Add to correct label's weights
+                    self.weights[self._get_weight_key(feature, datapoint.label)] += lr * value
+                    # Subtract from incorrect prediction's weights
+                    self.weights[self._get_weight_key(feature, prediction)] -= lr * value
+        
+            def train(
+                    self,
+                    training_data: List[DataPointWithFeatures],
+                    val_data: List[DataPointWithFeatures], 
+                    num_epochs: int,
+                    lr: float,
+                ) -> None:
+                    """Perceptron model training. Updates self.weights and self.labels
+                    We greedily learn about new labels.
+        
+                    Inputs:
+                        training_data: Suggested type is (list of tuple), where each item can be
+                            a training example represented as an (input, label) pair or (input, id, label) tuple.
+                        val_data: Validation data.
+                        num_epochs: Number of training epochs.
+                        lr: Learning rate.
+                    """
+                    # Add all unique labels to the model's label set
+                    self.labels.update(dp.label for dp in training_data)
+                    
+                    # Train for specified number of epochs
+                    for epoch in range(num_epochs):
+                        # Train on all examples
+                        for datapoint in training_data:
+                            prediction = self.predict(datapoint)
+                            self.update_parameters(datapoint, prediction, lr)
+                        
+                        # Calculate and print accuracies
+                        train_preds = [self.predict(dp) for dp in training_data]
+                        train_acc = accuracy(train_preds, [dp.label for dp in training_data])
+                        
+                        print(f"Epoch {epoch+1}/{num_epochs}:")
+                        print(f"  Training accuracy: {train_acc:.4f}")
+                        
+                        # Only calculate validation accuracy if we have validation data
+                        if val_data:
+                            val_preds = [self.predict(dp) for dp in val_data]
+                            val_acc = accuracy(val_preds, [dp.label for dp in val_data])
+                            print(f"  Validation accuracy: {val_acc:.4f}")
+        
+            def save_weights(self, path: str) -> None:
+                with open(path, "w") as f:
+                    f.write(json.dumps(self.weights, indent=2, sort_keys=True))
+                print(f"Model weights saved to {path}")
+        
+            def evaluate(
+                self,
+                data: List[DataPointWithFeatures],
+                save_path: str = None,
+            ) -> float:
+                """Evaluates the model on the given data.
+        
+                Inputs:
+                    data (list of Datapoint): The data to evaluate on.
+                    save_path: The path to save the predictions.
+        
+                Returns:
+                    accuracy (float): The accuracy of the model on the data.
+                """
+                # Get predictions for all data points
+                predictions = [self.predict(dp) for dp in data]
+                
+                # Save predictions if save path is provided
+                if save_path is not None:
+                    save_results(data, predictions, save_path)
+                
+                # Calculate and return accuracy if labels are available
+                if data[0].label is not None:
+                    return accuracy(predictions, [dp.label for dp in data])
+                
+                # Return 0.0 for unlabeled data
+                return 0.0
+        
+        
+        if __name__ == "__main__":
+            parser = argparse.ArgumentParser(description="Perceptron model")
+            parser.add_argument(
+                "-f",
+                "--features",
+                type=str,
+                default="bow",
+                help="Feature type, e.g., bow+len",
+            )
+            parser.add_argument(
+                "-e", "--epochs", type=int, default=3, help="Number of epochs"
+            )
+            parser.add_argument(
+                "-l", "--learning_rate", type=float, default=0.1, help="Learning rate"
+            )
+            args = parser.parse_args()
+        
+            feature_types: Set[str] = set(args.features.split("+"))
+            num_epochs: int = args.epochs
+            lr: float = args.learning_rate
+        
+            # Train models for both datasets
+            for data_type_str in ["sst2", "newsgroups"]:
+                print(f"\nTraining model for {data_type_str} dataset...")
+                data_type = DataType(data_type_str)
+        
+                train_data, val_data, dev_data, test_data = load_data(data_type)
+                train_data = featurize_data(train_data, feature_types)
+                val_data = featurize_data(val_data, feature_types)
+                dev_data = featurize_data(dev_data, feature_types)
+                test_data = featurize_data(test_data, feature_types)
+        
+                model = PerceptronModel()
+                print("Training the model...")
+                model.train(train_data, val_data, num_epochs, lr)
+        
+                # Predict on the development set
+                dev_acc = model.evaluate(
+                    dev_data,
+                    save_path=os.path.join(
+                        "results",
+                        f"perceptron_{data_type_str}_{args.features}_dev_predictions.csv",
+                    ),
+                )
+                print(f"Development accuracy: {100 * dev_acc:.2f}%")
+        
+                # Predict on the test set
+                _ = model.evaluate(
+                    test_data,
+                    save_path=os.path.join(
+                        "results",
+                        f"perceptron_{data_type_str}_test_predictions.csv",
+                    ),
+                )
+      Directory: Assignment1 - Copy/a1-rhit-deckerza/plots/
+      File: Assignment1 - Copy/a1-rhit-deckerza/plots/newsgroups_training_plots.png
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/plots/sst2_training_plots.png
+        No text extracted (unsupported format or empty).
+    File: Assignment1 - Copy/a1-rhit-deckerza/pytest.ini
+      No text extracted (unsupported format or empty).
+    File: Assignment1 - Copy/a1-rhit-deckerza/requirements.txt
+      Extracted text:
+        numpy
+        pandas
+        pytest
+        torch
+        tqdm
+      Directory: Assignment1 - Copy/a1-rhit-deckerza/results/
+      File: Assignment1 - Copy/a1-rhit-deckerza/results/mlp_newsgroups_test_predictions.csv
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/results/mlp_sst2_test_predictions.csv
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/results/perceptron_newsgroups_test_predictions.csv
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/results/perceptron_sst2_test_predictions.csv
+        No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/results/report_data.json
+        Extracted text:
+          {
+            "features": {
+              "bow": "Basic bag of words features",
+              "len": "Length-based features"
+            },
+            "model_results": {
+              "sst2": {
+                "perceptron": {
+                  "dev_accuracies": [],
+                  "test_accuracy": null,
+                  "ablation_results": {}
+                },
+                "mlp": {
+                  "dev_accuracies": [],
+                  "test_accuracy": null,
+                  "ablation_results": {}
+                }
+              },
+              "newsgroups": {
+                "perceptron": {
+                  "dev_accuracies": [],
+                  "test_accuracy": null,
+                  "ablation_results": {}
+                },
+                "mlp": {
+                  "dev_accuracies": [],
+                  "test_accuracy": null,
+                  "ablation_results": {}
+                }
+              }
+            },
+            "batch_results": {
+              "sst2": {
+                "1": 0.0,
+                "2": 0.0,
+                "4": 0.0,
+                "8": 0.0,
+                "16": 0.0,
+                "32": 0.0,
+                "64": 0.0
+              },
+              "newsgroups": {
+                "1": 0.0,
+                "2": 0.0,
+                "4": 0.0,
+                "8": 0.0,
+                "16": 0.0,
+                "32": 0.0,
+                "64": 0.0
+              }
+            }
+          }
+    File: Assignment1 - Copy/a1-rhit-deckerza/run_models.py
+      Extracted text:
+        import argparse
+        from perceptron import DataPointWithFeatures, PerceptronModel
+        from multilayer_perceptron import BOWDataset, MultilayerPerceptronModel, Tokenizer, Trainer, get_label_mappings
+        from utils import DataType, load_data, save_results
+        from features import make_featurize
+        import os
+        import torch
+        from typing import Dict, List, Tuple
+        from dataclasses import dataclass
+        from collections import defaultdict
+        
+        @dataclass
+        class ModelResults:
+            model_type: str
+            dataset: str
+            parameters: Dict
+            dev_accuracy: float
+            
+        class ExperimentTracker:
+            def __init__(self):
+                self.results: List[ModelResults] = []
+                self.best_results: Dict[Tuple[str, str], ModelResults] = {}
+            
+            def add_result(self, result: ModelResults):
+                self.results.append(result)
+                key = (result.model_type, result.dataset)
+                
+                if key not in self.best_results or result.dev_accuracy > self.best_results[key].dev_accuracy:
+                    self.best_results[key] = result
+            
+            def print_summary(self):
+                print("\n" + "="*80)
+                print("BEST RESULTS SUMMARY")
+                print("="*80)
+                
+                for (model_type, dataset), result in sorted(self.best_results.items()):
+                    print(f"\n{model_type} on {dataset}:")
+                    print(f"Development Accuracy: {100 * result.dev_accuracy:.2f}%")
+                    print("Parameters:")
+                    for param, value in result.parameters.items():
+                        print(f"  {param}: {value}")
+        
+        def get_training_configurations():
+            perceptron_configs = [
+                {
+                    "epochs": epochs,
+                    "learning_rate": lr,
+                    "features": features
+                }
+                for epochs in [3, 5, 10]
+                for lr in [0.1, 0.01, 0.001]
+                for features in ["bow", "bow+len"]
+            ]
+            
+            mlp_configs = [
+                {
+                    "epochs": epochs,
+                    "learning_rate": lr,
+                }
+                for epochs in [3, 5, 10]
+                for lr in [0.001, 0.0001]
+            ]
+            
+            return perceptron_configs, mlp_configs
+        
+        def run_perceptron(data_type_str: str, config: Dict, tracker: ExperimentTracker):
+            print(f"\nTraining perceptron model for {data_type_str} dataset...")
+            print(f"Configuration: {config}")
+            
+            data_type = DataType(data_type_str)
+            feature_types = set(config["features"].split("+"))
+        
+            train_data, val_data, dev_data, test_data = load_data(data_type)
+            
+            featurize = make_featurize(feature_types)
+            
+            train_data = [DataPointWithFeatures(id=dp.id, text=dp.text, label=dp.label, features=featurize(dp.text)) 
+                          for dp in train_data]
+            val_data = [DataPointWithFeatures(id=dp.id, text=dp.text, label=dp.label, features=featurize(dp.text)) 
+                        for dp in val_data]
+            dev_data = [DataPointWithFeatures(id=dp.id, text=dp.text, label=dp.label, features=featurize(dp.text)) 
+                        for dp in dev_data]
+            test_data = [DataPointWithFeatures(id=dp.id, text=dp.text, label=dp.label, features=featurize(dp.text)) 
+                         for dp in test_data]
+        
+            model = PerceptronModel()
+            model.train(train_data, val_data, config["epochs"], config["learning_rate"])
+        
+            dev_acc = model.evaluate(dev_data)
+            print(f"Development accuracy: {100 * dev_acc:.2f}%")
+            
+            tracker.add_result(ModelResults(
+                model_type="Perceptron",
+                dataset=data_type_str,
+                parameters=config,
+                dev_accuracy=dev_acc
+            ))
+            
+            key = ("Perceptron", data_type_str)
+            if tracker.best_results[key].dev_accuracy == dev_acc:
+                _ = model.evaluate(
+                    test_data,
+                    save_path=os.path.join(
+                        "results",
+                        f"perceptron_{data_type_str}_{config['features']}_test_predictions.csv",
+                    ),
+                )
+        
+        def run_mlp(data_type_str: str, config: Dict, tracker: ExperimentTracker):
+            print(f"\nTraining MLP model for {data_type_str} dataset...")
+            print(f"Configuration: {config}")
+            
+            device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+            print(f"Using device: {device}")
+            
+            data_type = DataType(data_type_str)
+            
+            train_data, val_data, dev_data, test_data = load_data(data_type)
+            
+            tokenizer = Tokenizer(train_data, max_vocab_size=20000)
+            label2id, id2label = get_label_mappings(train_data)
+            
+            max_length = 100
+            train_ds = BOWDataset(train_data, tokenizer, label2id, max_length)
+            val_ds = BOWDataset(val_data, tokenizer, label2id, max_length)
+            dev_ds = BOWDataset(dev_data, tokenizer, label2id, max_length)
+            test_ds = BOWDataset(test_data, tokenizer, label2id, max_length)
+        
+            model = MultilayerPerceptronModel(
+                vocab_size=len(tokenizer.token2id),
+                num_classes=len(label2id),
+            ).to(device)
+            
+            trainer = Trainer(model, device=device)
+            optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"])
+            trainer.train(train_ds, val_ds, optimizer, config["epochs"])
+        
+            dev_acc = trainer.evaluate(dev_ds)
+            print(f"Development accuracy: {100 * dev_acc:.2f}%")
+            
+            tracker.add_result(ModelResults(
+                model_type="MLP",
+                dataset=data_type_str,
+                parameters=config,
+                dev_accuracy=dev_acc
+            ))
+            
+            key = ("MLP", data_type_str)
+            if tracker.best_results[key].dev_accuracy == dev_acc:
+                test_preds = trainer.predict(test_ds)
+                test_preds = [id2label[pred] for pred in test_preds]
+                save_results(
+                    test_data,
+                    test_preds,
+                    os.path.join("results", f"mlp_{data_type_str}_test_predictions.csv"),
+                )
+        
+        def main():
+            perceptron_configs, mlp_configs = get_training_configurations()
+            tracker = ExperimentTracker()
+            
+            datasets = ["sst2", "newsgroups"]
+            
+            for data_type_str in datasets:
+                print(f"\n{'='*50}")
+                print(f"Processing dataset: {data_type_str}")
+                print(f"{'='*50}")
+                
+                for config in perceptron_configs:
+                    run_perceptron(data_type_str, config, tracker)
+                
+                for config in mlp_configs:
+                    run_mlp(data_type_str, config, tracker)
+            
+            tracker.print_summary()
+        
+        if __name__ == "__main__":
+            main()
+    File: Assignment1 - Copy/a1-rhit-deckerza/stopwords.txt
+      Extracted text:
+        i
+        me
+        my
+        myself
+        we
+        our
+        ours
+        ourselves
+        you
+        you're
+        you've
+        you'll
+        you'd
+        your
+        yours
+        yourself
+        yourselves
+        he
+        him
+        his
+        himself
+        she
+        she's
+        her
+        hers
+        herself
+        it
+        it's
+        its
+        itself
+        they
+        them
+        their
+        theirs
+        themselves
+        what
+        which
+        who
+        whom
+        this
+        that
+        that'll
+        these
+        those
+        am
+        is
+        are
+        was
+        were
+        be
+        been
+        being
+        have
+        has
+        had
+        having
+        do
+        does
+        did
+        doing
+        a
+        an
+        the
+        and
+        but
+        if
+        or
+        because
+        as
+        until
+        while
+        of
+        at
+        by
+        for
+        with
+        about
+        against
+        between
+        into
+        through
+        during
+        before
+        after
+        above
+        below
+        to
+        from
+        up
+        down
+        in
+        out
+        on
+        off
+        over
+        under
+        again
+        further
+        then
+        once
+        here
+        there
+        when
+        where
+        why
+        how
+        all
+        any
+        both
+        each
+        few
+        more
+        most
+        other
+        some
+        such
+        no
+        nor
+        not
+        only
+        own
+        same
+        so
+        than
+        too
+        very
+        s
+        t
+        can
+        will
+        just
+        don
+        don't
+        should
+        should've
+        now
+        d
+        ll
+        m
+        o
+        re
+        ve
+        y
+        ain
+        aren
+        aren't
+        couldn
+        couldn't
+        didn
+        didn't
+        doesn
+        doesn't
+        hadn
+        hadn't
+        hasn
+        hasn't
+        haven
+        haven't
+        isn
+        isn't
+        ma
+        mightn
+        mightn't
+        mustn
+        mustn't
+        needn
+        needn't
+        shan
+        shan't
+        shouldn
+        shouldn't
+        wasn
+        wasn't
+        weren
+        weren't
+        won
+        won't
+        wouldn
+        wouldn't
+      Directory: Assignment1 - Copy/a1-rhit-deckerza/tests/
+      File: Assignment1 - Copy/a1-rhit-deckerza/tests/__init__.py
+        No text extracted (unsupported format or empty).
+        Directory: Assignment1 - Copy/a1-rhit-deckerza/tests/__pycache__/
+        File: Assignment1 - Copy/a1-rhit-deckerza/tests/__pycache__/__init__.cpython-312.pyc
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/tests/__pycache__/test_bow_features.cpython-312-pytest-8.3.4.pyc
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/tests/__pycache__/test_io_utils.cpython-312-pytest-8.3.4.pyc
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/tests/__pycache__/test_multilayer_perceptron.cpython-312-pytest-8.3.4.pyc
+          No text extracted (unsupported format or empty).
+        File: Assignment1 - Copy/a1-rhit-deckerza/tests/__pycache__/test_perceptron.cpython-312-pytest-8.3.4.pyc
+          No text extracted (unsupported format or empty).
+      File: Assignment1 - Copy/a1-rhit-deckerza/tests/test_bow_features.py
+        Extracted text:
+          from features import BagOfWords
+          
+          
+          def test_bow_simple():
+              text = "I love this movie"
+              features = BagOfWords.featurize(text)
+              assert features == {"bow/love": 1.0, "bow/movie": 1.0}
+          
+          
+          def test_bow_ignore_stop_words():
+              text = "I"
+              features = BagOfWords.featurize(text)
+              assert features == {}
+          
+          
+          def test_bow_ignore_repeat():
+              text = "I don't know if I love this movie or that movie"
+              features = BagOfWords.featurize(text)
+              assert features == {
+                  "bow/love": 1.0,
+                  "bow/movie": 1.0,
+                  "bow/know": 1.0,
+              }
+          
+          
+          def test_bow_ignore_capital():
+              text = "I LoVe THIs mOVIe"
+              features = BagOfWords.featurize(text)
+              assert features == {"bow/love": 1.0, "bow/movie": 1.0}
+          
+          
+          def test_bow_ignore_space():
+              text = "   I love   this movie    "
+              features = BagOfWords.featurize(text)
+              assert features == {"bow/love": 1.0, "bow/movie": 1.0}
+      File: Assignment1 - Copy/a1-rhit-deckerza/tests/test_io_utils.py
+        Extracted text:
+          import tempfile
+          
+          from utils import DataPoint, read_labeled_data, read_unlabeled_data
+          
+          
+          def test_read_labeled_data():
+              data = """id,text
+          1,hello
+          2,world
+          """
+              labels = """id,label
+          1,1
+          2,0
+          """
+              with tempfile.NamedTemporaryFile("w", delete=False) as data_file:
+                  data_file.write(data)
+              with tempfile.NamedTemporaryFile("w", delete=False) as labels_file:
+                  labels_file.write(labels)
+              result = read_labeled_data(data_file.name, labels_file.name)
+              assert result == [
+                  DataPoint(id=1, text="hello", label="1"),
+                  DataPoint(id=2, text="world", label="0"),
+              ]
+          
+          
+          def test_read_unlabeld_data():
+              data = """id,text
+          1,hello
+          2,world
+          """
+              with tempfile.NamedTemporaryFile("w", delete=False) as data_file:
+                  data_file.write(data)
+              result = read_unlabeled_data(data_file.name)
+              assert result == [
+                  DataPoint(id=1, text="hello", label=None),
+                  DataPoint(id=2, text="world", label=None),
+              ]
+      File: Assignment1 - Copy/a1-rhit-deckerza/tests/test_multilayer_perceptron.py
+        Extracted text:
+          import pytest
+          import torch
+          from multilayer_perceptron import (
+              DataPoint,
+              MultilayerPerceptronModel,
+              Tokenizer,
+          )
+          
+          
+          @pytest.mark.parametrize("vocab_size,num_classes", [(1000, 2), (100_000, 10)])
+          def test_init(vocab_size, num_classes):
+              _ = MultilayerPerceptronModel(vocab_size, num_classes, 0)
+          
+          
+          @pytest.mark.parametrize(
+              "vocab_size,num_classes,batch_size,sequence_length",
+              [(1000, 2, 16, 1024), (100_000, 10, 64, 512)],
+          )
+          def test_predict(
+              vocab_size: int, num_classes: int, batch_size: int, sequence_length: int
+          ):
+              model = MultilayerPerceptronModel(vocab_size, num_classes, 0)
+              batch_size = 2
+              sequence_length = 3
+              input_features_b_l = torch.randint(
+                  low=0,
+                  high=vocab_size,
+                  size=(batch_size, sequence_length),
+                  dtype=torch.long,
+              )
+              input_length_b = torch.randint(
+                  low=0, high=sequence_length, size=(batch_size,), dtype=torch.long
+              )
+          
+              output_b_c = model.forward(input_features_b_l, input_length_b)
+              assert output_b_c.shape == (batch_size, num_classes)
+          
+          
+          def test_tokenizer():
+              dp = DataPoint(
+                  id=0,
+                  text="I love this movie",
+                  label="1",
+              )
+              data = [dp]
+              tokenizer = Tokenizer(data, max_vocab_size=1000)
+              assert len(tokenizer.token2id) == 3
+              assert all(t in tokenizer.token2id for t in ("love", "movie"))
+              assert len(tokenizer.tokenize("I love this movie")) == 2
+      File: Assignment1 - Copy/a1-rhit-deckerza/tests/test_perceptron.py
+        Extracted text:
+          from perceptron import DataPointWithFeatures, PerceptronModel
+          
+          import pytest
+          
+          
+          def test_init():
+              model = PerceptronModel()
+              assert len(model.weights) == 0
+              assert len(model.labels) == 0
+          
+          
+          def test_score_null_model_return_zero():
+              dp = DataPointWithFeatures(
+                  id=0,
+                  text="I love this movie",
+                  label="1",
+                  features={"bow/love": 1.0, "bow/movie": 1.0},
+              )
+              model = PerceptronModel()
+              assert model.score(dp, "1") == pytest.approx(0.0)
+          
+          
+          def test_score():
+              dp = DataPointWithFeatures(
+                  id=0,
+                  text="I love this movie",
+                  label="1",
+                  features={"bow/love": 1.0, "bow/movie": 1.0},
+              )
+              model = PerceptronModel()
+              model.labels = {"1", "0"}
+              model.weights.update({"bow/love#1": 0.2, "bow/movie#1": 0.1})
+              assert model.score(dp, "1") == pytest.approx(0.3)
+              assert model.score(dp, "0") == pytest.approx(0.0)
+          
+          
+          def test_predict():
+              dp = DataPointWithFeatures(
+                  id=0,
+                  text="I love this movie",
+                  label=None,
+                  features={"bow/love": 1.0, "bow/movie": 1.0},
+              )
+              model = PerceptronModel()
+              model.labels = {"1", "0"}
+              model.weights.update({"bow/love#1": 0.2, "bow/movie#1": 0.1})
+              assert model.predict(dp) == "1"
+          
+          
+          def test_predict_const():
+              dp = DataPointWithFeatures(
+                  id=0,
+                  text="I hate this movie",
+                  label=None,
+                  features={"bow/movie": 1.0, "bow/hate": 1.0},
+              )
+              model = PerceptronModel()
+              model.labels = {"1"}
+              assert model.predict(dp) == "1"
+          
+          
+          def test_update_parameters():
+              dp = DataPointWithFeatures(
+                  id=0,
+                  text="I love this movie",
+                  label="1",
+                  features={"bow/love": 1.0, "bow/movie": 1.0},
+              )
+              model = PerceptronModel()
+              model.labels = {"1", "0"}
+              model.weights.update({"bow/no#0": 10.0, "bow/no#1": -10.0})
+          
+              pred = "0"
+              lr = 0.1
+              model.update_parameters(dp, pred, lr)
+          
+              assert model.weights == {
+                  "bow/no#1": -10.0,
+                  "bow/no#0": 10.0,
+                  "bow/love#1": 0.1,
+                  "bow/love#0": -0.1,
+                  "bow/movie#1": 0.1,
+                  "bow/movie#0": -0.1,
+              }
+          
+          
+          def test_train_nop():
+              dp = DataPointWithFeatures(
+                  id=0,
+                  text="I love this movie",
+                  label="1",
+                  features={"bow/love": 1.0, "bow/movie": 1.0},
+              )
+              model = PerceptronModel()
+              model.labels = {"1", "0"}
+              model.weights.update({"bow/love#1": 10.0, "bow/love#0": -10.0})
+          
+              assert model.predict(dp) == "1"
+          
+              train_data = [dp]
+              val_data = []
+              num_epochs = 1
+              lr = 0.1
+              model.train(train_data, val_data, num_epochs, lr)
+              assert model.weights == {
+                  "bow/love#1": 10.0,
+                  "bow/love#0": -10.0,
+              }
+              assert model.labels == {"1", "0"}
+          
+          
+          def test_train():
+              dp = DataPointWithFeatures(
+                  id=0,
+                  text="I love this movie",
+                  label="1",
+                  features={"bow/love": 1.0, "bow/movie": 1.0},
+              )
+              model = PerceptronModel()
+              model.labels = {"1", "0"}
+              model.weights.update({"bow/love#1": -10.0, "bow/love#0": 10.0})
+          
+              assert model.predict(dp) == "0"
+          
+              train_data = [dp]
+              val_data = []
+              num_epochs = 1
+              lr = 0.1
+              model.train(train_data, val_data, num_epochs, lr)
+              assert model.weights == {
+                  "bow/love#1": -9.9,
+                  "bow/love#0": 9.9,
+                  "bow/movie#1": 0.1,
+                  "bow/movie#0": -0.1,
+              }
+              assert model.labels == {"1", "0"}
+    File: Assignment1 - Copy/a1-rhit-deckerza/utils.py
+      Extracted text:
+        """Utility functions for both perceptron and MLP models."""
+        
+        import enum
+        import random
+        from dataclasses import dataclass
+        from typing import Any, List, Tuple
+        
+        import pandas as pd
+        
+        ##### Data utilities #####
+        
+        
+        class DataType(enum.Enum):
+            SST2 = "sst2"
+            NEWSGROUPS = "newsgroups"
+        
+        
+        @dataclass(frozen=True)
+        class DataPoint:
+            id: int
+            text: str
+            label: str | None
+        
+        # DONE
+        def read_labeled_data(
+            data_filename: str, labels_filename: str
+        ) -> List[DataPoint]:
+            # Read CSVs using pandas
+            data_df = pd.read_csv(data_filename)
+            labels_df = pd.read_csv(labels_filename)
+            
+            # Create DataPoints from the DataFrame rows
+            return [
+                DataPoint(id=int(row['id']), text=str(row['text']), label=str(labels_df.iloc[i]['label']))
+                for i, row in data_df.iterrows()
+            ]
+        
+        # DONE
+        def read_unlabeled_data(data_filename: str) -> List[DataPoint]:
+            # Read CSV using pandas
+            data_df = pd.read_csv(data_filename)
+            
+            # Create DataPoints from the DataFrame rows
+            return [
+                DataPoint(id=int(row['id']), text=str(row['text']), label=None)
+                for _, row in data_df.iterrows()
+            ]
+        
+        
+        def load_data(
+            data_type: DataType,
+        ) -> Tuple[List[DataPoint], List[DataPoint], List[DataPoint], List[DataPoint]]:
+            """Loads the data for the given data type. Returns train, val, dev, test."""
+            data_type = data_type.value
+            f_train_data = "data/" + data_type + "/train/train_data.csv"
+            f_train_labels = "data/" + data_type + "/train/train_labels.csv"
+            f_dev_data = "data/" + data_type + "/dev/dev_data.csv"
+            f_dev_labels = "data/" + data_type + "/dev/dev_labels.csv"
+            f_test_data = "data/" + data_type + "/test/test_data.csv"
+        
+            train = read_labeled_data(f_train_data, f_train_labels)
+            dev = read_labeled_data(f_dev_data, f_dev_labels)
+            test = read_unlabeled_data(f_test_data)
+        
+            # Shuffle the training data with a fixed seed.
+            random.seed(0)
+            random.shuffle(train)
+        
+            # Take 5% of train for validation.
+            val = train[: int(len(train) * 0.05)]
+            train = train[int(len(train) * 0.05) :]
+            return train, val, dev, test
+        
+        
+        ##### Evaluation utilities #####
+        
+        
+        def accuracy(preds: List[Any], targets: List[Any]) -> float:
+            assert len(preds) == len(targets), (
+                f"len(preds)={len(preds)}, len(targets)={len(targets)}"
+            )
+            assert len(targets) > 0, f"len(targets)={len(targets)}"
+            correct = sum([pred == target for pred, target in zip(preds, targets)])
+            return correct / len(preds)
+        
+        
+        def save_results(
+            data: List[DataPoint], predictions: List[Any], results_path: str
+        ) -> None:
+            """Saves the predictions to a file.
+        
+            Inputs:
+                predictions (list of predictions, e.g., string)
+                results_path (str): Filename to save predictions to
+            """
+            ids = [d.id for d in data]
+            df = pd.DataFrame({"id": ids, "label": predictions})
+            df.to_csv(results_path, index=False)
+            print(f"Saved results to {results_path}")
+  File: Assignment1 - Copy/zip.py
+    Extracted text:
+      import os
+      import zipfile
+      import shutil
+      
+      # Extract a zipped folder to a temporary directory
+      def extract_zip(zip_path, extract_dir):
+          with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+              zip_ref.extractall(extract_dir)
+      
+      # Flatten all files in a directory to a single file
+      def flatten_files(input_dir, output_file):
+          with open(output_file, 'w', encoding='utf-8') as out_file:
+              for root, dirs, files in os.walk(input_dir):
+                  for file in files:
+                      file_path = os.path.join(root, file)
+                      
+                      # Skip binary and media files
+                      if file.lower().endswith(('.jpg', '.jpeg', '.png', '.svg', '.gif', 
+                                              '.mp4', '.mov', '.mp3', '.wav', '.pdf', 
+                                              '.zip', '.exe', '.dll', '.pyc')):
+                          continue
+                      
+                      try:
+                          # Try UTF-8 first
+                          with open(file_path, 'r', encoding='utf-8') as in_file:
+                              content = in_file.read()
+                      except UnicodeDecodeError:
+                          try:
+                              # Try Latin-1 as fallback
+                              with open(file_path, 'r', encoding='latin-1') as in_file:
+                                  content = in_file.read()
+                          except UnicodeDecodeError:
+                              # If both fail, skip the file
+                              print(f"Skipping file {file} due to encoding issues")
+                              continue
+                      
+                      out_file.write('---------\n')
+                      out_file.write(f"File: {file}\n\n")
+                      out_file.write(content)
+                      out_file.write('\n\n')
+      
+      # Convert a zipped folder to a text file
+      def zip_to_text(zip_path, output_file):
+          temp_dir = 'temp_extract'
+          extract_zip(zip_path, temp_dir)
+          flatten_files(temp_dir, output_file)
+          shutil.rmtree(temp_dir)  # Removes the temporary directory
+      
+      # Specify the path to the input zipped folder
+      zip_path = r"C:\Users\zadec\Desktop\Cornell Tech\NLP\Assignment1.zip"
+      
+      # Specify the path to the output text file
+      output_file = 'Repository.txt'
+      
+      # Convert zipped folder to text file
+      zip_to_text(zip_path, output_file)

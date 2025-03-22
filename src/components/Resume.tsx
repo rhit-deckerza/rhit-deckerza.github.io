@@ -1,16 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Resume() {
-  return (
-    <div>
-      <h1>Zachary Alexander Decker's Website</h1>
-      <p>I am a computer science student. I went to Rose-Hulman for undergrad and I am currently attending Cornell Tech for a CS masters and I am expected to graduate in May.
-        I am interested in AI, CV, and robotics.
-      </p>
-      
-      
-    </div>
-  );
-}
+const Resume: React.FC = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Redirect to the new home page
+    navigate('/');
+  }, [navigate]);
+  
+  return null; // No UI rendering needed as this is just a redirect
+};
 
 export default Resume;

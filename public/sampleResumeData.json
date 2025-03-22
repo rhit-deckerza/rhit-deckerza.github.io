@@ -1,105 +1,105 @@
 {
-  "name": "ZACHARY DECKER",
-  "location": "New York, NY",
-  "phone": "714-475-8849",
-  "email": "zad25@cornell.edu",
-  "website": "zacharydecker.com",
+  "name": "JOHN DOE",
+  "location": "Anytown, USA",
+  "phone": "555-123-4567",
+  "email": "johndoe@example.com",
+  "website": "johndoe.example.com",
 
   "education": [
     {
-      "institution": "Cornell Tech (Cornell University)",
-      "location": "New York, NY",
-      "graduationDate": "May 2025",
-      "degree": "Master of Engineering in Computer Science",
-      "gpa": "4.0"
+      "institution": "State University",
+      "location": "Collegetown, USA",
+      "graduationDate": "May 2023",
+      "degree": "Master of Science in Computer Science",
+      "gpa": "3.8"
     },
     {
-      "institution": "Rose-Hulman Institute of Technology",
-      "location": "Terre Haute, IN",
-      "graduationDate": "May 2024",
-      "degree": "Bachelor of Science in Computer Science and Software Engineering",
-      "gpa": "3.71"
+      "institution": "Local University",
+      "location": "Hometown, USA",
+      "graduationDate": "May 2020",
+      "degree": "Bachelor of Science in Computer Science",
+      "gpa": "3.7"
     }
   ],
 
   "technicalSkills": [
-    "Languages: Python, JavaScript, TypeScript, C++, Java, SQL",
-    "Frameworks: React, Node.js, Express, Flask, Django, TensorFlow",
-    "Tools: Git, Docker, AWS, Azure, GCP, CI/CD",
-    "Databases: MongoDB, PostgreSQL, MySQL, Redis",
-    "Other: RESTful APIs, GraphQL, Microservices, Agile/Scrum"
+    "Languages: JavaScript, Python, Java, C++, HTML/CSS",
+    "Frameworks: React, Angular, Node.js, Express, Django",
+    "Tools: Git, Docker, AWS, Jenkins, Jira",
+    "Databases: MongoDB, PostgreSQL, MySQL, SQLite",
+    "Other: RESTful APIs, GraphQL, UI/UX Design, Agile/Scrum"
   ],
 
   "experience": [
     {
-      "title": "Software Engineering Intern",
-      "company": "DEKA",
-      "location": "Manchester, NH",
-      "dateRange": "Fall 2022 – Spring 2024",
+      "title": "Software Engineer",
+      "company": "Tech Company Inc.",
+      "location": "Metropolis, USA",
+      "dateRange": "June 2022 - Present",
       "bullets": [
-        "Contributed to an **autonomous wheeled robot's embedded software** using C/C++ on a **Linux-based platform (ROS)**.",
-        "Researched, designed, and integrated **real-time localization and mapping algorithm** that reduced CPU usage by **30%**.",
-        "Worked closely with hardware and product teams to define feature specs, debug **low-level firmware issues**, and push **OTA updates**."
+        "Developed and maintained **responsive web applications** using **React.js and Node.js**, improving user engagement by **25%**.",
+        "Implemented **microservices architecture** to enhance system scalability and reduce service downtime by **15%**.",
+        "Collaborated with cross-functional teams to design and implement **RESTful APIs** that improved data retrieval speed by **40%**."
       ]
     },
     {
-      "title": "Machine Learning Intern",
-      "company": "AON Devices",
-      "location": "Irvine, CA",
-      "dateRange": "Summer 2022",
+      "title": "Junior Developer",
+      "company": "Startup Solutions",
+      "location": "Innovation City, USA",
+      "dateRange": "January 2021 - May 2022",
       "bullets": [
-        "Investigated and validated **transformer-based models** for motion and speech recognition on **low-power wearable devices**.",
-        "Developed **scalable data processing pipelines**, ensuring clean, high-quality input for **machine learning experiments**."
+        "Built and optimized **database queries** for a customer management system serving **10,000+ daily users**.",
+        "Contributed to front-end development using **HTML5, CSS3, and JavaScript** to create intuitive user interfaces."
       ]
     },
     {
-      "title": "Embedded Systems Intern",
-      "company": "Litrinium",
-      "location": "Mission Viejo, CA",
-      "dateRange": "Summer 2021",
+      "title": "Software Development Intern",
+      "company": "Mobile App Co.",
+      "location": "Tech Valley, USA",
+      "dateRange": "Summer 2020",
       "bullets": [
-        "Created Python scripts to validate optical communication products with integrated circuit designs, performing performance test reports and debugging."
+        "Assisted in the development of a mobile application using **React Native**, implementing core features and fixing bugs."
       ]
     }
   ],
 
   "projects": [
     {
-      "name": "World Seed: Augmented 3D Environment Generation (PyTorch)",
-      "dateRange": "Winter 2024 - Present",
+      "name": "Smart Home Automation System",
+      "dateRange": "January 2023 - Present",
       "bullets": [
-        "Augmenting **image-to-image diffusion models** trained in 3D video games with **SLAM algorithms** to increase consistency.",
-        "Collaborating with a team of researchers to document findings, demonstrating the potential for **next-gen immersive game design** workflows.",
-        "Applied **prompt engineering** to guide the diffusion model's 3D scene construction, reducing 'hallucinated' geometry by **25%**."
+        "Designing an **IoT-based home automation system** using **Raspberry Pi and Arduino** for temperature and lighting control.",
+        "Implementing a **mobile application** for remote monitoring and control using **React Native and Firebase**.",
+        "Integrating **machine learning algorithms** to predict user preferences and optimize energy usage by **20%**."
       ]
     },
     {
-      "name": "Course Registration Chatbot (PyTorch, Langchain)",
-      "dateRange": "Spring 2024",
+      "name": "E-commerce Platform",
+      "dateRange": "March 2022 - December 2022",
       "bullets": [
-        "Engineered a Retrieval Augmented Generation (RAG) pipeline, enabling pretrained LLMs to accurately reference university-specific course data.",
-        "Coordinated user testing with real students, collecting feedback to refine natural language understanding (NLU) and enhance user satisfaction."
+        "Created a full-stack e-commerce platform with secure payment processing and inventory management.",
+        "Incorporated responsive design principles to ensure seamless user experience across devices."
       ]
     },
     {
-      "name": "Organize My Life File Organization App (Matlab, PyTorch, YOLO)",
-      "dateRange": "Fall 2023 – Spring 2024",
+      "name": "Task Management Application",
+      "dateRange": "September 2021 - February 2022",
       "bullets": [
-        "Built a cross-platform file management solution for iOS and Android.",
-        "Implemented a serverless backend with AWS Amplify, ensuring secure multi-file storage and robust scalability.",
-        "Integrated CI/CD pipelines (GitHub Actions + Amplify) to automate testing and deployment.",
-        "Collaborated directly with clients to refine features, incorporate feedback, and optimize UX flows—delivering an end-to-end production-ready product."
+        "Developed a productivity application to help users organize tasks and track progress.",
+        "Implemented user authentication, data persistence, and real-time updates.",
+        "Conducted user testing and iteratively improved the interface based on feedback.",
+        "Deployed the application using cloud services, ensuring high availability and performance."
       ]
     }
   ],
 
   "publications": [
     {
-      "title": "Ashworth, J., Lee, Y., Shen, J., Kim, E., Decker, Z., & Yoder, J. (2022). Evolution of Developmental Strategies in NK Fitness Landscapes. ALIFE 2022: The 2022 Conference on Artificial Life, 59.",
-      "citation": "Studied the relationship between the evolution and development of organisms through computer simulation.",
+      "title": "Smith, A., Johnson, B., & Doe, J. (2022). Advancements in Machine Learning Applications for Software Development. Journal of Computer Science Research, 15(2), 112-128.",
+      "citation": "Investigated the integration of machine learning techniques into software development processes.",
       "bullets": [
-        "Designed an abstract computational model integrating NK fitness landscapes with genotype-encoded developmental programs to simulate organism trajectories and developmental processes.",
-        "Presented findings indicating evolved developmental strategies mirror biological phenomena such as sensitive periods, providing insights into the evolutionary origins of complex developmental patterns."
+        "Analyzed the effectiveness of predictive models in identifying potential bugs and security vulnerabilities in code.",
+        "Proposed a framework for incorporating machine learning algorithms into continuous integration pipelines to enhance code quality and developer productivity."
       ]
     }
   ]
