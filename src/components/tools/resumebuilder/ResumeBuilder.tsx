@@ -201,7 +201,7 @@ function ResumeBuilder() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [chatMessages, setChatMessages] = useState<AISuggestion[]>([
     { 
-      text: "Hi there! I'm your resume assistant. I can help you customize your resume or answer any questions about it. What would you like help with?", 
+      text: "Hi there! I'm your resume assistant. I can help you improve and customize your resume. Here are some ways to get started:\n\n• Paste in your existing resume and I'll help format it\n• Share a job description and I'll tailor your resume for it\n• Ask specific questions about improving sections of your resume\n\nWhat would you like help with today?", 
       sender: 'ai',
       timestamp: Date.now()
     }
@@ -273,18 +273,18 @@ function ResumeBuilder() {
         const parsedChat = JSON.parse(storedChat);
         setChatMessages(parsedChat);
       } else {
-        // No stored chat history, set default welcome message
+        // No stored chat history, set improved welcome message with suggestions
         setChatMessages([{ 
-          text: "Hi there! I'm your resume assistant. I can help you customize your resume or answer any questions about it. What would you like help with?", 
+          text: "Hi there! I'm your resume assistant. I can help you improve and customize your resume. Here are some ways to get started:\n\n• Paste in your existing resume and I'll help format it\n• Share a job description and I'll tailor your resume for it\n• Ask specific questions about improving sections of your resume\n\nWhat would you like help with today?", 
           sender: 'ai', 
           timestamp: Date.now()
         }]);
       }
     } catch (error) {
       console.error('Error loading chat history:', error);
-      // Reset to default on error
+      // Reset to default improved message on error
       setChatMessages([{ 
-        text: "Hi there! I'm your resume assistant. I can help you customize your resume or answer any questions about it. What would you like help with?", 
+        text: "Hi there! I'm your resume assistant. I can help you improve and customize your resume. Here are some ways to get started:\n\n• Paste in your existing resume and I'll help format it\n• Share a job description and I'll tailor your resume for it\n• Ask specific questions about improving sections of your resume\n\nWhat would you like help with today?", 
         sender: 'ai',
         timestamp: Date.now()
       }]);
@@ -1536,9 +1536,9 @@ When suggesting modifications:
   // Handle refresh chat button click
   const handleRefreshChat = () => {
     if (window.confirm("Are you sure you want to clear the chat history? This cannot be undone.")) {
-      // Create a fresh AI welcome message
+      // Create a fresh AI welcome message with improved suggestions
       const initialMessage = {
-        text: "Hi there! I'm your resume assistant. I can help you customize your resume or answer any questions about it. What would you like help with?",
+        text: "Hi there! I'm your resume assistant. I can help you improve and customize your resume. Here are some ways to get started:\n\n• Paste in your existing resume and I'll help format it\n• Share a job description and I'll tailor your resume for it\n• Ask specific questions about improving sections of your resume\n\nWhat would you like help with today?",
         sender: 'ai' as const,
         timestamp: Date.now()
       };

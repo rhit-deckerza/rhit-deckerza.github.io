@@ -44,7 +44,37 @@ const Portfolio: React.FC = () => {
         </Typography>
       </Paper> */}
 
-      {/* Projects Preview Section */}
+      {/* Coding Projects Section - Under Construction */}
+      <Box sx={{ mb: 5 }}>
+        <Typography variant="h4" component="h2" className="manga-title" gutterBottom>
+          Coding Projects
+        </Typography>
+        <Paper elevation={0} sx={{ p: 4, border: '1px solid black', textAlign: 'center' }}>
+          <Typography variant="h6" gutterBottom>
+            Under Construction
+          </Typography>
+          <Typography variant="body1">
+            My coding projects section is currently being updated. Please check back soon!
+          </Typography>
+        </Paper>
+      </Box>
+
+      {/* Research Projects Section - Under Construction */}
+      <Box sx={{ mb: 5 }}>
+        <Typography variant="h4" component="h2" className="manga-title" gutterBottom>
+          Research Projects
+        </Typography>
+        <Paper elevation={0} sx={{ p: 4, border: '1px solid black', textAlign: 'center' }}>
+          <Typography variant="h6" gutterBottom>
+            Under Construction
+          </Typography>
+          <Typography variant="body1">
+            My research projects section is currently being updated. Please check back soon!
+          </Typography>
+        </Paper>
+      </Box>
+
+      {/* Tools Section */}
       <Box sx={{ mb: 5 }}>
         <Typography variant="h4" component="h2" className="manga-title" gutterBottom>
           Tools
@@ -104,7 +134,7 @@ const Portfolio: React.FC = () => {
         <Button 
           variant="contained" 
           color="primary"
-          href="mailto:contact@example.com"
+          href="mailto:zad25@cornell.edu"
           sx={{ 
             boxShadow: 'none',
           }}

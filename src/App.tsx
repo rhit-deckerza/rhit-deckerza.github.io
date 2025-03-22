@@ -4,6 +4,8 @@ import { AppBar, Toolbar, Button, Container, Typography, Box } from '@mui/materi
 import ZipToContext from './components/tools/ziptocontext/ZipToContext';
 import Portfolio from './components/Portfolio';
 import ResumeBuilder from './components/tools/resumebuilder/ResumeBuilder';
+import ResearchProjectInfo from './components/projects/ResearchProjectInfo';
+import CodingProjectInfo from './components/projects/CodingProjectInfo';
 
 // Navigation bar for the portfolio site
 const NavigationBar = () => {
@@ -107,6 +109,10 @@ function App() {
           <Route path="/tools" element={<Tools />} />
           <Route path="/tools/ziptocontext" element={<ZipToContext />} />
           <Route path="/tools/resumebuilder" element={<ResumeBuilder />} />
+          
+          {/* Project Info Routes */}
+          <Route path="/research/:projectId" element={<ResearchProjectInfo />} />
+          <Route path="/projects/:projectId" element={<CodingProjectInfo />} />
           
           {/* Legacy routes for backward compatibility */}
           <Route path="/ziptocontext" element={<ZipToContext />} />
