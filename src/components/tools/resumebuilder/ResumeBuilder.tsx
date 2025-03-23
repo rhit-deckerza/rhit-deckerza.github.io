@@ -830,8 +830,9 @@ When suggesting modifications:
         .map(msg => `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.text}`)
         .join('\n\n');
       
+      // Instead of calling OpenAI directly, use our backend proxy
       const response = await axios.post(
-        OPENAI_API_ENDPOINT,
+        'https://backend-crimson-fog-1555.fly.dev/api/openai-proxy', // Update with your backend URL
         {
           model: "gpt-3.5-turbo",
           messages: [
@@ -846,15 +847,10 @@ When suggesting modifications:
           ],
           temperature: 0.7,
           max_tokens: 2000
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${OPENAI_API_KEY}`
-          }
         }
       );
 
+      // The rest of the function remains unchanged
       let responseText = response.data.choices[0].message.content;
       
       // Extract JSON if present, using JSON_START and JSON_END markers
