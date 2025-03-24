@@ -1,11 +1,27 @@
-import React from 'react';
-import { Container, Typography, Box, Button, Grid, Paper } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Container, Typography, Box, Button, Grid, Paper, Chip } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import './ui/MangaTheme.css';
+import { ProjectsData, ResearchProject, CodingProject } from '../utils/projectData';
+import { fetchProjects } from '../utils/projectData';
 
 const Portfolio: React.FC = () => {
+  const [projects, setProjects] = useState<ProjectsData>({
+    research: {},
+    coding: {}
+  });
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      const data = await fetchProjects();
+      setProjects(data);
+    };
+    loadProjects();
+  }, []);
+
   return (
-    <Container maxWidth="lg" sx={{ mt: 6 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+
       {/* Hero Section */}
       <Box sx={{ textAlign: 'center', mb: 5 }}>
         <Typography variant="h3" component="h1" className="manga-title" gutterBottom>
@@ -15,7 +31,7 @@ const Portfolio: React.FC = () => {
           Software Developer & Engineer
         </Typography>
         <Typography variant="body1" sx={{ maxWidth: '700px', mx: 'auto', mb: 4 }}>
-          Welcome to my portfolio site.
+          Under construction and still migrating projects. Will be complete by April 7th latest.
         </Typography>
         {/* <Button 
           variant="contained" 
@@ -43,36 +59,129 @@ const Portfolio: React.FC = () => {
           My background in engineering has given me a methodical approach to problem-solving, allowing me to build robust applications that stand up to real-world use.
         </Typography>
       </Paper> */}
+      {/* Coding Projects */}
+      <Typography variant="h4" component="h2" gutterBottom sx={{ mt: 4 }}>
+        Coding Projects
+      </Typography>
+      <Grid container spacing={3}>
+        {Object.entries(projects.coding).map(([id, project]) => (
+          <Grid item xs={12} md={6} key={id}>
+            <Paper elevation={0} sx={{ p: 2, border: '1px solid black' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                  {project.title}
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  {project.technologies.map((tech) => (
+                    <Chip
+                      key={tech}
+                      label={tech}
+                      size="small"
+                      variant="outlined"
+                    />
+                  ))}
+                </Box>
+              </Box>
+              <Typography variant="body1" paragraph>
+                {project.description}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Button
+                  variant="outlined"
+                  component={RouterLink}
+                  to={`/coding/${id}`}
+                  size="small"
+                  sx={{ 
+                    boxShadow: 'none',
+                    borderColor: 'black',
+                    color: 'black',
+                    '&:hover': {
+                      borderColor: 'black',
+                      backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                    }
+                  }}
+                >
+                  View Project
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
 
-      {/* Coding Projects Section - Under Construction */}
-      <Box sx={{ mb: 5 }}>
-        <Typography variant="h4" component="h2" className="manga-title" gutterBottom>
-          Coding Projects
-        </Typography>
-        <Paper elevation={0} sx={{ p: 4, border: '1px solid black', textAlign: 'center' }}>
-          <Typography variant="h6" gutterBottom>
-            Under Construction
-          </Typography>
-          <Typography variant="body1">
-            My coding projects section is currently being updated. Please check back soon!
-          </Typography>
-        </Paper>
-      </Box>
+      {/* Research Projects */}
+      <Typography variant="h4" component="h2" gutterBottom sx={{ mt: 4 }}>
+        Research Projects
+      </Typography>
+      <Grid container spacing={3}>
+        {Object.entries(projects.research).map(([id, project]) => (
+          <Grid item xs={12} md={6} key={id}>
+            <Paper elevation={0} sx={{ p: 2, border: '1px solid black' }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                <Typography variant="h6" component="h3" sx={{ mr: 1 }}>
+                  {project.title}
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', flex: 1, alignItems: 'center', mt: 0.5 }}>
+                  {/* Research Area Tags */}
+                  {project.tags.map((tag) => (
+                    <Chip 
+                      key={tag} 
+                      label={tag} 
+                      size="small"
+                      sx={{ 
+                        bgcolor: 'black', 
+                        color: 'white', 
+                        borderRadius: '4px',
+                        height: '24px'
+                      }} 
+                    />
+                  ))}
+                  {/* Technical Tags */}
+                  {project.technicalTags.map((tag) => (
+                    <Chip 
+                      key={tag} 
+                      label={tag} 
+                      size="small"
+                      sx={{ 
+                        bgcolor: 'white', 
+                        color: 'black', 
+                        border: '1px solid black',
+                        borderRadius: '4px',
+                        height: '24px'
+                      }} 
+                    />
+                  ))}
+                </Box>
+              </Box>
 
-      {/* Research Projects Section - Under Construction */}
-      <Box sx={{ mb: 5 }}>
-        <Typography variant="h4" component="h2" className="manga-title" gutterBottom>
-          Research Projects
-        </Typography>
-        <Paper elevation={0} sx={{ p: 4, border: '1px solid black', textAlign: 'center' }}>
-          <Typography variant="h6" gutterBottom>
-            Under Construction
-          </Typography>
-          <Typography variant="body1">
-            My research projects section is currently being updated. Please check back soon!
-          </Typography>
-        </Paper>
-      </Box>
+              <Typography variant="body2" sx={{ mb: 2 }}>
+                {project.description}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Button
+                  variant="outlined"
+                  component={RouterLink}
+                  to={`/research/${id}`}
+                  size="small"
+                  sx={{ 
+                    boxShadow: 'none',
+                    borderColor: 'black',
+                    color: 'black',
+                    '&:hover': {
+                      borderColor: 'black',
+                      backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                    }
+                  }}
+                >
+                  View Research
+                </Button>
+              </Box>
+            </Paper>
+          </Grid>
+        ))}
+      </Grid>
+
+      
 
       {/* Tools Section */}
       <Box sx={{ mb: 5 }}>

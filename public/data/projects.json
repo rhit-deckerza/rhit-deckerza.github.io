@@ -1,93 +1,128 @@
-[
-    {
-      "name": "Organize My Life",
-      "date": "Fall 2023 - Spring 2024",
-      "body": "Over the course of the final year of my undergraduate program, I along with three other seniors worked with a client to create a file organization software for mobile. We used XP techniques to collaborate with the client and each other to produce a working prototype that satisfied the main desired features.",
-      "image_src": "images/OMLDiagram-removebg-preview.png"
+{
+  "research": {
+    "evolution-development": {
+      "title": "Evolution of Developmental Strategies in NK Fitness Landscapes",
+      "description": "Research exploring the relationship between evolution and development through computational simulation, published at ALIFE 2022 Conference.",
+      "fullDescription": "As part of a research team at Rose-Hulman, I helped develop an abstract computational framework to investigate how evolution shapes developmental strategies. My primary contributions focused on implementing the NK fitness landscape model and analyzing the patterns of exploration and exploitation that emerged from our simulations.\n\nOur research revealed fascinating insights into why certain developmental processes, like adolescent exploration and sensitive periods, may have evolved. By simulating organisms navigating through environments of varying complexity, we demonstrated that evolution naturally selects for time-sensitive developmental strategies that balance exploration and exploitation.\n\nThe computational framework I helped develop provides a new way to study the relationship between evolution and development, offering insights that would be difficult to obtain through traditional biological studies due to the vast time scales involved.",
+      "tags": ["Artificial Intelligence", "Computational Biology"],
+      "technicalTags": ["Python", "C++", "Matplotlib", "CUDA"],
+      "images": [
+        {
+          "url": "/images/agentActions.png",
+          "caption": "Illustration of an agent performing actions according to its genotype."
+        },
+        {
+          "url": "/images/looksbeforewalks.png",
+          "caption": "Look before walks and fitness at each walk across K values"
+        }
+      ],
+      "links": [
+        {
+          "title": "Research Paper",
+          "url": "https://direct.mit.edu/isal/proceedings/isal/34/59/2035435/isal_a_00543.pdf"
+        },
+        {
+          "title": "ALIFE 2022 Conference",
+          "url": "https://2022.alife.org/"
+        }
+      ],
+      "keyTakeaways": [
+        "Gained experience in computational modeling and complex systems analysis, learning to translate biological concepts into abstract computational frameworks",
+        "Developed strong Python optimization skills through implementing parallel processing with CUDA, resulting in faster simulation speeds",
+        "Strengthened data visualization capabilities using Matplotlib to communicate complex patterns in our results",
+        "Our work provided new computational evidence for why developmental processes like adolescent exploration may have evolved"
+      ],
+      "collaborators": ["Dr. Jake Ashworth", "Yujung Lee", "Jackson Shen", "Edward Kim", "Dr. Jason Yoder"]
     },
-    {
-      "name": "AI Calendar Assistant",
-      "date": "Spring 2024",
-      "body": "As a final project for an independent study on generative AI, I used prompt engineering techniques to create an AI calendar assistant that was capable of scheduling and organizing events. Using React and Node.js I created a prototype website frontend and backend. Then I tested various prompt engineering techniques across various LLMs.",
-      "image_src": "images/AICalendarAssistant.png"
-    },
-    {
-      "name": "3D Reconstruction",
-      "date": "Spring 2023",
-      "body": "Using deep learning as well as traditional computer vision techniques I and two other seniors demonstrated how one could automate a 3D reconstruciton from a moving single camera video of a soccer game. For the project we gave an outline of the proposed pipeline as well as an example of its effictiveness on a short clip of a professional game.",
-      "image_src": "images/Soccer.png"
-    },
-    {
-        "name": "Haskell Video Game",
-        "date": "Spring 2023",
-        "body": "Created an arcade-style video game using Haskell. Gained expirence with a statically-typed and functional style language.",
-        "image_src": "images/haskell.png"
-    },
-    {
-        "name": "Cellular Automata",
-        "date": "Winter 2022",
-        "body": "With a partner I replicated multiple famous cellular automata simulations including Conway's Game of Life, Wolframs's Elementary Cellular Automaton, and Packard's Edge of Chaos. Through this project I learned about the concepts of complexity and emergent behavior.",
-        "image_src": "images/cellular.png"
-    },
-    {
-        "name": "Genetic Programming",
-        "date": "Winter 2022",
-        "body": "With a partner I programmed a tree-based genome capable of representing complex equations which were then used in optimization algorithms to select for equations that could model real-world phenomena.",
-        "image_src": "images/GeneticProgramming.png"
-    },
-    {
-        "name": "Scheme Interpreter",
-        "date": "Fall 2022",
-        "body": "Designed and built a Scheme intpreter that can parse and execute most Scheme expressions. I utilized sytax expansion to robustly respoind to Scheme's flexible syntax.",
-        "image_src": "images/scheme.png"
+    "beauty-beyond-words": {
+      "title": "Beauty Beyond Words II: Leveraging Attention for Ingredient-Attribute Insights in Beauty Products",
+      "description": "Research applying transformer-based architectures to analyze relationships between beauty product ingredients and skin-related attributes.",
+      "fullDescription": "This research addresses the beauty industry's need for transparent and explainable methods to map product ingredients to skin-related attributes. We developed a BERT-based machine learning model that achieved a balanced F1 score of 0.61 and precision of 0.75 for predicting product attributes from ingredients and descriptions.\n\nOur approach combined explicit model architectures with advanced explainability techniques, including Integrated Gradients, SHAP, and LIME, to uncover the relationships between ingredients and product attributes. By utilizing publicly available Amazon product metadata and reviews alongside a curated skincare glossary, we developed a scalable pipeline to extract and analyze ingredient-attribute relationships in beauty products.\n\nThe model successfully identified key attributes such as acne, hydration, and sensitive skin with high precision, while explainability methods revealed significant ingredients like salicylic acid for acne treatment and petroleum jelly for hydration. This work contributes to developing more transparent and effective tools for beauty product analysis and recommendation systems.",
+      "tags": ["Machine Learning", "Natural Language Processing", "Explainable AI"],
+      "technicalTags": ["Python", "PyTorch", "BERT", "Hugging Face"],
+      "images": [
+        {
+          "url": "/images/beauty_flowchart.png",
+          "caption": "Flowchart representing the pipeline for extracting ingredients and attributes."
+        }
+      ],
+      "links": [
+        {
+          "title": "Research Repository",
+          "url": "https://github.com/shreyasriram4/transformers_beauty"
+        }
+      ],
+      "keyTakeaways": [
+        "Developed a scalable, interpretable machine learning pipeline for analyzing beauty product ingredients and their attributes",
+        "Demonstrated that transformer-based models can effectively predict product attributes with high precision (0.75) and reasonable F1 scores (0.61)",
+        "Applied multiple explainability techniques to uncover meaningful connections between ingredients and skin benefits",
+        "Identified opportunities for improving recommendation systems through transparent ingredient-attribute mapping"
+      ],
+      "collaborators": ["Shreya Sriram", "Priyanshi Gupta"]
     }
-    ,
-    {
-        "name": "Digital Catan",
-        "date": "Spring 2022",
-        "body": "Recreated the board game Catan in Java along with a small group of students. Utilied test driven design (TDD) to as well as software design principles to create robust and flexible program that met all requirements.",
-        "image_src": "images/Catan.png"
+  },
+  "coding": {
+    "polyrook": {
+      "title": "PolyRook",
+      "description": "Community-driven, torrent-like AI generation & distribution platform for 3D models, creating an infinite, decentralized library of freely accessible assets.",
+      "fullDescription": "The premise is simple: anywhere, anytime, anyone can use AI to spawn brand-new 3D meshes and access an infinite library. Then they seamlessly push and share these GLB creations across a fully distributed, torrent-like network, contributing to the largest free 3D model hub ever conceived. Welcome to PolyRook.\n\nPolyRook is built on three core philosophies:\n\n• Infinite Models: The platform hosts thousands of new 3D models each day— all generated and shared by a legion of user-run AI nodes.\n\n• Fully Distributed: Users can volunteer their storage and bandwidth to become \"seeders\" for specific types of models to automatically mirror.\n\n• Metadata Filtering: 3D assets are fully tagged like character, RPG, cyberpunk, low-poly— with user comments, ratings, and even its generator.\n\nOur desktop app helps orchestrate local generation, seeding, and partial hosting. Meanwhile, the PolyRook API caters to developers who want dynamic, on-the-fly 3D asset loading for procedural or AAA games.\n\nWith PolyRook, we're galvanizing a new ecosystem of creative exchange, turning 3D content into a communal resource. Through torrent-style distribution and a swarm of volunteer AI model nodes, 3D is no longer a proprietary silo— it's a shared living global library.",
+      "technologies": ["React", "Three.js", "WebGL", "Peer-to-Peer", "AI", "WebRTC"],
+      "features": [
+        "AI-powered 3D model generation",
+        "Distributed torrent-like sharing system",
+        "Rich metadata and tagging system",
+        "Real-time 3D previews",
+        "Developer API for dynamic asset loading"
+      ],
+      "screenshots": [
+        {
+          "url": "/images/polyrook-interface.png",
+          "caption": "PolyRook main interface with 3D model browsing and filtering"
+        },
+        {
+          "url": "/images/polyrook-generation.png",
+          "caption": "AI Generation Panel for creating new 3D models"
+        },
+        {
+          "url": "/images/polyrook-comments.png",
+          "caption": "Community feedback and rating system for models"
+        },
+        {
+          "url": "/images/polyrook-workflow.png",
+          "caption": "Node-based workflow showing local saves, network sharing, and downloading"
+        }
+      ],
+      "links": [
+        {
+          "title": "GitHub",
+          "url": "https://github.com/yourusername/polyrook",
+          "icon": "GitHub"
+        },
+        {
+          "title": "Demo",
+          "url": "https://polyrook.io",
+          "icon": "Launch"
+        }
+      ],
+      "workflow": [
+        {
+          "step": "Local Node Saves",
+          "description": "Tagged & stored locally."
+        },
+        {
+          "step": "Push to Network",
+          "description": "Hashed & shared to peers with matching tags."
+        },
+        {
+          "step": "Seeding/Downloading",
+          "description": "Grab from nearest node for specific model types."
+        },
+        {
+          "step": "Metadata & Ratings",
+          "description": "Votes & feedback sync back to help others."
+        }
+      ]
     }
-    ,
-    {
-        "name": "Elden Ring Item Mangagement",
-        "date": "Spring 2022",
-        "body": "Created an online charecter item manager for the popular video game Elden Ring. Designed and implemented a relational database in SQL. Created website frontend using javascript and a python backend using Flask.",
-        "image_src": "images/elden.png"
-    }
-    ,
-    {
-        "name": "Major Planner",
-        "date": "Spring 2022",
-        "body": "With a partner I created a website that facilitates filling out the complicated Rose-Hulman double major application. Created an intuitive and responsive UI that allows students to quickly and easily plan their coursework and convert the plan into an application.",
-        "image_src": "images/doublemajor.png"
-    }
-    ,
-    {
-        "name": "Verilog Processor",
-        "date": "Winter 2021",
-        "body": "Designed and modeled a minimal instruction set general-purpose processor. Implementented the desgin as a multicycle datapath in Verilog. Created an assembler that translated assembly instructions into machine code. Wrote eulers algorithm in our assembly language and ran the algorithum on our datapath using an FPGA.",
-        "image_src": "images/datapath.png"
-    }
-    ,
-    {
-        "name": "Editor AVL Trees Data Structure",
-        "date": "Winter 2021",
-        "body": "Created a data structure designed for a text editing software using self-balancing AVL trees. The tree structure was able to insert and delete at any position in worst-case log(N) time complexity.",
-        "image_src": "images/AVLTree.png"
-    }
-    ,
-    {
-        "name": "Genetic Algorithm",
-        "date": "Winter 2021",
-        "body": "Designed and developed a simple genetic algorithm which included a graphical representation and user interface.",
-        "image_src": "images/GeneticAlgorithm.png"
-    },
-    {
-        "name": "Legend of Zelda Game",
-        "date": "Fall 2020",
-        "body": "Create a 2D adventure game in the style of the orginial Legend of Zelda",
-        "image_src": "images/zelda1header.png"
-    }
-  ]
+  }
+}
   

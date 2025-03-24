@@ -111,8 +111,8 @@ function App() {
           <Route path="/tools/resumebuilder" element={<ResumeBuilder />} />
           
           {/* Project Info Routes */}
-          <Route path="/research/:projectId" element={<ResearchProjectInfo />} />
-          <Route path="/projects/:projectId" element={<CodingProjectInfo />} />
+          <Route path="/research/:id" element={<ResearchProjectInfo />} />
+          <Route path="/coding/:id" element={<CodingProjectInfo />} />
           
           {/* Legacy routes for backward compatibility */}
           <Route path="/ziptocontext" element={<ZipToContext />} />

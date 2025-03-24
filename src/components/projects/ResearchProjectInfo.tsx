@@ -1,162 +1,367 @@
-import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Container, Typography, Box, Button, Paper, Chip, Grid } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
-// Define the research projects data
-const researchProjects = {
-  'material-science': {
-    title: 'Machine Learning for Material Science',
-    description: 'Investigating novel approaches to predict material properties using neural networks and transfer learning techniques.',
-    fullDescription: `This research project explores the application of machine learning algorithms to predict and discover new materials with desired properties. By leveraging large datasets of known materials and their properties, we've developed neural network models that can accurately predict various properties of new, theoretical materials.
-
-Our approach combines transfer learning techniques with domain-specific knowledge to create models that are both accurate and interpretable. The results have potential applications in fields such as energy storage, semiconductors, and structural materials.`,
-    tags: ['Machine Learning', 'Material Science', 'Neural Networks', 'Transfer Learning'],
-    links: [
-      { title: 'Research Paper', url: '#' },
-      { title: 'Dataset', url: '#' },
-      { title: 'Code Repository', url: '#' }
-    ],
-    keyFindings: [
-      'Developed a neural network architecture that predicts material properties with 94% accuracy',
-      'Identified novel composite materials with improved thermal conductivity',
-      'Created a transfer learning approach that reduces training time by 65%',
-      'Implemented an interpretable model that provides insights into structure-property relationships'
-    ],
-    collaborators: ['Dr. Jane Smith', 'Prof. Robert Johnson', 'Advanced Materials Research Lab']
-  },
-  'nlp-documentation': {
-    title: 'NLP for Technical Documentation',
-    description: 'Developing specialized language models for extracting insights from engineering and scientific literature.',
-    fullDescription: `This project focuses on developing specialized natural language processing models to extract, analyze, and summarize technical information from engineering and scientific literature. Traditional NLP models often struggle with domain-specific terminology and concepts found in technical documentation.
-
-Our research has led to the development of custom language models trained specifically on engineering and scientific corpora. These models are designed to understand technical jargon, identify key concepts, and extract relevant information from complex documents.`,
-    tags: ['Natural Language Processing', 'Information Extraction', 'Technical Documentation', 'Deep Learning'],
-    links: [
-      { title: 'Research Publication', url: '#' },
-      { title: 'Demo System', url: '#' },
-      { title: 'Technical Report', url: '#' }
-    ],
-    keyFindings: [
-      'Created domain-specific word embeddings that improve technical term recognition by 37%',
-      'Developed an automated system that extracts procedural information from technical manuals with 82% accuracy',
-      'Implemented a summarization algorithm that preserves technical accuracy while reducing document length by 70%',
-      'Designed an annotation system for technical knowledge graphs'
-    ],
-    collaborators: ['Technical Documentation Research Group', 'Dr. Michael Chen', 'Sarah Williams, PhD']
-  }
-};
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Container, Typography, Grid, Paper, Box, Button, Chip, List, ListItem, ListItemText, Divider, useTheme, useMediaQuery } from '@mui/material';
+import { ResearchProject } from '../../utils/projectData';
+import { fetchProjects } from '../../utils/projectData';
 
 const ResearchProjectInfo: React.FC = () => {
-  const { projectId } = useParams<{ projectId: string }>();
-  const project = projectId ? researchProjects[projectId as keyof typeof researchProjects] : null;
+  const { id } = useParams<{ id: string }>();
+  const [project, setProject] = useState<ResearchProject | null>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  useEffect(() => {
+    const loadProject = async () => {
+      const data = await fetchProjects();
+      if (id && data.research[id]) {
+        setProject(data.research[id]);
+      }
+    };
+    loadProject();
+  }, [id]);
 
   if (!project) {
     return (
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1" className="manga-title" gutterBottom>
-          Project Not Found
-        </Typography>
-        <Button 
-          variant="outlined" 
-          component={Link} 
-          to="/"
-          startIcon={<ArrowBackIcon />}
-          sx={{ mt: 2 }}
-        >
-          Back to Portfolio
-        </Button>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Typography variant="h5">Loading...</Typography>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
-      
-  
-      <Typography variant="h3" component="h1" className="manga-title" gutterBottom>
-        {project.title}
-      </Typography>
-      
-      <Box sx={{ mb: 3 }}>
-        {project.tags.map((tag, index) => (
-          <Chip 
-            key={index} 
-            label={tag} 
-            sx={{ 
-              mr: 1, 
-              mb: 1,
-              bgcolor: 'black',
-              color: 'white',
-              borderRadius: '4px'
-            }} 
-          />
-        ))}
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
+      {/* Header Section */}
+      <Box sx={{ mb: { xs: 3, md: 5 } }}>
+        <Typography 
+          variant="h2" 
+          component="h1" 
+          gutterBottom
+          sx={{ 
+            fontWeight: 700,
+            mb: 2,
+            fontSize: { xs: '2.25rem', md: '3rem' },
+            lineHeight: 1.2
+          }}
+        >
+          {project.title}
+        </Typography>
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 1, 
+          flexWrap: 'wrap', 
+          mb: 3 
+        }}>
+          {project.tags.map((tag) => (
+            <Chip
+              key={tag}
+              label={tag}
+              sx={{ 
+                bgcolor: 'black', 
+                color: 'white',
+                fontWeight: 500,
+                '&:hover': {
+                  bgcolor: 'rgba(0, 0, 0, 0.8)'
+                }
+              }}
+            />
+          ))}
+          {project.technicalTags.map((tag) => (
+            <Chip
+              key={tag}
+              label={tag}
+              variant="outlined"
+              sx={{
+                fontWeight: 500,
+                '&:hover': {
+                  borderColor: 'black'
+                }
+              }}
+            />
+          ))}
+        </Box>
       </Box>
 
-      <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', mb: 4 }}>
-        {project.fullDescription}
-      </Typography>
-
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
-          <Paper elevation={0} sx={{ p: 3, border: '1px solid black', height: '100%' }}>
-            <Typography variant="h5" component="h2" className="manga-title" gutterBottom>
-              Key Findings
-            </Typography>
-            <Box component="ul" sx={{ pl: 2 }}>
-              {project.keyFindings.map((finding, index) => (
-                <Box component="li" key={index} sx={{ mb: 1 }}>
-                  {finding}
-                </Box>
-              ))}
-            </Box>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <Paper elevation={0} sx={{ p: 3, border: '1px solid black', height: '100%' }}>
-            <Typography variant="h5" component="h2" className="manga-title" gutterBottom>
-              Collaborators
-            </Typography>
-            <Box component="ul" sx={{ pl: 2 }}>
-              {project.collaborators.map((collaborator, index) => (
-                <Box component="li" key={index} sx={{ mb: 1 }}>
-                  {collaborator}
-                </Box>
-              ))}
-            </Box>
-          </Paper>
-        </Grid>
-      </Grid>
-
-      <Paper elevation={0} sx={{ p: 3, border: '1px solid black', mt: 4 }}>
-        <Typography variant="h5" component="h2" className="manga-title" gutterBottom>
-          Resources & Links
-        </Typography>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 2 }}>
-          {project.links.map((link, index) => (
-            <Button 
-              key={index}
-              variant="outlined"
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
+      <Grid container spacing={{ xs: 3, md: 4 }}>
+        {/* Main Content Section */}
+        <Grid item xs={12} md={7}>
+          {/* Description */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: { xs: 2.5, md: 3.5 }, 
+              border: '1px solid black',
+              mb: { xs: 3, md: 4 },
+              borderRadius: 2,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+              }
+            }}
+          >
+            <Typography 
+              variant="body1" 
+              paragraph
               sx={{ 
-                boxShadow: 'none',
-                borderColor: 'black',
-                color: 'black',
+                lineHeight: 1.7,
+                fontSize: { xs: '1rem', md: '1.05rem' }
+              }}
+            >
+              {project.fullDescription}
+            </Typography>
+          </Paper>
+
+          {/* Images Section */}
+          {project.images.length > 0 && (
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: { xs: 2.5, md: 3.5 }, 
+                border: '1px solid black',
+                mb: { xs: 3, md: 4 },
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
                 '&:hover': {
-                  borderColor: 'black',
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
                 }
               }}
             >
-              {link.title}
-            </Button>
-          ))}
-        </Box>
-      </Paper>
+              <Typography 
+                variant="h5" 
+                gutterBottom
+                sx={{ 
+                  mb: 3,
+                  fontWeight: 600,
+                  fontSize: { xs: '1.4rem', md: '1.5rem' }
+                }}
+              >
+                Research Visualizations
+              </Typography>
+              <Grid container spacing={3}>
+                {project.images.map((image, index) => (
+                  <Grid 
+                    item 
+                    xs={12} 
+                    sm={project.images.length === 1 ? 12 : 6} 
+                    key={index}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Box 
+                      sx={{ 
+                        mb: 2,
+                        position: 'relative',
+                        maxWidth: project.images.length === 1 ? '80%' : '100%',
+                        mx: 'auto',
+                        '&:last-child': { mb: 0 }
+                      }}
+                    >
+                      <Box
+                        component="img"
+                        src={image.url}
+                        alt={image.caption}
+                        sx={{ 
+                          width: '100%', 
+                          height: 'auto',
+                          maxHeight: project.images.length === 1 ? '400px' : '280px',
+                          objectFit: 'contain',
+                          borderRadius: '8px',
+                          transition: 'transform 0.3s ease',
+                          cursor: 'pointer',
+                          '&:hover': {
+                            transform: 'scale(1.02)'
+                          }
+                        }}
+                      />
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          mt: 1.5,
+                          color: 'text.secondary',
+                          fontStyle: 'italic',
+                          textAlign: 'center',
+                          fontSize: '0.85rem'
+                        }}
+                      >
+                        {image.caption}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </Paper>
+          )}
+        </Grid>
+
+        {/* Sidebar Section */}
+        <Grid item xs={12} md={5}>
+          {/* Key Takeaways */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: { xs: 2.5, md: 3.5 }, 
+              border: '1px solid black',
+              mb: { xs: 3, md: 4 },
+              borderRadius: 2,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+              }
+            }}
+          >
+            <Typography 
+              variant="h5" 
+              gutterBottom
+              sx={{ 
+                mb: 3,
+                fontWeight: 600,
+                fontSize: { xs: '1.4rem', md: '1.5rem' }
+              }}
+            >
+              Key Takeaways
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {project.keyTakeaways.map((takeaway, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    py: 1.5,
+                    px: 2,
+                    borderRadius: 1,
+                    bgcolor: 'rgba(0, 0, 0, 0.02)',
+                    borderLeft: '3px solid black',
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      lineHeight: 1.5,
+                      fontSize: '0.95rem',
+                      fontWeight: 400
+                    }}
+                  >
+                    {takeaway}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </Paper>
+
+          {/* Resources & Links */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: { xs: 2.5, md: 3.5 }, 
+              border: '1px solid black',
+              mb: { xs: 3, md: 4 },
+              borderRadius: 2,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+              }
+            }}
+          >
+            <Typography 
+              variant="h5" 
+              gutterBottom
+              sx={{ 
+                mb: 3,
+                fontWeight: 600,
+                fontSize: { xs: '1.4rem', md: '1.5rem' }
+              }}
+            >
+              Resources & Links
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              {project.links.map((link) => (
+                <Button
+                  key={link.title}
+                  variant="outlined"
+                  size="medium"
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  fullWidth
+                  sx={{
+                    justifyContent: 'flex-start',
+                    textTransform: 'none',
+                    py: 1.25,
+                    px: 2.5,
+                    '&:hover': {
+                      borderColor: 'black',
+                      bgcolor: 'rgba(0, 0, 0, 0.02)'
+                    }
+                  }}
+                >
+                  {link.title}
+                </Button>
+              ))}
+            </Box>
+          </Paper>
+
+          {/* Collaborators */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: { xs: 2.5, md: 3.5 }, 
+              border: '1px solid black',
+              borderRadius: 2,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+              }
+            }}
+          >
+            <Typography 
+              variant="h5" 
+              gutterBottom
+              sx={{ 
+                mb: 3,
+                fontWeight: 600,
+                fontSize: { xs: '1.4rem', md: '1.5rem' }
+              }}
+            >
+              Collaborators
+            </Typography>
+            <Grid container spacing={1.5}>
+              {project.collaborators.map((collaborator, index) => (
+                <Grid item xs={12} sm={6} key={index}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      p: 1.5,
+                      borderRadius: 1,
+                      bgcolor: 'rgba(0, 0, 0, 0.02)',
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: '50%',
+                        bgcolor: 'black',
+                        mr: 1.5,
+                        flexShrink: 0
+                      }}
+                    />
+                    <Typography 
+                      variant="body2"
+                      sx={{
+                        fontSize: '0.95rem',
+                        fontWeight: 400
+                      }}
+                    >
+                      {collaborator}
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Paper>
+        </Grid>
+      </Grid>
     </Container>
   );
 };
