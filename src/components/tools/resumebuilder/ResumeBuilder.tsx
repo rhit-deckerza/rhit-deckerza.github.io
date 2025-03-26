@@ -835,7 +835,7 @@ When suggesting modifications:
       const response = await axios.post(
         'https://backend-crimson-fog-1555.fly.dev/api/openai-proxy', // Update with your backend URL
         {
-          model: "gpt-4-32k",
+          model: "gpt-3.5-turbo",
           messages: [
             {
               role: "system",
