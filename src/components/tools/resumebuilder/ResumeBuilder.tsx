@@ -824,7 +824,8 @@ When suggesting modifications:
       }
 
       const contextString = buildContextString();
-      
+      console.log("contextString", contextString);
+      console.log(systemInstructions + contextString);
       // Extract prior conversation for context (excluding AI suggestions JSON)
       const conversationHistory = chatMessages
         .map(msg => `${msg.sender === 'user' ? 'User' : 'Assistant'}: ${msg.text}`)
@@ -834,7 +835,7 @@ When suggesting modifications:
       const response = await axios.post(
         'https://backend-crimson-fog-1555.fly.dev/api/openai-proxy', // Update with your backend URL
         {
-          model: "gpt-3.5-turbo",
+          model: "gpt-4-32k",
           messages: [
             {
               role: "system",
@@ -846,7 +847,7 @@ When suggesting modifications:
             }
           ],
           temperature: 0.7,
-          max_tokens: 2000
+          max_tokens: 32000
         }
       );
 

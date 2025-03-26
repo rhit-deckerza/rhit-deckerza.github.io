@@ -20,7 +20,9 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:5173"], methods=["GET", "POST", "OPTIONS"])
+CORS(app, supports_credentials=True, 
+     origins=["http://localhost:5173", "https://zacharydecker.com"], 
+     methods=["GET", "POST", "OPTIONS"])
 
 # Modify the rate limiter to exempt OPTIONS requests
 limiter = Limiter(
@@ -134,7 +136,11 @@ def openai_proxy():
 @app.route('/<path:path>', methods=['OPTIONS'])
 def options_handler(path):
     response = make_response()
-    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+    # Get the origin from the request, or default to localhost
+    origin = request.headers.get('Origin', 'http://localhost:5173')
+    # Only allow specific origins
+    if origin in ['http://localhost:5173', 'https://zacharydecker.com']:
+        response.headers.add('Access-Control-Allow-Origin', origin)
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
     response.headers.add('Access-Control-Max-Age', '3600')
@@ -142,7 +148,9 @@ def options_handler(path):
 
 @app.after_request
 def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:5173')
+    origin = request.headers.get('Origin', 'http://localhost:5173')
+    if origin in ['http://localhost:5173', 'https://zacharydecker.com']:
+        response.headers.add('Access-Control-Allow-Origin', origin)
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
     return response
