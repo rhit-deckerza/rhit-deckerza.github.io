@@ -847,7 +847,7 @@ When suggesting modifications:
             }
           ],
           temperature: 0.7,
-          max_tokens: 32000
+          max_tokens: 2000
         }
       );
 
@@ -1171,40 +1171,165 @@ When suggesting modifications:
         return;
       }
       
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        if (!event.target || typeof event.target.result !== 'string') {
-          setSnackbarMessage(`Could not read file ${file.name}.`);
-          setSnackbarOpen(true);
-          return;
-        }
-        
-        const content = event.target.result;
-        // Create preview (first ~100 chars)
-        const preview = content.substring(0, 100) + (content.length > 100 ? '...' : '');
-        
-        // Add file to context
-        setContextFiles(prev => [
-          ...prev,
-          {
-            id: crypto.randomUUID(),
-            name: file.name,
-            content: content,
-            preview: preview,
-            size: file.size,
-            included: true
+      // Use backend for file processing if it's not a simple text file
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
+      const simpleTextExtensions = ['txt', 'json', 'md', 'csv', 'js', 'ts', 'jsx', 'tsx', 'html', 'css', 'xml'];
+      
+      if (simpleTextExtensions.includes(fileExtension)) {
+        // Use client-side FileReader for simple text files (faster)
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (!event.target || typeof event.target.result !== 'string') {
+            setSnackbarMessage(`Could not read file ${file.name}.`);
+            setSnackbarOpen(true);
+            return;
           }
-        ]);
+          
+          const content = event.target.result;
+          // Create preview (first ~100 chars)
+          const preview = content.substring(0, 100) + (content.length > 100 ? '...' : '');
+          
+          // Add file to context
+          setContextFiles(prev => [
+            ...prev,
+            {
+              id: crypto.randomUUID(),
+              name: file.name,
+              content: content,
+              preview: preview,
+              size: file.size,
+              included: true
+            }
+          ]);
+          
+          setShowContextSection(true);
+        };
         
-        setShowContextSection(true);
-      };
-      
-      reader.onerror = () => {
-        setSnackbarMessage(`Error reading file ${file.name}.`);
+        reader.onerror = () => {
+          setSnackbarMessage(`Error reading file ${file.name}.`);
+          setSnackbarOpen(true);
+        };
+        
+        reader.readAsText(file);
+      } else {
+        // Use backend for more complex file types (PDF, DOCX, etc.)
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        // Show loading state
+        setSnackbarMessage(`Processing ${file.name}...`);
         setSnackbarOpen(true);
-      };
-      
-      reader.readAsText(file);
+        
+        axios.post('https://backend-crimson-fog-1555.fly.dev/extract-text', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          withCredentials: false, // Disable sending cookies with cross-domain requests
+        })
+        .then(response => {
+          const data = response.data;
+          
+          if (data.text_extracted) {
+            // Create preview (first ~100 chars)
+            const content = data.text_extracted;
+            const preview = content.substring(0, 100) + (content.length > 100 ? '...' : '');
+            
+            // Add file to context
+            setContextFiles(prev => [
+              ...prev,
+              {
+                id: crypto.randomUUID(),
+                name: file.name,
+                content: content,
+                preview: preview,
+                size: file.size,
+                included: true
+              }
+            ]);
+            
+            setShowContextSection(true);
+            setSnackbarMessage(`Successfully extracted text from ${file.name}`);
+          } else {
+            setSnackbarMessage(`Could not extract text from ${file.name}: ${data.note}`);
+          }
+          setSnackbarOpen(true);
+        })
+        .catch(error => {
+          console.error('Error uploading file:', error);
+          
+          // Provide more specific error messages based on the type of error
+          let errorMessage = `Error processing ${file.name}: `;
+          
+          if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            errorMessage += error.response.data?.error || `Server error: ${error.response.status}`;
+          } else if (error.request) {
+            // The request was made but no response was received
+            errorMessage += 'No response received from server. This may be a CORS or network issue.';
+            
+            // Fallback to basic client-side text extraction
+            if (fileExtension === '.pdf' || fileExtension === '.docx') {
+              errorMessage += ' Attempting basic text extraction...';
+              setSnackbarMessage(errorMessage);
+              setSnackbarOpen(true);
+              
+              // Use FileReader as fallback
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                if (!event.target || typeof event.target.result !== 'string') {
+                  setSnackbarMessage(`Could not read file ${file.name} as text.`);
+                  setSnackbarOpen(true);
+                  return;
+                }
+                
+                // Note: This will likely not work well for binary files like PDF/DOCX
+                // but it's better than nothing for text-based files
+                let content = event.target.result;
+                
+                // For binary files, it might be mostly unreadable, so we'll add a note
+                if (fileExtension === '.pdf' || fileExtension === '.docx') {
+                  content = "NOTE: This file type requires server processing for proper extraction. The following content may be incomplete or include binary data:\n\n" + content;
+                }
+                
+                // Create preview (first ~100 chars)
+                const preview = content.substring(0, 100) + (content.length > 100 ? '...' : '');
+                
+                // Add file to context
+                setContextFiles(prev => [
+                  ...prev,
+                  {
+                    id: crypto.randomUUID(),
+                    name: file.name,
+                    content: content,
+                    preview: preview,
+                    size: file.size,
+                    included: true
+                  }
+                ]);
+                
+                setShowContextSection(true);
+                setSnackbarMessage(`Basic text extraction completed for ${file.name} (quality may be limited)`);
+                setSnackbarOpen(true);
+              };
+              
+              reader.onerror = () => {
+                setSnackbarMessage(`Failed to extract any content from ${file.name}.`);
+                setSnackbarOpen(true);
+              };
+              
+              reader.readAsText(file);
+              return; // Don't show the original error message
+            }
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            errorMessage += error.message || 'Unknown error occurred';
+          }
+          
+          setSnackbarMessage(errorMessage);
+          setSnackbarOpen(true);
+        });
+      }
     });
     
     // Reset file input

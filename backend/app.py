@@ -20,9 +20,11 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, 
-     origins=["http://localhost:5173", "https://zacharydecker.com"], 
-     methods=["GET", "POST", "OPTIONS"])
+CORS(app, 
+     resources={r"/*": {"origins": ["http://localhost:5173", "https://zacharydecker.com"]}},
+     supports_credentials=True,
+     allow_headers=["Content-Type", "Authorization"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
 
 # Modify the rate limiter to exempt OPTIONS requests
 limiter = Limiter(
@@ -131,28 +133,79 @@ def openai_proxy():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/extract-text', methods=['POST', 'OPTIONS'])
+@limiter.limit("20 per minute")  # Limit uploads to 20 per minute per IP
+def extract_text():
+    """
+    Endpoint to extract text from a single file using the same utilities as the zip context script
+    """
+    # Handle OPTIONS request explicitly
+    if request.method == 'OPTIONS':
+        return '', 200
+        
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    
+    # Create temp directory
+    temp_dir = tempfile.mkdtemp()
+    file_path = os.path.join(temp_dir, secure_filename(file.filename))
+    
+    try:
+        file.save(file_path)
+        
+        # Get file extension and determine processing method
+        _, file_extension = os.path.splitext(file.filename)
+        file_extension = file_extension.lower()
+        
+        file_bytes = open(file_path, 'rb').read()
+        extracted_text = None
+        note = "No text extracted (unsupported format or empty)"
+        
+        # Use the same extraction logic from zip_context_script
+        if file_extension in zip_context_script.TEXT_EXTENSIONS:
+            extracted_text = zip_context_script.read_text_file(file_bytes)
+        elif file_extension == ".pdf":
+            try:
+                extracted_text = zip_context_script.extract_pdf_text(file_bytes)
+            except Exception as e:
+                note = f"Failed to parse PDF: {str(e)}"
+        elif file_extension == ".docx":
+            try:
+                extracted_text = zip_context_script.extract_docx_text(file_bytes)
+            except Exception as e:
+                note = f"Failed to parse DOCX: {str(e)}"
+        
+        # Prepare the response
+        result = {
+            "filename": file.filename,
+            "file_size": os.path.getsize(file_path),
+            "line_count": zip_context_script.count_lines(extracted_text) if extracted_text else 0,
+            "text_extracted": extracted_text,
+            "note": note
+        }
+        
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        # Clean up
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
+
 # Add a global OPTIONS handler
 @app.route('/', defaults={'path': ''}, methods=['OPTIONS'])
 @app.route('/<path:path>', methods=['OPTIONS'])
 def options_handler(path):
-    response = make_response()
-    # Get the origin from the request, or default to localhost
-    origin = request.headers.get('Origin', 'http://localhost:5173')
-    # Only allow specific origins
-    if origin in ['http://localhost:5173', 'https://zacharydecker.com']:
-        response.headers.add('Access-Control-Allow-Origin', origin)
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-    response.headers.add('Access-Control-Max-Age', '3600')
-    return response
+    # Flask-CORS will handle the CORS headers, we just need to return an empty response
+    return '', 200
 
 @app.after_request
 def after_request(response):
-    origin = request.headers.get('Origin', 'http://localhost:5173')
-    if origin in ['http://localhost:5173', 'https://zacharydecker.com']:
-        response.headers.add('Access-Control-Allow-Origin', origin)
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+    # Let Flask-CORS handle the CORS headers
     return response
 
 if __name__ == "__main__":
