@@ -28,6 +28,7 @@ export interface ResearchProject extends BaseProject {
 }
 
 export interface CodingProject extends BaseProject {
+  tags: string[];
   technologies: string[];
   features: string[];
   screenshots: ProjectImage[];

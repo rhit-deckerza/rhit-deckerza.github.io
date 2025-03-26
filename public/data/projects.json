@@ -4,8 +4,16 @@
       "title": "Evolution of Developmental Strategies in NK Fitness Landscapes",
       "description": "Research exploring the relationship between evolution and development through computational simulation, published at ALIFE 2022 Conference.",
       "fullDescription": "As part of a research team at Rose-Hulman, I helped develop an abstract computational framework to investigate how evolution shapes developmental strategies. My primary contributions focused on implementing the NK fitness landscape model and analyzing the patterns of exploration and exploitation that emerged from our simulations.\n\nOur research revealed fascinating insights into why certain developmental processes, like adolescent exploration and sensitive periods, may have evolved. By simulating organisms navigating through environments of varying complexity, we demonstrated that evolution naturally selects for time-sensitive developmental strategies that balance exploration and exploitation.\n\nThe computational framework I helped develop provides a new way to study the relationship between evolution and development, offering insights that would be difficult to obtain through traditional biological studies due to the vast time scales involved.",
-      "tags": ["Artificial Intelligence", "Computational Biology"],
-      "technicalTags": ["Python", "C++", "Matplotlib", "CUDA"],
+      "tags": [
+        "Artificial Intelligence",
+        "Computational Biology"
+      ],
+      "technicalTags": [
+        "Python",
+        "C++",
+        "Matplotlib",
+        "CUDA"
+      ],
       "images": [
         {
           "url": "/images/agentActions.png",
@@ -32,14 +40,29 @@
         "Strengthened data visualization capabilities using Matplotlib to communicate complex patterns in our results",
         "Our work provided new computational evidence for why developmental processes like adolescent exploration may have evolved"
       ],
-      "collaborators": ["Dr. Jake Ashworth", "Yujung Lee", "Jackson Shen", "Edward Kim", "Dr. Jason Yoder"]
+      "collaborators": [
+        "Dr. Jake Ashworth",
+        "Yujung Lee",
+        "Jackson Shen",
+        "Edward Kim",
+        "Dr. Jason Yoder"
+      ]
     },
     "beauty-beyond-words": {
       "title": "Beauty Beyond Words II: Leveraging Attention for Ingredient-Attribute Insights in Beauty Products",
       "description": "Research applying transformer-based architectures to analyze relationships between beauty product ingredients and skin-related attributes.",
       "fullDescription": "This research addresses the beauty industry's need for transparent and explainable methods to map product ingredients to skin-related attributes. We developed a BERT-based machine learning model that achieved a balanced F1 score of 0.61 and precision of 0.75 for predicting product attributes from ingredients and descriptions.\n\nOur approach combined explicit model architectures with advanced explainability techniques, including Integrated Gradients, SHAP, and LIME, to uncover the relationships between ingredients and product attributes. By utilizing publicly available Amazon product metadata and reviews alongside a curated skincare glossary, we developed a scalable pipeline to extract and analyze ingredient-attribute relationships in beauty products.\n\nThe model successfully identified key attributes such as acne, hydration, and sensitive skin with high precision, while explainability methods revealed significant ingredients like salicylic acid for acne treatment and petroleum jelly for hydration. This work contributes to developing more transparent and effective tools for beauty product analysis and recommendation systems.",
-      "tags": ["Machine Learning", "Natural Language Processing", "Explainable AI"],
-      "technicalTags": ["Python", "PyTorch", "BERT", "Hugging Face"],
+      "tags": [
+        "Machine Learning",
+        "Natural Language Processing",
+        "Explainable AI"
+      ],
+      "technicalTags": [
+        "Python",
+        "PyTorch",
+        "BERT",
+        "Hugging Face"
+      ],
       "images": [
         {
           "url": "/images/beauty_flowchart.png",
@@ -58,71 +81,72 @@
         "Applied multiple explainability techniques to uncover meaningful connections between ingredients and skin benefits",
         "Identified opportunities for improving recommendation systems through transparent ingredient-attribute mapping"
       ],
-      "collaborators": ["Shreya Sriram", "Priyanshi Gupta"]
+      "collaborators": [
+        "Shreya Sriram",
+        "Priyanshi Gupta"
+      ]
     }
   },
   "coding": {
     "polyrook": {
-      "title": "PolyRook",
-      "description": "Community-driven, torrent-like AI generation & distribution platform for 3D models, creating an infinite, decentralized library of freely accessible assets.",
-      "fullDescription": "The premise is simple: anywhere, anytime, anyone can use AI to spawn brand-new 3D meshes and access an infinite library. Then they seamlessly push and share these GLB creations across a fully distributed, torrent-like network, contributing to the largest free 3D model hub ever conceived. Welcome to PolyRook.\n\nPolyRook is built on three core philosophies:\n\n• Infinite Models: The platform hosts thousands of new 3D models each day— all generated and shared by a legion of user-run AI nodes.\n\n• Fully Distributed: Users can volunteer their storage and bandwidth to become \"seeders\" for specific types of models to automatically mirror.\n\n• Metadata Filtering: 3D assets are fully tagged like character, RPG, cyberpunk, low-poly— with user comments, ratings, and even its generator.\n\nOur desktop app helps orchestrate local generation, seeding, and partial hosting. Meanwhile, the PolyRook API caters to developers who want dynamic, on-the-fly 3D asset loading for procedural or AAA games.\n\nWith PolyRook, we're galvanizing a new ecosystem of creative exchange, turning 3D content into a communal resource. Through torrent-style distribution and a swarm of volunteer AI model nodes, 3D is no longer a proprietary silo— it's a shared living global library.",
-      "technologies": ["React", "Three.js", "WebGL", "Peer-to-Peer", "AI", "WebRTC"],
-      "features": [
-        "AI-powered 3D model generation",
-        "Distributed torrent-like sharing system",
-        "Rich metadata and tagging system",
-        "Real-time 3D previews",
-        "Developer API for dynamic asset loading"
-      ],
-      "screenshots": [
-        {
-          "url": "/images/polyrook-interface.png",
-          "caption": "PolyRook main interface with 3D model browsing and filtering"
-        },
-        {
-          "url": "/images/polyrook-generation.png",
-          "caption": "AI Generation Panel for creating new 3D models"
-        },
-        {
-          "url": "/images/polyrook-comments.png",
-          "caption": "Community feedback and rating system for models"
-        },
-        {
-          "url": "/images/polyrook-workflow.png",
-          "caption": "Node-based workflow showing local saves, network sharing, and downloading"
-        }
-      ],
-      "links": [
-        {
-          "title": "GitHub",
-          "url": "https://github.com/yourusername/polyrook",
-          "icon": "GitHub"
-        },
-        {
-          "title": "Demo",
-          "url": "https://polyrook.io",
-          "icon": "Launch"
-        }
-      ],
-      "workflow": [
-        {
-          "step": "Local Node Saves",
-          "description": "Tagged & stored locally."
-        },
-        {
-          "step": "Push to Network",
-          "description": "Hashed & shared to peers with matching tags."
-        },
-        {
-          "step": "Seeding/Downloading",
-          "description": "Grab from nearest node for specific model types."
-        },
-        {
-          "step": "Metadata & Ratings",
-          "description": "Votes & feedback sync back to help others."
-        }
-      ]
-    }
+    "title": "PolyRook",
+    "description": "PolyRook is a decentralized, AI-powered 3D model platform that uses a torrent-like network to generate and share thousands of new assets daily, all fully tagged for quick filtering and easy integration.",
+    "fullDescription": "The premise is simple: anywhere, anytime, anyone can use AI to spawn brand-new 3D meshes and access an infinite library. Then they seamlessly push and share these GLB creations across a fully distributed, torrent-like network. Our desktop app helps orchestrate local generation, seeding, and partial hosting. Meanwhile, the PolyRook API caters to developers who want dynamic, on-the-fly 3D asset loading for procedural or AAA games.",
+    "tags": [
+      "3D Modeling",
+      "Peer-to-Peer",
+      "AI Generation",
+      "Decentralized"
+    ],
+    "technologies": [
+      "React",
+      "Three.js",
+      "WebGL",
+      "Peer-to-Peer",
+      "WebRTC"
+    ],
+    "features": [
+      "AI-driven 3D model generation, spawning thousands of new assets daily",
+      "Fully distributed, torrent-like architecture for scalable hosting",
+      "Comprehensive tagging and metadata system for quick discovery",
+      "Desktop application for local generation, seeding, and hosting",
+      "Robust developer API for on-demand 3D asset loading"
+    ],
+    "screenshots": [
+      {
+        "url": "/images/polyrookhome.png",
+        "caption": "PolyRook main interface with 3D model browsing and filtering"
+      },
+      {
+        "url": "/images/polyrookStudio.png",
+        "caption": "Studio for editing and composing 3D models"
+      }
+    ],
+    "links": [
+      {
+        "title": "Demo",
+        "url": "https://polyrook.com",
+        "icon": "Launch"
+      }
+    ],
+    "workflow": [
+      {
+        "step": "Local Node Saves",
+        "description": "Tagged & stored locally."
+      },
+      {
+        "step": "Push to Network",
+        "description": "Hashed & shared to peers with matching tags."
+      },
+      {
+        "step": "Seeding/Downloading",
+        "description": "Grab from nearest node for specific model types."
+      },
+      {
+        "step": "Metadata & Ratings",
+        "description": "Votes & feedback sync back to help others."
+      }
+    ]
+  }
   }
 }
-  

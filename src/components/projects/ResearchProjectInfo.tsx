@@ -56,11 +56,12 @@ const ResearchProjectInfo: React.FC = () => {
               key={tag}
               label={tag}
               sx={{ 
-                bgcolor: 'black', 
-                color: 'white',
+                bgcolor: 'white', 
+                color: 'black',
+                border: '1px solid black',
                 fontWeight: 500,
                 '&:hover': {
-                  bgcolor: 'rgba(0, 0, 0, 0.8)'
+                  bgcolor: 'rgba(0, 0, 0, 0.04)'
                 }
               }}
             />
@@ -69,11 +70,12 @@ const ResearchProjectInfo: React.FC = () => {
             <Chip
               key={tag}
               label={tag}
-              variant="outlined"
               sx={{
+                bgcolor: 'black', 
+                color: 'white',
                 fontWeight: 500,
                 '&:hover': {
-                  borderColor: 'black'
+                  bgcolor: 'rgba(0, 0, 0, 0.8)'
                 }
               }}
             />

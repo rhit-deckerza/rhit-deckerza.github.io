@@ -67,22 +67,43 @@ const Portfolio: React.FC = () => {
         {Object.entries(projects.coding).map(([id, project]) => (
           <Grid item xs={12} md={6} key={id}>
             <Paper elevation={0} sx={{ p: 2, border: '1px solid black' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <Typography variant="h6" gutterBottom>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                <Typography variant="h6" component="h3" sx={{ mr: 1 }}>
                   {project.title}
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  {project.technologies.map((tech) => (
+                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', flex: 1, alignItems: 'center', mt: 0.5 }}>
+                  {/* Regular Tags */}
+                  {project.tags && project.tags.map((tag) => (
+                    <Chip
+                      key={tag}
+                      label={tag}
+                      size="small"
+                      sx={{ 
+                        bgcolor: 'white', 
+                        color: 'black', 
+                        border: '1px solid black',
+                        borderRadius: '4px',
+                        height: '24px'
+                      }}
+                    />
+                  ))}
+                  {/* Technical Tags */}
+                  {project.technologies && project.technologies.map((tech) => (
                     <Chip
                       key={tech}
                       label={tech}
                       size="small"
-                      variant="outlined"
+                      sx={{ 
+                        bgcolor: 'black', 
+                        color: 'white',
+                        borderRadius: '4px',
+                        height: '24px'
+                      }}
                     />
                   ))}
                 </Box>
               </Box>
-              <Typography variant="body1" paragraph>
+              <Typography variant="body2" sx={{ mb: 2 }}>
                 {project.description}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
@@ -129,8 +150,9 @@ const Portfolio: React.FC = () => {
                       label={tag} 
                       size="small"
                       sx={{ 
-                        bgcolor: 'black', 
-                        color: 'white', 
+                        bgcolor: 'white', 
+                        color: 'black', 
+                        border: '1px solid black',
                         borderRadius: '4px',
                         height: '24px'
                       }} 
@@ -143,9 +165,8 @@ const Portfolio: React.FC = () => {
                       label={tag} 
                       size="small"
                       sx={{ 
-                        bgcolor: 'white', 
-                        color: 'black', 
-                        border: '1px solid black',
+                        bgcolor: 'black', 
+                        color: 'white',
                         borderRadius: '4px',
                         height: '24px'
                       }} 
