@@ -88,65 +88,64 @@
     }
   },
   "coding": {
-    "polyrook": {
-    "title": "PolyRook",
-    "description": "PolyRook is a decentralized, AI-powered 3D model platform that uses a torrent-like network to generate and share thousands of new assets daily, all fully tagged for quick filtering and easy integration.",
-    "fullDescription": "The premise is simple: anywhere, anytime, anyone can use AI to spawn brand-new 3D meshes and access an infinite library. Then they seamlessly push and share these GLB creations across a fully distributed, torrent-like network. Our desktop app helps orchestrate local generation, seeding, and partial hosting. Meanwhile, the PolyRook API caters to developers who want dynamic, on-the-fly 3D asset loading for procedural or AAA games.",
-    "tags": [
-      "3D Modeling",
-      "Peer-to-Peer",
-      "AI Generation",
-      "Decentralized"
-    ],
-    "technologies": [
-      "React",
-      "Three.js",
-      "WebGL",
-      "Peer-to-Peer",
-      "WebRTC"
-    ],
-    "features": [
-      "AI-driven 3D model generation, spawning thousands of new assets daily",
-      "Fully distributed, torrent-like architecture for scalable hosting",
-      "Comprehensive tagging and metadata system for quick discovery",
-      "Desktop application for local generation, seeding, and hosting",
-      "Robust developer API for on-demand 3D asset loading"
-    ],
-    "screenshots": [
-      {
-        "url": "/images/polyrookhome.png",
-        "caption": "PolyRook main interface with 3D model browsing and filtering"
-      },
-      {
-        "url": "/images/polyrookStudio.png",
-        "caption": "Studio for editing and composing 3D models"
-      }
-    ],
-    "links": [
-      {
-        "title": "Demo",
-        "url": "https://polyrook.com",
-        "icon": "Launch"
-      }
-    ],
-    "workflow": [
-      {
-        "step": "Local Node Saves",
-        "description": "Tagged & stored locally."
-      },
-      {
-        "step": "Push to Network",
-        "description": "Hashed & shared to peers with matching tags."
-      },
-      {
-        "step": "Seeding/Downloading",
-        "description": "Grab from nearest node for specific model types."
-      },
-      {
-        "step": "Metadata & Ratings",
-        "description": "Votes & feedback sync back to help others."
-      }
-    ]
-  }
+    "ai-actual": {
+      "title": "AI Actual: Personal Finance App",
+      "description": "An open-source fork of Actual Budget enhanced with AI capabilities for intelligent transaction management, natural conversations about spending, and automated financial organization.",
+      "fullDescription": "AI Actual is my fork of the popular open-source personal finance application Actual Budget, enhanced with artificial intelligence capabilities. The project focuses on making personal finance more accessible and intelligent through natural language interactions and automated management. I've implemented a chat interface that allows users to naturally query and analyze their transaction history, along with intelligent systems for automatic transaction categorization and payee name normalization. The application maintains the privacy-first approach of the original Actual, with a focus on keeping sensitive financial data secure. Future development plans include integrated AI budget planning, predictive financial forecasting, and local model support for enhanced privacy. By improving upon an already solid open-source foundation, AI Actual demonstrates how machine learning can make financial tools more intelligent and personalized while respecting user privacy.",
+      "tags": [
+        "Personal Finance",
+        "Artificial Intelligence",
+        "Open Source",
+        "Web Application"
+      ],
+      "technologies": [
+        "React",
+        "Node.js",
+        "SQLite",
+        "TensorFlow.js"
+      ],
+      "features": [
+        "Chat interface for natural conversations about your finances",
+        "AI-powered transaction categorization",
+        "Intelligent payee name normalization",
+        "Privacy-preserving design with local-first computing"
+      ],
+      "screenshots": [
+        {
+          "url": "/images/AIActualCategorization.gif",
+          "caption": "AI Actual dashboard with smart insights and chat interface"
+        }
+      ],
+      "links": [
+        {
+          "title": "GitHub Repository",
+          "url": "https://github.com/yourusername/ai-actual",
+          "icon": "GitHub"
+        }
+      ],
+      "collaborators": [
+        "James Wilson",
+        "Sophia Chen",
+        "Open Source Contributors"
+      ],
+      "workflow": [
+        {
+          "step": "Data Ingestion",
+          "description": "Import and clean bank transactions"
+        },
+        {
+          "step": "AI Processing",
+          "description": "Automatic categorization and payee normalization"
+        },
+        {
+          "step": "Natural Language Interface",
+          "description": "Chat-based interaction with financial data"
+        },
+        {
+          "step": "Privacy Protection",
+          "description": "Secure data with local-first approach and encryption"
+        }
+      ]
+    }
   }
 }

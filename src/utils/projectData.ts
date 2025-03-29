@@ -32,6 +32,11 @@ export interface CodingProject extends BaseProject {
   technologies: string[];
   features: string[];
   screenshots: ProjectImage[];
+  collaborators?: string[];
+  workflow?: {
+    step: string;
+    description: string;
+  }[];
 }
 
 export interface ProjectsData {

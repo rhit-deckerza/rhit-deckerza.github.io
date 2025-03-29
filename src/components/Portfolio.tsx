@@ -60,48 +60,46 @@ const Portfolio: React.FC = () => {
         </Typography>
       </Paper> */}
       {/* Coding Projects */}
-      <Typography variant="h4" component="h2" gutterBottom sx={{ mt: 4 }}>
+      <Typography variant="h4" component="h2" className="manga-title" gutterBottom sx={{ mt: 4 }}>
         Coding Projects
       </Typography>
       <Grid container spacing={3}>
         {Object.entries(projects.coding).map(([id, project]) => (
           <Grid item xs={12} md={6} key={id}>
             <Paper elevation={0} sx={{ p: 2, border: '1px solid black' }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                <Typography variant="h6" component="h3" sx={{ mr: 1 }}>
-                  {project.title}
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', flex: 1, alignItems: 'center', mt: 0.5 }}>
-                  {/* Regular Tags */}
-                  {project.tags && project.tags.map((tag) => (
-                    <Chip
-                      key={tag}
-                      label={tag}
-                      size="small"
-                      sx={{ 
-                        bgcolor: 'white', 
-                        color: 'black', 
-                        border: '1px solid black',
-                        borderRadius: '4px',
-                        height: '24px'
-                      }}
-                    />
-                  ))}
-                  {/* Technical Tags */}
-                  {project.technologies && project.technologies.map((tech) => (
-                    <Chip
-                      key={tech}
-                      label={tech}
-                      size="small"
-                      sx={{ 
-                        bgcolor: 'black', 
-                        color: 'white',
-                        borderRadius: '4px',
-                        height: '24px'
-                      }}
-                    />
-                  ))}
-                </Box>
+              <Typography variant="h6" component="h3" sx={{ mb: 1 }}>
+                {project.title}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mb: 2 }}>
+                {/* Regular Tags */}
+                {project.tags && project.tags.map((tag) => (
+                  <Chip
+                    key={tag}
+                    label={tag}
+                    size="small"
+                    sx={{ 
+                      bgcolor: 'white', 
+                      color: 'black', 
+                      border: '1px solid black',
+                      borderRadius: '4px',
+                      height: '24px'
+                    }}
+                  />
+                ))}
+                {/* Technical Tags */}
+                {project.technologies && project.technologies.map((tech) => (
+                  <Chip
+                    key={tech}
+                    label={tech}
+                    size="small"
+                    sx={{ 
+                      bgcolor: 'black', 
+                      color: 'white',
+                      borderRadius: '4px',
+                      height: '24px'
+                    }}
+                  />
+                ))}
               </Box>
               <Typography variant="body2" sx={{ mb: 2 }}>
                 {project.description}
@@ -131,7 +129,7 @@ const Portfolio: React.FC = () => {
       </Grid>
 
       {/* Research Projects */}
-      <Typography variant="h4" component="h2" gutterBottom sx={{ mt: 4 }}>
+      <Typography variant="h4" component="h2" className="manga-title" gutterBottom sx={{ mt: 4 }}>
         Research Projects
       </Typography>
       <Grid container spacing={3}>
