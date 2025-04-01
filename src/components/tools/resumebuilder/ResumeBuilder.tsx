@@ -100,6 +100,7 @@ interface Education {
   graduationDate: string;
   degree: string;
   gpa?: string;
+  coursework?: string[];
 }
 
 interface Experience {
@@ -648,6 +649,11 @@ function ResumeBuilder() {
                 <span className="date-range">{parseBulletText(edu.graduationDate)}</span><br />
                 {parseBulletText(edu.degree)}{edu.gpa ? ` | GPA: ${edu.gpa}` : ""}
               </p>
+              {edu.coursework && edu.coursework.length > 0 && (
+                <p style={{ marginTop: '3px', marginBottom: '0' }}>
+                  Relevant Coursework: {edu.coursework.join(', ')}
+                </p>
+              )}
             </div>
           ))}
         </div>
