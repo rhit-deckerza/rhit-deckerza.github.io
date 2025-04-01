@@ -642,7 +642,7 @@ function ResumeBuilder() {
         <h2>EDUCATION</h2>
         <div id="educationList">
           {resumeData.education.map((edu, index) => (
-            <div key={index}>
+            <div key={index} style={{ marginBottom: '10px' }}>
               <p>
                 <strong>{parseBulletText(edu.institution)}</strong>, {parseBulletText(edu.location)}
                 <span className="date-range">{parseBulletText(edu.graduationDate)}</span><br />
@@ -707,9 +707,9 @@ function ResumeBuilder() {
         <h2>EXPERIENCE</h2>
         <div id="experienceList">
           {resumeData.experience.map((job, index) => (
-            <div key={index}>
+            <div key={index} style={{ marginBottom: '12px' }}>
               <p>
-                <span className="job-title">{parseBulletText(job.title)}</span>, {parseBulletText(job.company)}, {parseBulletText(job.location)}
+                <strong>{parseBulletText(job.company)}</strong>, <span className="job-title">{parseBulletText(job.title)}</span>, {parseBulletText(job.location)}
                 <span className="date-range">{parseBulletText(job.dateRange)}</span>
               </p>
               {job.bullets && job.bullets.length > 0 && (
@@ -735,7 +735,7 @@ function ResumeBuilder() {
         <h2>PROJECTS</h2>
         <div id="projectsList">
           {resumeData.projects.map((project, index) => (
-            <div key={index}>
+            <div key={index} style={{ marginBottom: '12px' }}>
               <p>
                 <span className="project-title">{parseBulletText(project.name)}</span>
                 <span className="date-range">{parseBulletText(project.dateRange)}</span>

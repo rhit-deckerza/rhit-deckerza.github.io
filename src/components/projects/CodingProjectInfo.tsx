@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Container, Typography, Box, Button, Paper, Chip, Grid, Divider, Avatar } from '@mui/material';
+import { Container, Typography, Box, Button, Paper, Chip, Grid, Avatar } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { CodingProject } from '../../utils/projectData';
 import { fetchProjects } from '../../utils/projectData';
@@ -8,12 +8,16 @@ import { fetchProjects } from '../../utils/projectData';
 const CodingProjectInfo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [project, setProject] = useState<CodingProject | null>(null);
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   useEffect(() => {
     const loadProject = async () => {
       const data = await fetchProjects();
       if (id && data.coding[id]) {
         setProject(data.coding[id]);
+        if (data.coding[id].screenshots && data.coding[id].screenshots.length > 0) {
+          setSelectedImage(0);
+        }
       }
     };
     loadProject();
@@ -48,7 +52,7 @@ const CodingProjectInfo: React.FC = () => {
       </Button>
 
       {/* Header Section */}
-      <Box sx={{ mb: 6 }}>
+      <Box sx={{ mb: 5 }}>
         <Typography 
           variant="h3" 
           component="h1" 
@@ -103,23 +107,230 @@ const CodingProjectInfo: React.FC = () => {
             />
           ))}
         </Box>
+      </Box>
 
+      {/* Screenshots Section - Enhanced for better display */}
+      {project.screenshots && project.screenshots.length > 0 && (
+        <Box sx={{ 
+          mb: 7, 
+          width: '100%',
+        }}>
+          <Typography 
+            variant="h5" 
+            component="h2" 
+            gutterBottom 
+            sx={{ 
+              mb: 4,
+              fontWeight: 600,
+              position: 'relative',
+              '&:after': {
+                content: '""',
+                position: 'absolute',
+                bottom: '-8px',
+                left: 0,
+                width: '40px',
+                height: '3px',
+                backgroundColor: 'black'
+              }
+            }}
+          >
+            Screenshots
+          </Typography>
+          
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%'
+          }}>
+            {/* Main Screenshot Display */}
+            <Paper
+              elevation={0}
+              sx={{
+                width: '100%',
+                mb: 3,
+                overflow: 'hidden',
+                borderRadius: '12px',
+                border: '1px solid rgba(0, 0, 0, 0.1)',
+                position: 'relative',
+                backgroundColor: 'white',
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0 12px 30px rgba(0,0,0,0.08)',
+                }
+              }}
+            >
+              {selectedImage !== null && project.screenshots[selectedImage] && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '100%',
+                    height: {
+                      xs: '300px',
+                      sm: '350px',
+                      md: project.screenshots.length > 1 ? '400px' : '500px'
+                    },
+                    padding: {
+                      xs: '10px',
+                      sm: '15px',
+                      md: '20px'
+                    },
+                    backgroundColor: 'white',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={project.screenshots[selectedImage].url}
+                    alt={project.screenshots[selectedImage].caption}
+                    sx={{ 
+                      maxWidth: '100%', 
+                      maxHeight: '100%',
+                      objectFit: 'contain',
+                      display: 'block',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+                    }}
+                  />
+                </Box>
+              )}
+              <Box sx={{ 
+                p: { xs: 2, sm: 2.5, md: 3 },
+                borderTop: '1px solid rgba(0, 0, 0, 0.08)',
+                backgroundColor: 'rgba(0, 0, 0, 0.02)'
+              }}>
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    color: 'rgba(0, 0, 0, 0.87)',
+                    fontSize: { xs: '0.95rem', sm: '1rem', md: '1.05rem' },
+                    textAlign: 'center',
+                    fontStyle: 'italic',
+                    fontWeight: selectedImage !== null ? 400 : 'inherit',
+                    lineHeight: 1.6,
+                    maxWidth: '800px',
+                    mx: 'auto'
+                  }}
+                >
+                  {selectedImage !== null && project.screenshots[selectedImage] 
+                    ? project.screenshots[selectedImage].caption 
+                    : ''}
+                </Typography>
+              </Box>
+            </Paper>
+            
+            {/* Thumbnail Navigation (only show if more than one screenshot) */}
+            {project.screenshots.length > 1 && (
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                gap: { xs: 1, sm: 1.5, md: 2 },
+                mt: 2,
+                mb: 1,
+                width: '100%',
+                padding: { xs: '0 10px', sm: '0 15px', md: '0 20px' }
+              }}>
+                {project.screenshots.map((screenshot, index) => (
+                  <Box
+                    key={index}
+                    onClick={() => setSelectedImage(index)}
+                    sx={{
+                      width: { xs: '70px', sm: '85px', md: '100px' },
+                      height: { xs: '50px', sm: '65px', md: '75px' },
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      border: selectedImage === index ? '3px solid black' : '1px solid rgba(0, 0, 0, 0.15)',
+                      cursor: 'pointer',
+                      opacity: selectedImage === index ? 1 : 0.7,
+                      transition: 'all 0.2s ease',
+                      position: 'relative',
+                      '&:hover': {
+                        opacity: 1,
+                        transform: 'scale(1.05)',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
+                      },
+                      '&:after': selectedImage === index ? {
+                        content: '""',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '3px',
+                        backgroundColor: 'black'
+                      } : {}
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src={screenshot.url}
+                      alt={`Thumbnail ${index+1}`}
+                      sx={{ 
+                        width: '100%', 
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block'
+                      }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Box>
+        </Box>
+      )}
+
+      {/* Project Description */}
+      <Paper elevation={0} sx={{ 
+        p: 4,
+        mb: 5,
+        border: '1px solid rgba(0, 0, 0, 0.12)',
+        borderRadius: 2,
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
+          borderColor: 'rgba(0, 0, 0, 0.3)'
+        }
+      }}>
+        <Typography 
+          variant="h5" 
+          component="h2" 
+          gutterBottom 
+          sx={{ 
+            mb: 3,
+            fontWeight: 600,
+            position: 'relative',
+            '&:after': {
+              content: '""',
+              position: 'absolute',
+              bottom: '-8px',
+              left: 0,
+              width: '40px',
+              height: '3px',
+              backgroundColor: 'black'
+            }
+          }}
+        >
+          About This Project
+        </Typography>
         <Typography 
           variant="body1" 
           sx={{ 
             fontSize: '1.125rem', 
             lineHeight: 1.7,
-            maxWidth: '90ch',
             color: 'rgba(0, 0, 0, 0.87)'
           }}
         >
           {project.fullDescription}
         </Typography>
-      </Box>
+      </Paper>
 
       <Grid container spacing={4}>
         <Grid item xs={12} md={7}>
-          {/* Key Features Section */}
+          {/* Key Takeaways Section (renamed from Key Features) */}
           <Paper elevation={0} sx={{ 
             p: 4, 
             border: '1px solid rgba(0, 0, 0, 0.12)',
@@ -150,7 +361,7 @@ const CodingProjectInfo: React.FC = () => {
                 }
               }}
             >
-              Key Features
+              Key Takeaways
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {project.features.map((feature, index) => (
@@ -177,7 +388,9 @@ const CodingProjectInfo: React.FC = () => {
               ))}
             </Box>
           </Paper>
-
+        </Grid>
+        
+        <Grid item xs={12} md={5}>
           {/* Collaborators Section (Optional) */}
           {project.collaborators && project.collaborators.length > 0 && (
             <Paper elevation={0} sx={{ 
@@ -234,162 +447,6 @@ const CodingProjectInfo: React.FC = () => {
                       }
                     }}
                   />
-                ))}
-              </Box>
-            </Paper>
-          )}
-
-          {/* Workflow Section (if present) */}
-          {project.workflow && project.workflow.length > 0 && (
-            <Paper elevation={0} sx={{ 
-              p: 4, 
-              border: '1px solid rgba(0, 0, 0, 0.12)',
-              mb: 4,
-              borderRadius: 2,
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
-                borderColor: 'rgba(0, 0, 0, 0.3)'
-              }
-            }}>
-              <Typography 
-                variant="h5" 
-                component="h2" 
-                gutterBottom 
-                sx={{ 
-                  mb: 3,
-                  fontWeight: 600,
-                  position: 'relative',
-                  '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: '-8px',
-                    left: 0,
-                    width: '40px',
-                    height: '3px',
-                    backgroundColor: 'black'
-                  }
-                }}
-              >
-                Workflow
-              </Typography>
-              <Box sx={{ mt: 3 }}>
-                {project.workflow.map((step, index) => (
-                  <Box key={index} sx={{ mb: 3, display: 'flex' }}>
-                    <Box sx={{
-                      mr: 3,
-                      minWidth: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      backgroundColor: 'black',
-                      color: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 'bold',
-                      fontSize: '0.9rem',
-                      alignSelf: 'flex-start',
-                      marginTop: '4px'
-                    }}>
-                      {index + 1}
-                    </Box>
-                    <Box>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 0.5 }}>
-                        {step.step}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: 'rgba(0, 0, 0, 0.7)' }}>
-                        {step.description}
-                      </Typography>
-                      {index < project.workflow.length - 1 && (
-                        <Box sx={{ height: '20px', borderLeft: '1px dashed rgba(0,0,0,0.2)', ml: '15px', mt: 1 }} />
-                      )}
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
-            </Paper>
-          )}
-        </Grid>
-        
-        <Grid item xs={12} md={5}>
-          {/* Screenshots Section */}
-          {project.screenshots && project.screenshots.length > 0 && (
-            <Paper elevation={0} sx={{ 
-              p: 4, 
-              border: '1px solid rgba(0, 0, 0, 0.12)', 
-              mb: 4,
-              borderRadius: 2,
-              transition: 'all 0.3s ease',
-              '&:hover': {
-                boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
-                borderColor: 'rgba(0, 0, 0, 0.3)'
-              }
-            }}>
-              <Typography 
-                variant="h5" 
-                component="h2" 
-                gutterBottom 
-                sx={{ 
-                  mb: 3,
-                  fontWeight: 600,
-                  position: 'relative',
-                  '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: '-8px',
-                    left: 0,
-                    width: '40px',
-                    height: '3px',
-                    backgroundColor: 'black'
-                  }
-                }}
-              >
-                Screenshots
-              </Typography>
-              <Box sx={{ mt: 3 }}>
-                {project.screenshots.map((screenshot, index) => (
-                  <Box 
-                    key={index}
-                    sx={{ 
-                      mb: 4,
-                      position: 'relative',
-                      overflow: 'hidden',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(0, 0, 0, 0.1)',
-                    }}
-                  >
-                    <Box
-                      component="img"
-                      src={screenshot.url}
-                      alt={screenshot.caption}
-                      sx={{ 
-                        width: '100%', 
-                        height: 'auto',
-                        objectFit: 'cover',
-                        display: 'block',
-                        transition: 'transform 0.5s ease',
-                        '&:hover': {
-                          transform: 'scale(1.02)'
-                        }
-                      }}
-                    />
-                    <Box sx={{ 
-                      p: 2,
-                      borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-                      backgroundColor: 'rgba(0, 0, 0, 0.02)'
-                    }}>
-                      <Typography 
-                        variant="body2" 
-                        sx={{ 
-                          color: 'rgba(0, 0, 0, 0.7)',
-                          fontStyle: 'italic',
-                          fontSize: '0.9rem'
-                        }}
-                      >
-                        {screenshot.caption}
-                      </Typography>
-                    </Box>
-                  </Box>
                 ))}
               </Box>
             </Paper>
