@@ -31,7 +31,7 @@ const Portfolio: React.FC = () => {
           Software Developer & Engineer
         </Typography>
         <Typography variant="body1" sx={{ maxWidth: '700px', mx: 'auto', mb: 4 }}>
-          Under construction and still migrating projects. Will be complete by April 7th latest.
+          Under construction and still migrating projects.
         </Typography>
         {/* <Button 
           variant="contained" 
@@ -204,7 +204,7 @@ const Portfolio: React.FC = () => {
 
       {/* Tools Section */}
       <Box sx={{ mb: 5 }}>
-        <Typography variant="h4" component="h2" className="manga-title" gutterBottom>
+        <Typography variant="h4" component="h2" className="manga-title" gutterBottom sx={{ mt: 4 }}>
           Tools
         </Typography>
         <Grid container spacing={3} sx={{ mt: -2 }}>

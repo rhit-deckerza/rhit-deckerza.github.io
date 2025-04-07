@@ -1,9 +1,140 @@
 {
   "research": {
+    "enhanced-calendar-assistant": {
+      "title": "Enhanced Calendar Assistant through Prompt Engineering",
+      "description": "Research project improving an LLM-powered calendar assistant by applying advanced prompt engineering techniques and evaluating their effectiveness across multiple models.",
+      "fullDescription": "This project expanded upon a previous prototype of an LLM-powered calendar assistant, focusing on enhancing its capabilities through systematic application of prompt engineering techniques. I created an improved interface using React and Node.js, then implemented and evaluated various prompting strategies including self-consistency, chain-of-thought, few-shot, template, and persona approaches.\n\nThe research included a comprehensive analysis comparing these techniques across multiple state-of-the-art language models: GPT-4 Turbo, Mistral Large, GPT-3.5, and Mistral 7B. Results showed that combining few-shot learning with templating yielded the most significant performance improvements, with self-consistency also demonstrating strong standalone results.\n\nA key technical contribution was the development of a simplified JSON-based calendar representation format that proved more effective than the previous ICAL approach. This research provides valuable insights into how prompt engineering can significantly enhance the performance of LLMs in structured tasks like calendar management.",
+      "date": {
+        "season": "Spring",
+        "year": 2024
+      },
+      "tags": [
+        "Artificial Intelligence",
+        "Natural Language Processing",
+        "Prompt Engineering"
+      ],
+      "technicalTags": [
+        "React",
+        "Node.js"
+      ],
+      "images": [
+        {
+          "url": "/images/CalAssistentScheme.png",
+          "caption": "Diagram of the calendar assistant system"
+        }
+      ],
+      "visualizations": [
+        {
+          "type": "html",
+          "caption": "Calendar Interface",
+          "htmlContent": "<!DOCTYPE html><html><head><style>:root{--main-bg:#f7f9fc;--card-bg:#fff;--primary:#6772e5;--secondary:#5469d4;--accent:#ff8c00;--text:#1a1f36}*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}body{color:var(--text);line-height:1.6;overflow:hidden}html,body{height:100%;width:100%}.container{max-width:100%;height:100%}h3{margin-bottom:0;color:var(--primary)}.stage{background-color:var(--card-bg);padding:15px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.05);position:relative;height:100%}.stage-title{display:flex;align-items:center;gap:10px;font-size:1.2rem;color:var(--secondary);margin-bottom:0}</style></head><body><div class=\"container\"><div class=\"stage\"><div class=\"stage-title\"><span>🖥️</span><h3>Calendar Interface</h3></div><p>React-based UI with integrated calendar visualization</p><svg width=\"100%\" height=\"200\" viewBox=\"0 0 600 200\" style=\"background:#fff;border-radius:8px;margin-top:10px\"><rect x=\"0\" y=\"0\" width=\"600\" height=\"40\" fill=\"#4a6cf7\" rx=\"8\" ry=\"8\"/><text x=\"20\" y=\"25\" fill=\"white\" font-weight=\"bold\">Calendar Assistant</text><rect x=\"20\" y=\"50\" width=\"350\" height=\"140\" fill=\"#f0f4ff\" rx=\"5\" ry=\"5\" stroke=\"#ddd\" stroke-width=\"1\"/><line x1=\"20\" y1=\"75\" x2=\"370\" y2=\"75\" stroke=\"#ddd\" stroke-width=\"1\"/><text x=\"50\" y=\"67\" font-size=\"12\" font-weight=\"bold\">May 2024</text><rect x=\"380\" y=\"50\" width=\"200\" height=\"140\" fill=\"white\" rx=\"5\" ry=\"5\" stroke=\"#ddd\" stroke-width=\"1\"/><text x=\"390\" y=\"67\" font-size=\"12\" font-weight=\"bold\">Calendar Assistant</text><rect x=\"390\" y=\"75\" width=\"180\" height=\"25\" fill=\"#f0f4ff\" rx=\"5\" ry=\"5\"/><text x=\"400\" y=\"92\" font-size=\"10\">How can I help with your calendar?</text><rect x=\"390\" y=\"105\" width=\"180\" height=\"25\" fill=\"#f7f9fc\" rx=\"5\" ry=\"5\"/><text x=\"400\" y=\"122\" font-size=\"10\">Move my meeting on Friday to Monday</text><rect x=\"390\" y=\"135\" width=\"180\" height=\"35\" fill=\"#f0f4ff\" rx=\"5\" ry=\"5\"/><text x=\"400\" y=\"150\" font-size=\"10\">I'll move your Friday meeting to</text><text x=\"400\" y=\"165\" font-size=\"10\">Monday. Is that correct?</text></svg></div></div></body></html>",
+          "height": "300px"
+        },
+        {
+          "type": "html",
+          "caption": "Calendar Format Improvement",
+          "htmlContent": "<!DOCTYPE html><html><head><style>:root{--main-bg:#f7f9fc;--card-bg:#fff;--primary:#6772e5;--secondary:#5469d4;--accent:#ff8c00;--text:#1a1f36}*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}body{color:var(--text);line-height:1.6;overflow:hidden}html,body{height:100%;width:100%}.container{max-width:100%;height:100%}h3,h4{margin-bottom:0;color:var(--primary)}.stage{background-color:var(--card-bg);padding:15px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.05);position:relative;height:100%}.stage-title{display:flex;align-items:center;gap:10px;font-size:1.2rem;color:var(--secondary);margin-bottom:0}.calendar-format{display:flex;justify-content:space-between;margin-top:15px;gap:10px}.format-card{flex:1;padding:10px;border-radius:8px;background-color:#f0f4ff}.format-title{margin-bottom:8px;display:flex;align-items:center;gap:5px}.format-body{font-family:monospace;font-size:0.8rem;background-color:#2d2d2d;color:#e6e6e6;padding:8px;border-radius:5px;max-height:none;overflow:visible}</style></head><body><div class=\"container\"><div class=\"stage\"><div class=\"stage-title\"><span>📝</span><h3>Calendar Format Improvement</h3></div><p>From complex ICAL to simple JSON structure</p><div class=\"calendar-format\"><div class=\"format-card\"><div class=\"format-title\"><span>❌</span><h4>ICAL Format (Complex)</h4></div><div class=\"format-body\">BEGIN:VCALENDAR<br>VERSION:2.0<br>BEGIN:VEVENT<br>UID:uid1@example.com<br>DTSTAMP:19970714T170000Z<br>DTSTART:19970714T170000Z<br>END:VEVENT<br>END:VCALENDAR</div></div><div class=\"format-card\"><div class=\"format-title\"><span>✅</span><h4>JSON Format (Simple)</h4></div><div class=\"format-body\">{<br>  \"id\": \"event-123\",<br>  \"title\": \"Meeting\",<br>  \"start\": \"2024-05-05T10:00:00\"<br>}</div></div></div></div></div></body></html>",
+          "height": "360px"
+        },
+        {
+          "type": "html",
+          "caption": "Prompt Engineering Techniques",
+          "htmlContent": "<!DOCTYPE html><html><head><style>:root{--main-bg:#f7f9fc;--card-bg:#fff;--primary:#6772e5;--secondary:#5469d4;--accent:#ff8c00;--text:#1a1f36;--naive-color:#e2e8f0;--fewshot-color:#c3dafe;--cot-color:#b9e6fe;--selfcon-color:#bfdbfe;--template-color:#c7d2fe;--combo-color:#fbcfe8}*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}body{color:var(--text);line-height:1.6;overflow:hidden}html,body{height:100%;width:100%}.container{max-width:100%;height:100%}h3{margin-bottom:0;color:var(--primary)}.stage{background-color:var(--card-bg);padding:15px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.05);position:relative;height:100%}.stage-title{display:flex;align-items:center;gap:10px;font-size:1.2rem;color:var(--secondary);margin-bottom:0}.prompt-options{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}.prompt-option{flex:1;min-width:110px;padding:10px;border-radius:8px;text-align:center;cursor:pointer;transition:all 0.3s ease;border:2px solid transparent;opacity:0.7}.prompt-option:hover{transform:translateY(-3px);opacity:1}.prompt-option.active{border-color:var(--accent);opacity:1}.prompt-option h4{margin-bottom:6px;font-size:0.9rem}.prompt-option p{font-size:0.8rem}.performance-indicator{margin-top:8px;padding:2px 6px;border-radius:4px;display:inline-block;font-weight:bold;font-size:0.75rem}.positive{background-color:rgba(50,205,50,0.2);color:darkgreen}.neutral{background-color:rgba(128,128,128,0.2);color:#555}.details-box{margin-top:15px;padding:12px;border-radius:8px;background-color:#f0f4ff;display:block}@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}.pulse{animation:pulse 2s infinite}</style></head><body><div class=\"container\"><div class=\"stage\"><div class=\"stage-title\"><span>🧠</span><h3>Prompt Engineering Techniques</h3></div><p>Click on a technique to see details:</p><div class=\"prompt-options\"><div class=\"prompt-option\" style=\"background-color:var(--naive-color)\" id=\"naive\"><h4>Naive Baseline</h4><p>Basic task description</p><div class=\"performance-indicator neutral\">Baseline</div></div><div class=\"prompt-option\" style=\"background-color:var(--fewshot-color)\" id=\"fewshot\"><h4>Few-Shot</h4><p>Examples of queries</p><div class=\"performance-indicator positive\">+0.4 pts</div></div><div class=\"prompt-option\" style=\"background-color:var(--selfcon-color)\" id=\"selfcon\"><h4>Self-Consistency</h4><p>Multiple reasoning paths</p><div class=\"performance-indicator positive\">+0.6 pts</div></div><div class=\"prompt-option\" style=\"background-color:var(--template-color)\" id=\"template\"><h4>Template</h4><p>Structured format</p><div class=\"performance-indicator positive\">+0.5 pts</div></div><div class=\"prompt-option\" style=\"background-color:var(--combo-color)\" id=\"combo\"><h4>Few-Shot + Template</h4><p>Combined approach</p><div class=\"performance-indicator positive pulse\">+1.0 pts</div></div></div><div id=\"details-box\" class=\"details-box\"><h4 id=\"details-title\">Few-Shot + Template (Best)</h4><p id=\"details-desc\">Combined examples with structured format guidance.</p></div></div></div><script>const promptDetails={naive:{title:\"Naive Baseline\",desc:\"Basic approach with minimal guidance for the LLM.\"},fewshot:{title:\"Few-Shot Learning\",desc:\"Uses examples of calendar queries and their responses.\"},selfcon:{title:\"Self-Consistency\",desc:\"Generates multiple reasoning paths then selects the most consistent answer.\"},template:{title:\"Template\",desc:\"Provides structured response format with clear sections.\"},combo:{title:\"Few-Shot + Template (Best)\",desc:\"Combined examples with structured format guidance.\"}};document.querySelectorAll('.prompt-option').forEach(option=>{option.addEventListener('click',function(){document.querySelectorAll('.prompt-option').forEach(o=>o.classList.remove('active'));this.classList.add('active');const detailsBox=document.getElementById('details-box');const detailsTitle=document.getElementById('details-title');const detailsDesc=document.getElementById('details-desc');const id=this.id;detailsBox.style.display='block';detailsBox.style.backgroundColor=getComputedStyle(this).backgroundColor;detailsTitle.textContent=promptDetails[id].title;detailsDesc.textContent=promptDetails[id].desc;})});document.querySelector('#combo').classList.add('active');</script></body></html>",
+          "height": "460px"
+        },
+        {
+          "type": "html",
+          "caption": "LLM Models Performance",
+          "htmlContent": "<!DOCTYPE html><html><head><style>:root{--main-bg:#f7f9fc;--card-bg:#fff;--primary:#6772e5;--secondary:#5469d4;--accent:#ff8c00;--text:#1a1f36}*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}body{color:var(--text);line-height:1.6;overflow:hidden}html,body{height:100%;width:100%}.container{max-width:100%;height:100%}h3{margin-bottom:0;color:var(--primary)}.stage{background-color:var(--card-bg);padding:15px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.05);position:relative;height:100%}.stage-title{display:flex;align-items:center;gap:10px;font-size:1.2rem;color:var(--secondary);margin-bottom:0}.model-cards{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}.model-card{flex:1;min-width:110px;background-color:#f0f4ff;padding:12px;border-radius:8px;transition:transform 0.3s ease;position:relative}.model-card:hover{transform:translateY(-3px)}.model-score{font-size:1.2rem;font-weight:bold;margin-top:5px;color:var(--primary)}.model-rank{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background-color:var(--primary);color:white;display:flex;justify-content:center;align-items:center;font-weight:bold;font-size:0.7rem}</style></head><body><div class=\"container\"><div class=\"stage\"><div class=\"stage-title\"><span>🤖</span><h3>LLM Models Performance</h3></div><p>Four different models tested across all prompting techniques:</p><div class=\"model-cards\"><div class=\"model-card\"><div class=\"model-rank\">1</div><h4>GPT-4 Turbo</h4><p>Best overall performance</p><div class=\"model-score\">9.0/10</div></div><div class=\"model-card\"><div class=\"model-rank\">2</div><h4>Mistral Large</h4><p>Outperformed GPT-3.5</p><div class=\"model-score\">8.7/10</div></div><div class=\"model-card\"><div class=\"model-rank\">3</div><h4>GPT-3.5</h4><p>Solid performance</p><div class=\"model-score\">8.5/10</div></div><div class=\"model-card\"><div class=\"model-rank\">4</div><h4>Mistral 7b</h4><p>Good for smaller model</p><div class=\"model-score\">7.8/10</div></div></div></div></div></body></html>",
+          "height": "250px"
+        },
+        {
+          "type": "html",
+          "caption": "Results & Conclusions",
+          "htmlContent": "<!DOCTYPE html><html><head><style>:root{--main-bg:#f7f9fc;--card-bg:#fff;--primary:#6772e5;--secondary:#5469d4;--accent:#ff8c00;--text:#1a1f36;--naive-color:#e2e8f0;--fewshot-color:#c3dafe;--selfcon-color:#bfdbfe;--template-color:#c7d2fe;--combo-color:#fbcfe8}*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}body{color:var(--text);line-height:1.6;overflow:hidden}html,body{height:100%;width:100%}.container{max-width:100%;height:100%}h3{margin-bottom:0;color:var(--primary)}.stage{background-color:var(--card-bg);padding:15px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.05);position:relative;height:100%}.stage-title{display:flex;align-items:center;gap:10px;font-size:1.2rem;color:var(--secondary);margin-bottom:0}.results-bars{display:flex;flex-direction:column;gap:10px;margin-top:15px}.result-bar{height:20px;background-color:#e9ecef;border-radius:6px;overflow:hidden;position:relative}.result-bar-fill{height:100%;border-radius:6px;transition:width 1s ease-out}.result-label{position:absolute;top:0;left:10px;line-height:20px;color:var(--text);font-weight:bold;font-size:0.8rem}.result-value{position:absolute;top:0;right:10px;line-height:20px;color:var(--text);font-weight:bold;font-size:0.8rem}</style></head><body><div class=\"container\"><div class=\"stage\"><div class=\"stage-title\"><span>📈</span><h3>Results & Conclusions</h3></div><p>Performance across prompting techniques:</p><div class=\"results-bars\"><div class=\"result-bar\"><div class=\"result-bar-fill\" style=\"width:60%;background-color:var(--naive-color)\"></div><span class=\"result-label\">Baseline</span><span class=\"result-value\">6.0/10</span></div><div class=\"result-bar\"><div class=\"result-bar-fill\" style=\"width:64%;background-color:var(--fewshot-color)\"></div><span class=\"result-label\">Few-Shot</span><span class=\"result-value\">6.4/10</span></div><div class=\"result-bar\"><div class=\"result-bar-fill\" style=\"width:66%;background-color:var(--selfcon-color)\"></div><span class=\"result-label\">Self-Consistency</span><span class=\"result-value\">6.6/10</span></div><div class=\"result-bar\"><div class=\"result-bar-fill\" style=\"width:65%;background-color:var(--template-color)\"></div><span class=\"result-label\">Template</span><span class=\"result-value\">6.5/10</span></div><div class=\"result-bar\"><div class=\"result-bar-fill\" style=\"width:70%;background-color:var(--combo-color)\"></div><span class=\"result-label\">Few-Shot + Template</span><span class=\"result-value\">7.0/10</span></div></div><h3 style=\"margin-top:15px\">Key Findings</h3><ul style=\"margin:10px 0 0 20px\"><li>Combined Few-Shot + Template approach was most effective</li><li>Self-Consistency was the best standalone technique</li><li>JSON format significantly improved model performance vs ICAL</li><li>GPT-4 Turbo performed best overall</li></ul></div></div></body></html>",
+          "height": "370px"
+        }
+      ],
+      "links": [
+        {
+          "title": "Research Paper",
+          "url": "/docs/GENAI_report.pdf"
+        }
+      ],
+      "keyTakeaways": [
+        "Demonstrated that combining few-shot learning with template prompting provides the most effective approach for LLM-based calendar assistants",
+        "Developed a simplified JSON calendar representation that significantly improved model performance compared to complex ICAL format",
+        "Created a comprehensive evaluation pipeline to systematically assess prompt engineering techniques across multiple models",
+        "Found that GPT-4 Turbo performed best overall, though Mistral Large showed strong competitive capabilities"
+      ],
+      "collaborators": []
+    },
+    "beauty-beyond-words": {
+      "title": "Beauty Beyond Words II: Leveraging Attention for Ingredient-Attribute Insights in Beauty Products",
+      "description": "Research applying transformer-based architectures to analyze relationships between beauty product ingredients and skin-related attributes.",
+      "fullDescription": "This research addresses the beauty industry's need for transparent and explainable methods to map product ingredients to skin-related attributes. We developed a BERT-based machine learning model that achieved a balanced F1 score of 0.61 and precision of 0.75 for predicting product attributes from ingredients and descriptions.\n\nOur approach combined explicit model architectures with advanced explainability techniques, including Integrated Gradients, SHAP, and LIME, to uncover the relationships between ingredients and product attributes. By utilizing publicly available Amazon product metadata and reviews alongside a curated skincare glossary, we developed a scalable pipeline to extract and analyze ingredient-attribute relationships in beauty products.\n\nThe model successfully identified key attributes such as acne, hydration, and sensitive skin with high precision, while explainability methods revealed significant ingredients like salicylic acid for acne treatment and petroleum jelly for hydration. This work contributes to developing more transparent and effective tools for beauty product analysis and recommendation systems.",
+      "date": {
+        "season": "Fall",
+        "year": 2023
+      },
+      "tags": [
+        "Artificial Intelligence",
+        "Natural Language Processing",
+        "Explainable AI"
+      ],
+      "technicalTags": [
+        "Python",
+        "PyTorch",
+        "BERT",
+        "LIME",
+        "SHAP",
+        "Hugging Face"
+      ],
+      "images": [
+        {
+          "url": "/images/beauty_flowchart.png",
+          "caption": "Flowchart representing the pipeline for extracting ingredients and attributes."
+        }
+      ],
+      "visualizations": [
+        {
+          "type": "html",
+          "caption": "Confusion Matrices for Top Attributes",
+          "htmlContent": "<!DOCTYPE html><html><head><style>:root{--main-bg:#f7f9fc;--card-bg:#fff;--primary:#6772e5;--secondary:#5469d4;--accent:#ff8c00;--text:#1a1f36}*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}body{color:var(--text);line-height:1.6;overflow:hidden}html,body{height:100%;width:100%}.container{max-width:100%;height:100%}h2{font-size:1.25rem;font-weight:700;margin-bottom:1rem;text-align:center}h3{font-size:1rem;font-weight:600;margin-bottom:0.25rem;text-align:center}.matrices-container{display:flex;justify-content:center;gap:2rem;flex-wrap:nowrap}.confusion-matrix{display:flex;flex-direction:column;align-items:center;margin-bottom:1rem;min-width:260px;max-width:300px}.matrix-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.25rem}.matrix-cell{display:flex;align-items:center;justify-content:center;padding:0.5rem;height:6rem;width:6rem;position:relative}.true-positive,.true-negative{background-color:#d1fae5;border:1px solid #10b981}.false-positive,.false-negative{background-color:#fee2e2;border:1px solid #ef4444}.cell-content{text-align:center}.value{font-weight:700;font-size:1.25rem}.label{font-size:0.75rem;color:#4b5563}.percentage{font-size:0.7rem;color:#6b7280}</style></head><body><div class=\"container\"><div style=\"padding:1rem;\"><h2>Confusion Matrices for Top Attributes</h2><div class=\"matrices-container\"><!-- Acne Matrix --><div class=\"confusion-matrix\"><h3>Acne</h3><div class=\"matrix-grid\"><div class=\"matrix-cell true-positive\"><div class=\"cell-content\"><div class=\"value\">680</div><div class=\"label\">True Positive</div><div class=\"percentage\">35.4%</div></div></div><div class=\"matrix-cell false-positive\"><div class=\"cell-content\"><div class=\"value\">87</div><div class=\"label\">False Positive</div><div class=\"percentage\">4.5%</div></div></div><div class=\"matrix-cell false-negative\"><div class=\"cell-content\"><div class=\"value\">405</div><div class=\"label\">False Negative</div><div class=\"percentage\">21.1%</div></div></div><div class=\"matrix-cell true-negative\"><div class=\"cell-content\"><div class=\"value\">748</div><div class=\"label\">True Negative</div><div class=\"percentage\">39.0%</div></div></div></div></div><!-- Oily Skin Matrix --><div class=\"confusion-matrix\"><h3>Oily Skin</h3><div class=\"matrix-grid\"><div class=\"matrix-cell true-positive\"><div class=\"cell-content\"><div class=\"value\">641</div><div class=\"label\">True Positive</div><div class=\"percentage\">31.7%</div></div></div><div class=\"matrix-cell false-positive\"><div class=\"cell-content\"><div class=\"value\">140</div><div class=\"label\">False Positive</div><div class=\"percentage\">6.9%</div></div></div><div class=\"matrix-cell false-negative\"><div class=\"cell-content\"><div class=\"value\">444</div><div class=\"label\">False Negative</div><div class=\"percentage\">22.0%</div></div></div><div class=\"matrix-cell true-negative\"><div class=\"cell-content\"><div class=\"value\">795</div><div class=\"label\">True Negative</div><div class=\"percentage\">39.4%</div></div></div></div></div></div></div></div></body></html>",
+          "height": "320px"
+        },
+        {
+          "type": "html",
+          "caption": "Explainability Analysis of Ingredients",
+          "htmlContent": "<!DOCTYPE html><html><head><style>:root{--main-bg:#f7f9fc;--card-bg:#fff;--primary:#6772e5;--secondary:#5469d4;--accent:#ff8c00;--text:#1a1f36}*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}body{color:var(--text);line-height:1.6;overflow:hidden}html,body{height:100%;width:100%}.container{max-width:100%;height:100%;overflow-y:auto}.border{border:1px solid #e5e7eb}.rounded-lg{border-radius:0.5rem}.p-4{padding:1rem}.shadow-md{box-shadow:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -1px rgba(0,0,0,0.06)}.w-full{width:100%}.space-y-3>*+*{margin-top:0.75rem}.flex{display:flex}.flex-col{flex-direction:column}.justify-between{justify-content:space-between}.mb-1{margin-bottom:0.25rem}.mb-4{margin-bottom:1rem}.text-sm{font-size:0.875rem}.text-lg{font-size:1.125rem}.text-xl{font-size:1.25rem}.font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}.bg-gray-200{background-color:#e5e7eb}.bg-blue-500{background-color:#3b82f6}.bg-green-500{background-color:#10b981}.bg-purple-500{background-color:#8b5cf6}.bg-pink-500{background-color:#ec4899}.text-blue-600{color:#2563eb}.text-gray-500{color:#6b7280}.border-blue-500{border-color:#3b82f6}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.rounded-full{border-radius:9999px}.h-4{height:1rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.px-4{padding-left:1rem;padding-right:1rem}.text-center{text-align:center}.grid{display:grid}.gap-6{gap:1.5rem}.divide-y>*+*{border-top-width:1px}.bg-gray-50{background-color:#f9fafb}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.text-left{text-align:left}.text-xs{font-size:0.75rem}.tracking-wider{letter-spacing:0.05em}.uppercase{text-transform:uppercase}.bg-white{background-color:white}.py-4{padding-top:1rem;padding-bottom:1rem}.whitespace-nowrap{white-space:nowrap}.text-gray-900{color:#111827}.hidden{display:none}.block{display:block}@media (min-width:768px){.md\\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}.active-tab{border-bottom:2px solid #3b82f6;color:#2563eb}.inactive-tab{color:#6b7280}</style></head><body><div class=\"container\"><div style=\"padding:1.5rem;\"><div class=\"flex flex-col\"><h2 class=\"text-xl font-bold mb-4 text-center\">Explainability Analysis</h2><div class=\"flex border-b mb-4\"><button id=\"limeTab\" class=\"py-2 px-4 font-medium active-tab\">LIME Analysis</button><button id=\"shapTab\" class=\"py-2 px-4 font-medium inactive-tab\">SHAP Analysis</button><button id=\"igTab\" class=\"py-2 px-4 font-medium inactive-tab\">Integrated Gradients</button></div><div id=\"limeContent\" class=\"grid gap-6\"><div class=\"border rounded-lg p-4 shadow-md w-full\"><h3 class=\"text-lg font-semibold mb-4\">LIME: Top Ingredients for Acne</h3><div class=\"space-y-3\"><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Salicylic Acid</span><span class=\"text-sm font-semibold\">0.825</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-blue-500 h-4 rounded-full\" style=\"width:82.5%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Glycolic Acid</span><span class=\"text-sm font-semibold\">0.753</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-blue-500 h-4 rounded-full\" style=\"width:75.3%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Benzoyl Peroxide</span><span class=\"text-sm font-semibold\">0.701</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-blue-500 h-4 rounded-full\" style=\"width:70.1%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Tea Tree Oil</span><span class=\"text-sm font-semibold\">0.654</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-blue-500 h-4 rounded-full\" style=\"width:65.4%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Sulfur</span><span class=\"text-sm font-semibold\">0.612</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-blue-500 h-4 rounded-full\" style=\"width:61.2%\"></div></div></div></div></div><div class=\"border rounded-lg p-4 shadow-md w-full\"><h3 class=\"text-lg font-semibold mb-4\">LIME: Top Ingredients for Hydration</h3><div class=\"space-y-3\"><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Hyaluronic Acid</span><span class=\"text-sm font-semibold\">0.871</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-green-500 h-4 rounded-full\" style=\"width:87.1%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Shea Butter</span><span class=\"text-sm font-semibold\">0.786</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-green-500 h-4 rounded-full\" style=\"width:78.6%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Glycerin</span><span class=\"text-sm font-semibold\">0.742</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-green-500 h-4 rounded-full\" style=\"width:74.2%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Ceramides</span><span class=\"text-sm font-semibold\">0.689</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-green-500 h-4 rounded-full\" style=\"width:68.9%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Squalane</span><span class=\"text-sm font-semibold\">0.652</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-green-500 h-4 rounded-full\" style=\"width:65.2%\"></div></div></div></div></div></div><div id=\"shapContent\" class=\"grid gap-6 hidden\"><div class=\"border rounded-lg p-4 shadow-md w-full\"><h3 class=\"text-lg font-semibold mb-4\">SHAP: Top Ingredients for Acne</h3><div class=\"space-y-3\"><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Cyclopentasiloxane</span><span class=\"text-sm font-semibold\">0.274</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-purple-500 h-4 rounded-full\" style=\"width:27.4%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Doxycycline</span><span class=\"text-sm font-semibold\">0.229</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-purple-500 h-4 rounded-full\" style=\"width:22.9%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Pycnogenol</span><span class=\"text-sm font-semibold\">0.209</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-purple-500 h-4 rounded-full\" style=\"width:20.9%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Dihydroxyacetone</span><span class=\"text-sm font-semibold\">0.045</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-purple-500 h-4 rounded-full\" style=\"width:4.5%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Probiotics</span><span class=\"text-sm font-semibold\">0.035</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-purple-500 h-4 rounded-full\" style=\"width:3.5%\"></div></div></div></div></div><div class=\"border rounded-lg p-4 shadow-md w-full\"><h3 class=\"text-lg font-semibold mb-4\">SHAP: Top Ingredients for Hydration</h3><div class=\"space-y-3\"><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Pycnogenol</span><span class=\"text-sm font-semibold\">0.134</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-pink-500 h-4 rounded-full\" style=\"width:13.4%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Caffeine</span><span class=\"text-sm font-semibold\">0.115</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-pink-500 h-4 rounded-full\" style=\"width:11.5%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Panthenol</span><span class=\"text-sm font-semibold\">0.114</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-pink-500 h-4 rounded-full\" style=\"width:11.4%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Doxycycline</span><span class=\"text-sm font-semibold\">0.092</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-pink-500 h-4 rounded-full\" style=\"width:9.2%\"></div></div></div><div class=\"flex flex-col\"><div class=\"flex justify-between mb-1\"><span class=\"text-sm font-medium\">Zinc</span><span class=\"text-sm font-semibold\">0.081</span></div><div class=\"w-full bg-gray-200 rounded-full h-4\"><div class=\"bg-pink-500 h-4 rounded-full\" style=\"width:8.1%\"></div></div></div></div></div></div><div id=\"igContent\" class=\"grid gap-6 hidden\"><div class=\"border rounded-lg p-4 shadow-md\"><h3 class=\"text-lg font-semibold mb-4\">Integrated Gradients: Acne</h3><table class=\"min-w-full divide-y divide-gray-200\"><thead class=\"bg-gray-50\"><tr><th class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider\">Token</th><th class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider\">Attribution Score</th><th class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider\">Ingredient</th></tr></thead><tbody class=\"bg-white divide-y divide-gray-200\"><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">##tino</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.8290</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Retinol (from retino)</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">sulfur</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.4662</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Sulfur</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">##eth</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.4478</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Ethanol</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">zinc</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.4271</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Zinc</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">##bu</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.4199</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Butylene glycol</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">per</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.3930</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Peroxide</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">sal</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.3625</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Salicylic acid (from sal)</td></tr></tbody></table></div><div class=\"border rounded-lg p-4 shadow-md\"><h3 class=\"text-lg font-semibold mb-4\">Integrated Gradients: Hydration</h3><table class=\"min-w-full divide-y divide-gray-200\"><thead class=\"bg-gray-50\"><tr><th class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider\">Token</th><th class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider\">Attribution Score</th><th class=\"px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider\">Ingredient</th></tr></thead><tbody class=\"bg-white divide-y divide-gray-200\"><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">##eth</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.9065</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Ethanol</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">##anu</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.5271</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Manuka (honey)</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">petroleum</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.4896</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Petroleum</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">##bu</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.3558</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Butylene glycol</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">jelly</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.3519</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Petroleum jelly</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">##cta</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.2791</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Possibly cetrimonium</td></tr><tr><td class=\"px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900\">##ram</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">0.2785</td><td class=\"px-6 py-4 whitespace-nowrap text-sm text-gray-500\">Possibly ceramid</td></tr></tbody></table></div></div></div></div></div><script>document.addEventListener('DOMContentLoaded',function(){const limeTab=document.getElementById('limeTab');const shapTab=document.getElementById('shapTab');const igTab=document.getElementById('igTab');const limeContent=document.getElementById('limeContent');const shapContent=document.getElementById('shapContent');const igContent=document.getElementById('igContent');function setActiveTab(tab,content){[limeTab,shapTab,igTab].forEach(t=>t.classList.remove('active-tab'));[limeTab,shapTab,igTab].forEach(t=>t.classList.add('inactive-tab'));[limeContent,shapContent,igContent].forEach(c=>c.classList.add('hidden'));tab.classList.remove('inactive-tab');tab.classList.add('active-tab');content.classList.remove('hidden');if(window.innerWidth>=768){content.classList.add('md\\:grid-cols-2')}}limeTab.addEventListener('click',function(){setActiveTab(limeTab,limeContent)});shapTab.addEventListener('click',function(){setActiveTab(shapTab,shapContent)});igTab.addEventListener('click',function(){setActiveTab(igTab,igContent)})});</script></body></html>",
+          "height": "600px"
+        }
+      ],
+      "links": [
+        {
+          "title": "Research Paper",
+          "url": "/docs/final_project_DL.pdf"
+        }
+      ],
+      "keyTakeaways": [
+        "Developed a scalable, interpretable machine learning pipeline for analyzing beauty product ingredients and their attributes",
+        "Demonstrated that transformer-based models can effectively predict product attributes with high precision (0.75) and reasonable F1 scores (0.61)",
+        "Applied multiple explainability techniques to uncover meaningful connections between ingredients and skin benefits",
+        "Identified opportunities for improving recommendation systems through transparent ingredient-attribute mapping"
+      ],
+      "collaborators": [
+        "Shreya Sriram",
+        "Priyanshi Gupta"
+      ]
+    },
     "evolution-development": {
       "title": "Evolution of Developmental Strategies in NK Fitness Landscapes",
       "description": "Research exploring the relationship between evolution and development through computational simulation, published at ALIFE 2022 Conference.",
       "fullDescription": "As part of a research team at Rose-Hulman, I helped develop an abstract computational framework to investigate how evolution shapes developmental strategies. My primary contributions focused on implementing the NK fitness landscape model and analyzing the patterns of exploration and exploitation that emerged from our simulations.\n\nOur research revealed fascinating insights into why certain developmental processes, like adolescent exploration and sensitive periods, may have evolved. By simulating organisms navigating through environments of varying complexity, we demonstrated that evolution naturally selects for time-sensitive developmental strategies that balance exploration and exploitation.\n\nThe computational framework I helped develop provides a new way to study the relationship between evolution and development, offering insights that would be difficult to obtain through traditional biological studies due to the vast time scales involved.",
+      "date": {
+        "season": "Summer",
+        "year": 2022
+      },
       "tags": [
         "Artificial Intelligence",
         "Computational Biology"
@@ -27,11 +158,11 @@
       "links": [
         {
           "title": "Research Paper",
-          "url": "https://direct.mit.edu/isal/proceedings/isal/34/59/2035435/isal_a_00543.pdf"
+          "url": "https://direct.mit.edu/isal/proceedings/isal2022/34/59/112288"
         },
         {
           "title": "ALIFE 2022 Conference",
-          "url": "https://2022.alife.org/"
+          "url": "https://direct.mit.edu/isal/isal2022/volume/34"
         }
       ],
       "keyTakeaways": [
@@ -47,44 +178,6 @@
         "Edward Kim",
         "Dr. Jason Yoder"
       ]
-    },
-    "beauty-beyond-words": {
-      "title": "Beauty Beyond Words II: Leveraging Attention for Ingredient-Attribute Insights in Beauty Products",
-      "description": "Research applying transformer-based architectures to analyze relationships between beauty product ingredients and skin-related attributes.",
-      "fullDescription": "This research addresses the beauty industry's need for transparent and explainable methods to map product ingredients to skin-related attributes. We developed a BERT-based machine learning model that achieved a balanced F1 score of 0.61 and precision of 0.75 for predicting product attributes from ingredients and descriptions.\n\nOur approach combined explicit model architectures with advanced explainability techniques, including Integrated Gradients, SHAP, and LIME, to uncover the relationships between ingredients and product attributes. By utilizing publicly available Amazon product metadata and reviews alongside a curated skincare glossary, we developed a scalable pipeline to extract and analyze ingredient-attribute relationships in beauty products.\n\nThe model successfully identified key attributes such as acne, hydration, and sensitive skin with high precision, while explainability methods revealed significant ingredients like salicylic acid for acne treatment and petroleum jelly for hydration. This work contributes to developing more transparent and effective tools for beauty product analysis and recommendation systems.",
-      "tags": [
-        "Machine Learning",
-        "Natural Language Processing",
-        "Explainable AI"
-      ],
-      "technicalTags": [
-        "Python",
-        "PyTorch",
-        "BERT",
-        "Hugging Face"
-      ],
-      "images": [
-        {
-          "url": "/images/beauty_flowchart.png",
-          "caption": "Flowchart representing the pipeline for extracting ingredients and attributes."
-        }
-      ],
-      "links": [
-        {
-          "title": "Research Repository",
-          "url": "https://github.com/shreyasriram4/transformers_beauty"
-        }
-      ],
-      "keyTakeaways": [
-        "Developed a scalable, interpretable machine learning pipeline for analyzing beauty product ingredients and their attributes",
-        "Demonstrated that transformer-based models can effectively predict product attributes with high precision (0.75) and reasonable F1 scores (0.61)",
-        "Applied multiple explainability techniques to uncover meaningful connections between ingredients and skin benefits",
-        "Identified opportunities for improving recommendation systems through transparent ingredient-attribute mapping"
-      ],
-      "collaborators": [
-        "Shreya Sriram",
-        "Priyanshi Gupta"
-      ]
     }
   },
   "coding": {
@@ -92,17 +185,22 @@
       "title": "AI Actual: Personal Finance App",
       "description": "An open-source fork of Actual Budget enhanced with AI capabilities for intelligent transaction management, natural conversations about spending, and automated financial organization.",
       "fullDescription": "AI Actual is my fork of the popular open-source personal finance application Actual Budget, enhanced with artificial intelligence capabilities. The project focuses on making personal finance more accessible and intelligent through natural language interactions and automated management. I've implemented a chat interface that allows users to naturally query and analyze their transaction history, along with intelligent systems for automatic transaction categorization and payee name normalization. The application maintains the privacy-first approach of the original Actual, with a focus on keeping sensitive financial data secure. Future development plans include integrated AI budget planning, predictive financial forecasting, and local model support for enhanced privacy. By improving upon an already solid open-source foundation, AI Actual demonstrates how machine learning can make financial tools more intelligent and personalized while respecting user privacy.",
+      "date": {
+        "season": "Spring",
+        "year": 2023
+      },
       "tags": [
-        "Personal Finance",
         "Artificial Intelligence",
+        "Natural Language Processing",
         "Open Source",
-        "Web Application"
+        "Web Development"       
       ],
       "technologies": [
+        "TypeScript",
         "React",
-        "Node.js",
-        "SQLite",
-        "TensorFlow.js"
+        "Python",
+        "Flask",
+        "SQLite"
       ],
       "features": [
         "Chat interface for natural conversations about your finances",
@@ -119,11 +217,10 @@
       "links": [
         {
           "title": "GitHub Repository",
-          "url": "https://github.com/yourusername/ai-actual",
+          "url": "https://github.com/rhit-deckerza/AIActual",
           "icon": "GitHub"
         }
       ],
-    
       "workflow": [
         {
           "step": "Data Ingestion",
@@ -142,7 +239,136 @@
           "description": "Secure data with local-first approach and encryption"
         }
       ]
-    }
+    },
+    "freshmen-advising-llm": {
+      "title": "Freshmen Advising LLM",
+      "description": "AI-powered academic advising system designed to assist faculty and freshmen with academic policies and resources at Rose-Hulman Institute of Technology.",
+      "fullDescription": "The Freshmen Advising LLM project was developed to enhance academic advising resources at Rose-Hulman Institute of Technology. This specialized language model was trained to understand and answer questions about the institution's academic policies, course offerings, and advising best practices. The system helps faculty members provide consistent guidance to students while giving freshmen direct access to accurate information about academic requirements and policies.\n\nThe project involved collecting and structuring data from various academic resources including the student handbook, course catalog, academic rules and procedures, and advising materials. We implemented a Retrieval-Augmented Generation (RAG) system to provide accurate, contextual responses backed by official documentation. The model was fine-tuned to maintain the tone and style appropriate for an academic advising context.\n\nWe developed performance metrics to evaluate the system's effectiveness compared to existing FAQ resources, focusing on accuracy, relevance, and helpfulness of responses. The project culminated in a hosted interface that allows users to interact with the system and a technical report documenting our approach and findings.",
+      "date": {
+        "season": "Winter",
+        "year": 2023
+      },
+      "tags": [
+        "Artificial Intelligence",
+        "Natural Language Processing",
+        "Prompt Engineering",
+        "Fine-tuning",
+        "RAG"
+      ],
+      "technologies": [
+        "Python",
+        "Hugging Face",
+        "LangChain"
+      ],
+      "features": [
+        "Accurate academic policy information retrieval",
+        "Question answering system for freshmen advising",
+        "Fine-tuned language model with academic context",
+        "Web interface for easy access and use",
+        "Performance metrics for continuous improvement"
+      ],
+      "screenshots": [
+        {
+          "url": "/images/CourseRegistrationMockup.png",
+          "caption": "Freshmen Advising LLM interface showing policy questions and answers"
+        },
+        {
+          "url": "/images/CourseRegistrationDiagram.png",
+          "caption": "Diagram of the Freshmen Advising LLM system"
+        }
+      ],
+      "links": [
+      ],
+      "workflow": [
+        {
+          "step": "Data Collection",
+          "description": "Gathering academic resources and policies from various Rose-Hulman sources"
+        },
+        {
+          "step": "Model Training",
+          "description": "Fine-tuning LLM with academic content and developing RAG system"
+        },
+        {
+          "step": "Performance Evaluation",
+          "description": "Creating metrics to measure accuracy and relevance of responses"
+        },
+        {
+          "step": "Interface Development",
+          "description": "Building user-friendly web interface for student and faculty access"
+        }
+      ]
+    },
     
+    "organize-my-life": {
+      "title": "Organize My Life: IOS and Android Application for File Organization",
+      "description": "A cross-platform mobile application built with React Native and AWS to help users organize and share information about their assets.",
+      "fullDescription": "Organize My Life was created to solve the common problem of managing information and documents about personal assets. Many people struggle with overflowing drawers of receipts and paperwork related to their cars, houses, and other possessions. Even when organized, finding specific information can be challenging, and sharing this information with family members, employers, or service professionals is often cumbersome.\n\nOur team developed a user-friendly mobile application that allows users to digitally organize their assets, quickly search and filter information, and securely share access with trusted individuals. The app provides calculated insights about assets and utilizes robust authentication to protect sensitive user data.\n\nThe application was built using React Native for cross-platform compatibility, with AWS Amplify powering the backend infrastructure. We implemented GraphQL for efficient data operations and AWS DynamoDB for database management. The project followed extreme programming practices with regular client feedback incorporated throughout the development process.",
+      "date": {
+        "season": "Fall",
+        "year": 2023
+      },
+      "tags": [
+        "Mobile Development",
+        "Cloud Computing",
+        "User Experience"
+      ],
+      "technologies": [
+        "React Native",
+        "AWS Amplify",
+        "GraphQL",
+        "DynamoDB"
+      ],
+      "features": [
+        "User-friendly interface for organizing personal assets",
+        "Advanced search and filtering capabilities",
+        "Secure authentication and data protection",
+        "Asset information calculations and insights",
+        "Selective information sharing with trusted contacts"
+      ],
+      "screenshots": [
+        {
+          "url": "/images/OMLDiagram1.png",
+          "caption": "Login page with secure authentication"
+        },
+        {
+          "url": "/images/OMLDiagram2.png",
+          "caption": "Home dashboard showing organized asset categories"
+        },
+        {
+          "url": "/images/OMLuiScreenshots.png",
+          "caption": "Example UI Screenshots"
+        }
+      ],
+      "links": [
+        {
+          "title": "GitHub Repository",
+          "url": "https://github.com/rhit-rippergm/organize-my-life",
+          "icon": "GitHub"
+        }
+      ],
+      "workflow": [
+        {
+          "step": "User Authentication",
+          "description": "Secure login and account management through AWS Cognito"
+        },
+        {
+          "step": "Asset Organization",
+          "description": "Digital storage and categorization of asset information"
+        },
+        {
+          "step": "Information Retrieval",
+          "description": "Advanced search and filtering to quickly find asset details"
+        },
+        {
+          "step": "Secure Sharing",
+          "description": "Controlled access sharing with family members or service providers"
+        }
+      ],
+      "collaborators": [
+        "Emma Brown",
+        "Kernan Lee",
+        "Joseph Parsons"
+      ]
+    }
   }
 }

@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Container, Typography, Box, Button, Paper, Chip, Grid, Avatar } from '@mui/material';
+import { Container, Typography, Box, Button, Paper, Chip, Grid, Avatar, useTheme, useMediaQuery, Modal, IconButton, Dialog } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import CloseIcon from '@mui/icons-material/Close';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { CodingProject } from '../../utils/projectData';
 import { fetchProjects } from '../../utils/projectData';
 
@@ -9,6 +14,9 @@ const CodingProjectInfo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [project, setProject] = useState<CodingProject | null>(null);
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [openLightbox, setOpenLightbox] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     const loadProject = async () => {
@@ -23,6 +31,28 @@ const CodingProjectInfo: React.FC = () => {
     loadProject();
   }, [id]);
 
+  const handlePrevImage = () => {
+    if (!project || !project.screenshots) return;
+    setSelectedImage(prev => 
+      prev === null ? null : (prev === 0 ? project.screenshots.length - 1 : prev - 1)
+    );
+  };
+
+  const handleNextImage = () => {
+    if (!project || !project.screenshots) return;
+    setSelectedImage(prev => 
+      prev === null ? null : (prev === project.screenshots.length - 1 ? 0 : prev + 1)
+    );
+  };
+
+  const handleOpenLightbox = () => {
+    setOpenLightbox(true);
+  };
+
+  const handleCloseLightbox = () => {
+    setOpenLightbox(false);
+  };
+
   if (!project) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -32,14 +62,14 @@ const CodingProjectInfo: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
       <Button 
         variant="outlined" 
         component={Link} 
         to="/"
         startIcon={<ArrowBackIcon />}
         sx={{ 
-          mb: 5,
+          mb: 2,
           borderColor: 'black',
           color: 'black',
           '&:hover': {
@@ -52,25 +82,40 @@ const CodingProjectInfo: React.FC = () => {
       </Button>
 
       {/* Header Section */}
-      <Box sx={{ mb: 5 }}>
+      <Box sx={{ mb: { xs: 3, md: 5 } }}>
         <Typography 
-          variant="h3" 
+          variant="h2" 
           component="h1" 
           gutterBottom
           sx={{ 
-            fontWeight: 600,
-            letterSpacing: '-0.5px',
-            mb: 3
+            fontWeight: 700,
+            mb: 2,
+            fontSize: { xs: '2.25rem', md: '3rem' },
+            lineHeight: 1.2
           }}
         >
           {project.title}
         </Typography>
 
+        {/* Project Date */}
+        {project.date && (
+          <Typography 
+            variant="subtitle1"
+            sx={{ 
+              mb: 2,
+              fontWeight: 500,
+              fontSize: { xs: '1rem', md: '1.1rem' },
+            }}
+          >
+            {project.date.season} {project.date.year}
+          </Typography>
+        )}
+
         <Box sx={{ 
           display: 'flex', 
           gap: 1, 
           flexWrap: 'wrap', 
-          mb: 4
+          mb: 3
         }}>
           {/* Regular Tags */}
           {project.tags && project.tags.map((tag) => (
@@ -82,7 +127,6 @@ const CodingProjectInfo: React.FC = () => {
                 color: 'black',
                 border: '1px solid black',
                 fontWeight: 500,
-                borderRadius: '4px',
                 '&:hover': {
                   bgcolor: 'rgba(0, 0, 0, 0.04)'
                 }
@@ -99,7 +143,6 @@ const CodingProjectInfo: React.FC = () => {
                 bgcolor: 'black', 
                 color: 'white',
                 fontWeight: 500,
-                borderRadius: '4px',
                 '&:hover': {
                   bgcolor: 'rgba(0, 0, 0, 0.8)'
                 }
@@ -109,416 +152,496 @@ const CodingProjectInfo: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Screenshots Section - Enhanced for better display */}
-      {project.screenshots && project.screenshots.length > 0 && (
-        <Box sx={{ 
-          mb: 7, 
-          width: '100%',
-        }}>
-          <Typography 
-            variant="h5" 
-            component="h2" 
-            gutterBottom 
-            sx={{ 
-              mb: 4,
-              fontWeight: 600,
-              position: 'relative',
-              '&:after': {
-                content: '""',
-                position: 'absolute',
-                bottom: '-8px',
-                left: 0,
-                width: '40px',
-                height: '3px',
-                backgroundColor: 'black'
-              }
-            }}
-          >
-            Screenshots
-          </Typography>
-          
-          <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%'
-          }}>
-            {/* Main Screenshot Display */}
-            <Paper
-              elevation={0}
-              sx={{
-                width: '100%',
-                mb: 3,
-                overflow: 'hidden',
-                borderRadius: '12px',
-                border: '1px solid rgba(0, 0, 0, 0.1)',
-                position: 'relative',
-                backgroundColor: 'white',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  boxShadow: '0 12px 30px rgba(0,0,0,0.08)',
-                }
-              }}
-            >
-              {selectedImage !== null && project.screenshots[selectedImage] && (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '100%',
-                    height: {
-                      xs: '300px',
-                      sm: '350px',
-                      md: project.screenshots.length > 1 ? '400px' : '500px'
-                    },
-                    padding: {
-                      xs: '10px',
-                      sm: '15px',
-                      md: '20px'
-                    },
-                    backgroundColor: 'white',
-                    overflow: 'hidden'
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src={project.screenshots[selectedImage].url}
-                    alt={project.screenshots[selectedImage].caption}
-                    sx={{ 
-                      maxWidth: '100%', 
-                      maxHeight: '100%',
-                      objectFit: 'contain',
-                      display: 'block',
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
-                    }}
-                  />
-                </Box>
-              )}
-              <Box sx={{ 
-                p: { xs: 2, sm: 2.5, md: 3 },
-                borderTop: '1px solid rgba(0, 0, 0, 0.08)',
-                backgroundColor: 'rgba(0, 0, 0, 0.02)'
-              }}>
-                <Typography 
-                  variant="body1" 
-                  sx={{ 
-                    color: 'rgba(0, 0, 0, 0.87)',
-                    fontSize: { xs: '0.95rem', sm: '1rem', md: '1.05rem' },
-                    textAlign: 'center',
-                    fontStyle: 'italic',
-                    fontWeight: selectedImage !== null ? 400 : 'inherit',
-                    lineHeight: 1.6,
-                    maxWidth: '800px',
-                    mx: 'auto'
-                  }}
-                >
-                  {selectedImage !== null && project.screenshots[selectedImage] 
-                    ? project.screenshots[selectedImage].caption 
-                    : ''}
-                </Typography>
-              </Box>
-            </Paper>
-            
-            {/* Thumbnail Navigation (only show if more than one screenshot) */}
-            {project.screenshots.length > 1 && (
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                gap: { xs: 1, sm: 1.5, md: 2 },
-                mt: 2,
-                mb: 1,
-                width: '100%',
-                padding: { xs: '0 10px', sm: '0 15px', md: '0 20px' }
-              }}>
-                {project.screenshots.map((screenshot, index) => (
-                  <Box
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    sx={{
-                      width: { xs: '70px', sm: '85px', md: '100px' },
-                      height: { xs: '50px', sm: '65px', md: '75px' },
-                      borderRadius: '8px',
-                      overflow: 'hidden',
-                      border: selectedImage === index ? '3px solid black' : '1px solid rgba(0, 0, 0, 0.15)',
-                      cursor: 'pointer',
-                      opacity: selectedImage === index ? 1 : 0.7,
-                      transition: 'all 0.2s ease',
-                      position: 'relative',
-                      '&:hover': {
-                        opacity: 1,
-                        transform: 'scale(1.05)',
-                        boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
-                      },
-                      '&:after': selectedImage === index ? {
-                        content: '""',
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '3px',
-                        backgroundColor: 'black'
-                      } : {}
-                    }}
-                  >
-                    <Box
-                      component="img"
-                      src={screenshot.url}
-                      alt={`Thumbnail ${index+1}`}
-                      sx={{ 
-                        width: '100%', 
-                        height: '100%',
-                        objectFit: 'cover',
-                        display: 'block'
-                      }}
-                    />
-                  </Box>
-                ))}
-              </Box>
-            )}
-          </Box>
-        </Box>
-      )}
-
-      {/* Project Description */}
-      <Paper elevation={0} sx={{ 
-        p: 4,
-        mb: 5,
-        border: '1px solid rgba(0, 0, 0, 0.12)',
-        borderRadius: 2,
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
-          borderColor: 'rgba(0, 0, 0, 0.3)'
-        }
-      }}>
-        <Typography 
-          variant="h5" 
-          component="h2" 
-          gutterBottom 
-          sx={{ 
-            mb: 3,
-            fontWeight: 600,
-            position: 'relative',
-            '&:after': {
-              content: '""',
-              position: 'absolute',
-              bottom: '-8px',
-              left: 0,
-              width: '40px',
-              height: '3px',
-              backgroundColor: 'black'
-            }
-          }}
-        >
-          About This Project
-        </Typography>
-        <Typography 
-          variant="body1" 
-          sx={{ 
-            fontSize: '1.125rem', 
-            lineHeight: 1.7,
-            color: 'rgba(0, 0, 0, 0.87)'
-          }}
-        >
-          {project.fullDescription}
-        </Typography>
-      </Paper>
-
-      <Grid container spacing={4}>
+      <Grid container spacing={{ xs: 3, md: 4 }}>
+        {/* Main Content Section */}
         <Grid item xs={12} md={7}>
-          {/* Key Takeaways Section (renamed from Key Features) */}
-          <Paper elevation={0} sx={{ 
-            p: 4, 
-            border: '1px solid rgba(0, 0, 0, 0.12)',
-            mb: 4,
-            borderRadius: 2,
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
-              borderColor: 'rgba(0, 0, 0, 0.3)'
-            }
-          }}>
-            <Typography 
-              variant="h5" 
-              component="h2" 
-              gutterBottom 
-              sx={{ 
-                mb: 3,
-                fontWeight: 600,
-                position: 'relative',
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: '-8px',
-                  left: 0,
-                  width: '40px',
-                  height: '3px',
-                  backgroundColor: 'black'
-                }
-              }}
-            >
-              Key Takeaways
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {project.features.map((feature, index) => (
-                <Paper
-                  key={index}
-                  elevation={0}
-                  sx={{
-                    py: 2,
-                    px: 3,
-                    border: '1px solid rgba(0, 0, 0, 0.08)',
-                    borderRadius: 1,
-                    fontSize: '1rem',
-                    lineHeight: 1.6,
-                    backgroundColor: 'rgba(0, 0, 0, 0.01)',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      backgroundColor: 'rgba(0, 0, 0, 0.03)',
-                      transform: 'translateY(-2px)'
-                    }
-                  }}
-                >
-                  {feature}
-                </Paper>
-              ))}
-            </Box>
-          </Paper>
-        </Grid>
-        
-        <Grid item xs={12} md={5}>
-          {/* Collaborators Section (Optional) */}
-          {project.collaborators && project.collaborators.length > 0 && (
-            <Paper elevation={0} sx={{ 
-              p: 4, 
-              border: '1px solid rgba(0, 0, 0, 0.12)',
-              mb: 4,
+          {/* Description */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: { xs: 2.5, md: 3.5 }, 
+              border: '1px solid black',
+              mb: { xs: 3, md: 4 },
               borderRadius: 2,
               transition: 'all 0.3s ease',
               '&:hover': {
-                boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
-                borderColor: 'rgba(0, 0, 0, 0.3)'
+                boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
               }
-            }}>
+            }}
+          >
+            <Typography 
+              variant="body1" 
+              paragraph
+              sx={{ 
+                lineHeight: 1.7,
+                fontSize: { xs: '1rem', md: '1.05rem' }
+              }}
+            >
+              {project.fullDescription}
+            </Typography>
+          </Paper>
+
+          {/* Screenshots Section */}
+          {project.screenshots && project.screenshots.length > 0 && (
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: { xs: 2.5, md: 3.5 }, 
+                border: '1px solid black',
+                mb: { xs: 3, md: 4 },
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+                }
+              }}
+            >
               <Typography 
                 variant="h5" 
-                component="h2" 
-                gutterBottom 
+                gutterBottom
                 sx={{ 
                   mb: 3,
                   fontWeight: 600,
-                  position: 'relative',
-                  '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: '-8px',
-                    left: 0,
-                    width: '40px',
-                    height: '3px',
-                    backgroundColor: 'black'
-                  }
+                  fontSize: { xs: '1.4rem', md: '1.5rem' }
                 }}
               >
-                Collaborators
+                Screenshots
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mt: 3 }}>
-                {project.collaborators.map((collaborator, index) => (
-                  <Chip
-                    key={index}
-                    avatar={<Avatar>{collaborator.charAt(0)}</Avatar>}
-                    label={collaborator}
-                    variant="outlined"
+              
+              {/* Main Featured Image */}
+              {selectedImage !== null && (
+                <Box 
+                  sx={{ 
+                    mb: 4, 
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Box 
+                    sx={{ 
+                      position: 'relative', 
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    {/* Left Arrow */}
+                    {project.screenshots.length > 1 && (
+                      <IconButton 
+                        onClick={handlePrevImage}
+                        sx={{ 
+                          position: 'absolute', 
+                          left: 0, 
+                          zIndex: 1,
+                          color: 'black',
+                          bgcolor: 'rgba(255,255,255,0.7)',
+                          '&:hover': {
+                            bgcolor: 'rgba(255,255,255,0.9)'
+                          }
+                        }}
+                      >
+                        <ArrowBackIosNewIcon />
+                      </IconButton>
+                    )}
+
+                    {/* Main Image */}
+                    <Box
+                      sx={{ 
+                        maxWidth: '80%',
+                        position: 'relative',
+                        cursor: 'pointer'
+                      }}
+                      onClick={handleOpenLightbox}
+                    >
+                      <Box
+                        component="img"
+                        src={project.screenshots[selectedImage].url}
+                        alt={project.screenshots[selectedImage].caption}
+                        sx={{ 
+                          width: '100%', 
+                          maxHeight: '400px',
+                          objectFit: 'contain',
+                          borderRadius: '8px',
+                        }}
+                      />
+                      
+                      {/* Fullscreen Button */}
+                      <IconButton
+                        sx={{
+                          position: 'absolute',
+                          bottom: 10,
+                          right: 10,
+                          bgcolor: 'rgba(255,255,255,0.7)',
+                          '&:hover': {
+                            bgcolor: 'rgba(255,255,255,0.9)'
+                          }
+                        }}
+                        onClick={handleOpenLightbox}
+                      >
+                        <FullscreenIcon />
+                      </IconButton>
+                    </Box>
+
+                    {/* Right Arrow */}
+                    {project.screenshots.length > 1 && (
+                      <IconButton 
+                        onClick={handleNextImage}
+                        sx={{ 
+                          position: 'absolute', 
+                          right: 0, 
+                          zIndex: 1,
+                          color: 'black',
+                          bgcolor: 'rgba(255,255,255,0.7)',
+                          '&:hover': {
+                            bgcolor: 'rgba(255,255,255,0.9)'
+                          }
+                        }}
+                      >
+                        <ArrowForwardIosIcon />
+                      </IconButton>
+                    )}
+                  </Box>
+                  
+                  {/* Caption for main image */}
+                  <Typography 
+                    variant="body1" 
+                    sx={{ 
+                      mt: 2,
+                      textAlign: 'center',
+                      fontStyle: 'italic'
+                    }}
+                  >
+                    {project.screenshots[selectedImage].caption}
+                  </Typography>
+                </Box>
+              )}
+              
+              {/* Thumbnail Grid */}
+              {project.screenshots.length > 1 && (
+                <Grid container spacing={2}>
+                  {project.screenshots.map((screenshot, index) => (
+                    <Grid 
+                      item 
+                      xs={6} 
+                      sm={4} 
+                      md={3} 
+                      key={index}
+                    >
+                      <Box 
+                        sx={{ 
+                          cursor: 'pointer',
+                          opacity: selectedImage === index ? 1 : 0.6,
+                          border: selectedImage === index ? '2px solid black' : 'none',
+                          borderRadius: '4px',
+                          overflow: 'hidden',
+                          transition: 'all 0.2s ease',
+                          '&:hover': {
+                            opacity: 1,
+                            transform: 'scale(1.05)'
+                          }
+                        }}
+                        onClick={() => setSelectedImage(index)}
+                      >
+                        <Box
+                          component="img"
+                          src={screenshot.url}
+                          alt={screenshot.caption}
+                          sx={{ 
+                            width: '100%', 
+                            height: '80px',
+                            objectFit: 'cover',
+                          }}
+                        />
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+            </Paper>
+          )}
+        </Grid>
+
+        {/* Sidebar Section */}
+        <Grid item xs={12} md={5}>
+          {/* Key Features */}
+          <Paper 
+            elevation={0} 
+            sx={{ 
+              p: { xs: 2.5, md: 3.5 }, 
+              border: '1px solid black',
+              mb: { xs: 3, md: 4 },
+              borderRadius: 2,
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+              }
+            }}
+          >
+            <Typography 
+              variant="h5" 
+              gutterBottom
+              sx={{ 
+                mb: 3,
+                fontWeight: 600,
+                fontSize: { xs: '1.4rem', md: '1.5rem' }
+              }}
+            >
+              Key Features
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {project.features.map((feature, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    py: 1.5,
+                    px: 2,
+                    borderRadius: 1,
+                    bgcolor: 'rgba(0, 0, 0, 0.02)',
+                    borderLeft: '3px solid black',
+                  }}
+                >
+                  <Typography
+                    variant="body2"
                     sx={{
-                      border: '1px solid rgba(0, 0, 0, 0.2)',
-                      padding: '8px 4px',
-                      height: 'auto',
-                      '& .MuiChip-avatar': {
-                        bgcolor: 'black',
-                        color: 'white',
-                        fontWeight: 'bold'
-                      },
-                      '& .MuiChip-label': {
-                        padding: '0 8px',
-                        fontSize: '0.9rem'
+                      lineHeight: 1.5,
+                      fontSize: '0.95rem',
+                      fontWeight: 400
+                    }}
+                  >
+                    {feature}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </Paper>
+
+          {/* Project Links */}
+          {project.links && project.links.length > 0 && (
+            <Paper 
+              elevation={0} 
+              sx={{ 
+                p: { xs: 2.5, md: 3.5 }, 
+                border: '1px solid black',
+                mb: { xs: 3, md: 4 },
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
+                }
+              }}
+            >
+              <Typography 
+                variant="h5" 
+                gutterBottom
+                sx={{ 
+                  mb: 3,
+                  fontWeight: 600,
+                  fontSize: { xs: '1.4rem', md: '1.5rem' }
+                }}
+              >
+                Project Links
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                {project.links.map((link) => (
+                  <Button
+                    key={link.title}
+                    variant="outlined"
+                    size="medium"
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    fullWidth
+                    sx={{
+                      justifyContent: 'flex-start',
+                      textTransform: 'none',
+                      py: 1.25,
+                      px: 2.5,
+                      '&:hover': {
+                        borderColor: 'black',
+                        bgcolor: 'rgba(0, 0, 0, 0.02)'
                       }
                     }}
-                  />
+                  >
+                    {link.title}
+                  </Button>
                 ))}
               </Box>
             </Paper>
           )}
 
-          {/* Project Links Section */}
-          <Paper elevation={0} sx={{ 
-            p: 4, 
-            border: '1px solid rgba(0, 0, 0, 0.12)',
-            borderRadius: 2,
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
-              borderColor: 'rgba(0, 0, 0, 0.3)'
-            }
-          }}>
-            <Typography 
-              variant="h5" 
-              component="h2" 
-              gutterBottom 
+          {/* Collaborators Section (Optional) */}
+          {project.collaborators && project.collaborators.length > 0 && (
+            <Paper 
+              elevation={0} 
               sx={{ 
-                mb: 3,
-                fontWeight: 600,
-                position: 'relative',
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: '-8px',
-                  left: 0,
-                  width: '40px',
-                  height: '3px',
-                  backgroundColor: 'black'
+                p: { xs: 2.5, md: 3.5 }, 
+                border: '1px solid black',
+                borderRadius: 2,
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
                 }
               }}
             >
-              Project Links
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 3 }}>
-              {project.links.map((link) => (
-                <Button 
-                  key={link.title}
-                  variant="outlined"
-                  size="large"
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  fullWidth
-                  sx={{
-                    justifyContent: 'flex-start',
-                    textTransform: 'none',
-                    py: 1.5,
-                    px: 3,
-                    borderColor: 'rgba(0, 0, 0, 0.3)',
-                    color: 'black',
-                    fontWeight: 500,
-                    borderRadius: '6px',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      borderColor: 'black',
-                      backgroundColor: 'rgba(0, 0, 0, 0.03)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-                    }
-                  }}
-                >
-                  {link.title}
-                </Button>
-              ))}
-            </Box>
-          </Paper>
+              <Typography 
+                variant="h5" 
+                gutterBottom
+                sx={{ 
+                  mb: 3,
+                  fontWeight: 600,
+                  fontSize: { xs: '1.4rem', md: '1.5rem' }
+                }}
+              >
+                Collaborators
+              </Typography>
+              <Grid container spacing={1.5}>
+                {project.collaborators.map((collaborator, index) => (
+                  <Grid item xs={12} sm={6} key={index}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        p: 1.5,
+                        borderRadius: 1,
+                        bgcolor: 'rgba(0, 0, 0, 0.02)',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: '50%',
+                          bgcolor: 'black',
+                          mr: 1.5,
+                          flexShrink: 0
+                        }}
+                      />
+                      <Typography 
+                        variant="body2"
+                        sx={{
+                          fontSize: '0.95rem',
+                          fontWeight: 400
+                        }}
+                      >
+                        {collaborator}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </Paper>
+          )}
         </Grid>
       </Grid>
+
+      {/* Lightbox Modal */}
+      <Dialog
+        open={openLightbox}
+        onClose={handleCloseLightbox}
+        maxWidth="lg"
+        fullWidth
+      >
+        <Box sx={{ position: 'relative', bgcolor: 'black', p: 1 }}>
+          {/* Close button */}
+          <IconButton
+            onClick={handleCloseLightbox}
+            sx={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+              color: 'white',
+              zIndex: 1,
+              bgcolor: 'rgba(0,0,0,0.5)',
+              '&:hover': {
+                bgcolor: 'rgba(0,0,0,0.7)'
+              }
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          
+          {/* Navigation Arrows */}
+          {project.screenshots && project.screenshots.length > 1 && (
+            <>
+              <IconButton
+                onClick={handlePrevImage}
+                sx={{
+                  position: 'absolute',
+                  left: 10,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'white',
+                  zIndex: 1,
+                  bgcolor: 'rgba(0,0,0,0.5)',
+                  '&:hover': {
+                    bgcolor: 'rgba(0,0,0,0.7)'
+                  }
+                }}
+              >
+                <ArrowBackIcon fontSize="large" />
+              </IconButton>
+              
+              <IconButton
+                onClick={handleNextImage}
+                sx={{
+                  position: 'absolute',
+                  right: 10,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'white',
+                  zIndex: 1,
+                  bgcolor: 'rgba(0,0,0,0.5)',
+                  '&:hover': {
+                    bgcolor: 'rgba(0,0,0,0.7)'
+                  }
+                }}
+              >
+                <ArrowForwardIcon fontSize="large" />
+              </IconButton>
+            </>
+          )}
+          
+          {/* Main Image */}
+          {selectedImage !== null && project.screenshots && (
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: { xs: '50vh', md: '80vh' },
+              width: '100%'
+            }}>
+              <Box
+                component="img"
+                src={project.screenshots[selectedImage].url}
+                alt={project.screenshots[selectedImage].caption}
+                sx={{ 
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  objectFit: 'contain'
+                }}
+              />
+            </Box>
+          )}
+          
+          {/* Caption */}
+          {selectedImage !== null && project.screenshots && (
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                color: 'white',
+                textAlign: 'center',
+                pt: 2,
+                pb: 1
+              }}
+            >
+              {project.screenshots[selectedImage].caption}
+            </Typography>
+          )}
+        </Box>
+      </Dialog>
     </Container>
   );
 };

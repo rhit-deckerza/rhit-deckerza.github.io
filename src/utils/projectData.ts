@@ -1,6 +1,17 @@
 import { IconType } from 'react-icons';
 import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa';
 
+export type VisualizationType = 'image' | 'html';
+
+export interface Visualization {
+  type: VisualizationType;
+  caption: string;
+  url?: string;         // For image type
+  htmlContent?: string; // For HTML type
+  height?: string;      // Optional height for HTML content
+  width?: string;       // Optional width for HTML content
+}
+
 export interface ProjectImage {
   url: string;
   caption: string;
@@ -17,12 +28,17 @@ export interface BaseProject {
   description: string;
   fullDescription: string;
   links: ProjectLink[];
+  date?: {
+    season: string;
+    year: number;
+  };
 }
 
 export interface ResearchProject extends BaseProject {
   tags: string[];
   technicalTags: string[];
   images: ProjectImage[];
+  visualizations?: Visualization[];  // New field for enhanced visualizations
   keyTakeaways: string[];
   collaborators: string[];
 }
