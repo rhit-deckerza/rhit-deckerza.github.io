@@ -462,7 +462,7 @@ function ResumeBuilder() {
           
           // Copy HTML content from the modal's full-size version
           if (resumeData) {
-            // Create header content
+            // Create header content with website as a hyperlink
             const headerHTML = `
               <div style="text-align: center; padding-bottom: 4px; margin-bottom: 8px">
                 <h1 style="margin: 0; font-size: 16pt; font-weight: 600; letter-spacing: 0.5px">${resumeData.name}</h1>
@@ -470,7 +470,9 @@ function ResumeBuilder() {
                   <span>${resumeData.location}</span> | <span>${resumeData.phone}</span> | <span>${resumeData.email}</span>
                 </p>
                 ${resumeData.website && (
-                  `<p style="margin: 2px 0; font-size: 10pt; line-height: 1">${resumeData.website}</p>`
+                  `<p style="margin: 2px 0; font-size: 10pt; line-height: 1">
+                    <a href="${resumeData.website}" style="color: black; text-decoration: none;">${resumeData.website}</a>
+                  </p>`
                 )}
               </div>
             `;
@@ -590,8 +592,20 @@ function ResumeBuilder() {
               format: 'letter' // Standard US letter size
             });
             
-            // Add the image to the PDF (with proper margins already handled by tempDiv padding)ww
+            // Add the image to the PDF (with proper margins already handled by tempDiv padding)
             pdf.addImage(imgData, 'JPEG', 0, 0, 8.5, 11);
+            
+            // Add hyperlinks to the PDF
+            if (resumeData?.website) {
+              const fontSize = 10; // Font size in points
+              const textWidth = pdf.getStringUnitWidth(resumeData.website) * fontSize / pdf.internal.scaleFactor;
+              const pageWidth = pdf.internal.pageSize.getWidth();
+              const x = (pageWidth - textWidth) / 2; // Center the link
+              const y = 0.5 + 0.3 + 0.2; // Top margin + name height + contact info height
+              
+              // Add the hyperlink
+              pdf.link(x, y, textWidth, 0.2, { url: resumeData.website });
+            }
             
             // Save the PDF with the name of the person or "Resume"
             pdf.save(`${resumeData?.name || 'Resume'}.pdf`);
