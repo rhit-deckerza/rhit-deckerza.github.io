@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <meta name="theme-color" content="#000000"/>
+    <title>Project - Evolution of Developmental Strategies</title>
+    <meta name="description" content="Research exploring the relationship between evolution and development through computational simulation, published at ALIFE 2022 Conference."/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles from other projects */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .screenshot {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.5s ease;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background-color: rgba(var(--text-color-rgb), 0.02);
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            background-color: rgba(var(--text-color-rgb), 0.03);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .feature-card {
+            position: relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+            background-color: rgba(var(--text-color-rgb), 0.02);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card.active p {
+            opacity: 1;
+            max-height: 200px;
+            margin-top: 0.5rem;
+        }
+        
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-pill {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .tech-pill:hover {
+            background-color: rgba(var(--accent-color-rgb), 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .slide-in {
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.8s forwards;
+        }
+        
+        @keyframes slideIn {
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* For dark/light mode compatibility with blue accents */
+        html.dark {
+            --text-color-rgb: 255, 255, 255;
+            --focus-color: #3b82f6;
+            --accent-color-rgb: 59, 130, 246;
+        }
+        
+        html.light {
+            --text-color-rgb: 26, 26, 26;
+            --focus-color: #2563eb;
+            --accent-color-rgb: 37, 99, 235;
+        }
+        
+        /* Progress bar styles */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(var(--text-color-rgb), 0.1);
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--focus-color);
+            transition: width 1.5s ease-in-out;
+        }
+        
+        /* Carousel styles */
+        .carousel {
+            position: relative;
+            width: 100%;
+            margin: 2rem 0;
+            overflow: hidden;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 350px;
+        }
+        
+        .carousel-item {
+            min-width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0;
+        }
+        
+        .carousel-img {
+            max-width: 100%;
+            max-height: 300px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-arrow:hover {
+            background-color: rgba(var(--accent-color-rgb), 0.7);
+        }
+        
+        .carousel-arrow-left {
+            left: 10px;
+        }
+        
+        .carousel-arrow-right {
+            right: 10px;
+        }
+        
+        /* Lightbox styles */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 80%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        
+        .lightbox-caption {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-toggle-btn:hover {
+            opacity: 0.7;
+        }
+        
+        .theme-toggle-btn:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body class="antialiased inconsolata-yes">
+    <div class="container max-w-700px mx-auto p-container" style="margin-bottom: 0;">
+        <main>
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title">
+                    Evolution of Developmental Strategies
+                </h1>
+                
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex justify-between items-center mt-header mb-header">
+                <p class="date font-medium m-0">Computational Biology Research - Summer 2022</p>
+                <div class="flex gap-3 items-center mr-10px">
+                    <a href="https://direct.mit.edu/isal/proceedings/isal2022/34/59/112288" target="_blank" rel="noopener noreferrer" aria-label="Research Paper" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </a>
+                    <a href="https://direct.mit.edu/isal/isal2022/volume/34" target="_blank" rel="noopener noreferrer" aria-label="ALIFE 2022 Conference" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>
+                    </a>
+                    <a href="../index.html" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Project Overview</h2>
+            <p class="font-medium">
+                As part of a research team at Rose-Hulman, I helped develop an abstract computational framework to investigate how evolution shapes developmental strategies. My primary contributions focused on implementing the NK fitness landscape model and analyzing the patterns of exploration and exploitation that emerged from our simulations.
+            </p>
+            <p class="font-medium">
+                Our research revealed fascinating insights into why certain developmental processes, like adolescent exploration and sensitive periods, may have evolved. By simulating organisms navigating through environments of varying complexity, we demonstrated that evolution naturally selects for time-sensitive developmental strategies that balance exploration and exploitation.
+            </p>
+            <p class="font-medium">
+                The computational framework I helped develop provides a new way to study the relationship between evolution and development, offering insights that would be difficult to obtain through traditional biological studies due to the vast time scales involved.
+            </p>
+
+            <h2 style="padding-bottom: 0;">Screenshots</h2>
+            <div class="carousel fade-in">
+                <div class="carousel-container" id="carousel">
+                    <div class="carousel-item">
+                        <img src="../images/agentActions.png" alt="Illustration of an agent performing actions according to its genotype" class="carousel-img" />
+                        <div class="carousel-caption">Illustration of an agent performing actions according to its genotype</div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="../images/looksbeforewalks.png" alt="Look before walks and fitness at each walk across K values" class="carousel-img" />
+                        <div class="carousel-caption">Look before walks and fitness at each walk across K values</div>
+                    </div>
+                </div>
+                <div class="carousel-arrow carousel-arrow-left" onclick="moveCarousel(-1)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </div>
+                <div class="carousel-arrow carousel-arrow-right" onclick="moveCarousel(1)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Technologies</h2>
+            <div class="tech-pills slide-in">
+                <div class="tech-pill">Python</div>
+                <div class="tech-pill">C++</div>
+                <div class="tech-pill">Matplotlib</div>
+                <div class="tech-pill">CUDA</div>
+                <div class="tech-pill">Artificial Intelligence</div>
+                <div class="tech-pill">Computational Biology</div>
+                <div class="tech-pill">NK Fitness Landscapes</div>
+                <div class="tech-pill">Data Visualization</div>
+                <div class="tech-pill">Parallel Processing</div>
+                <div class="tech-pill">Statistical Analysis</div>
+            </div>
+
+            <!-- NK Landscape Visualization -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">NK Fitness Landscapes</h2>
+                    </div>
+                    <p>Understanding the environment complexity:</p>
+                    <div style="display:flex; justify-content:space-between; margin-top:15px; gap:20px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:250px; padding:15px; border-radius:8px; border: 1px solid rgba(var(--text-color-rgb), 0.1); background-color:rgba(var(--text-color-rgb), 0.02);">
+                            <div style="margin-bottom:8px; display:flex; align-items:center; gap:5px;">
+                                <h4 style="margin:0;">Low K Value (Simple)</h4>
+                            </div>
+                            <div style="text-align:center; padding:10px;">
+                                <svg width="200" height="100" viewBox="0 0 200 100">
+                                    <path d="M0,80 Q50,20 100,70 Q150,40 200,60" stroke="var(--focus-color)" fill="none" stroke-width="3"/>
+                                    <circle cx="100" cy="70" r="5" fill="var(--focus-color)"/>
+                                </svg>
+                                <p style="margin-top:10px; font-size:0.9rem;">Smooth fitness landscape with few local optima</p>
+                            </div>
+                        </div>
+                        <div style="flex:1; min-width:250px; padding:15px; border-radius:8px; border: 1px solid rgba(var(--text-color-rgb), 0.1); background-color:rgba(var(--text-color-rgb), 0.02);">
+                            <div style="margin-bottom:8px; display:flex; align-items:center; gap:5px;">
+                                <h4 style="margin:0;">High K Value (Complex)</h4>
+                            </div>
+                            <div style="text-align:center; padding:10px;">
+                                <svg width="200" height="100" viewBox="0 0 200 100">
+                                    <path d="M0,70 L10,40 L20,80 L30,30 L40,75 L50,20 L60,65 L70,40 L80,70 L90,20 L100,50 L110,30 L120,80 L130,40 L140,60 L150,30 L160,70 L170,20 L180,60 L190,40 L200,55" stroke="var(--focus-color)" fill="none" stroke-width="3"/>
+                                    <circle cx="100" cy="50" r="5" fill="var(--focus-color)"/>
+                                </svg>
+                                <p style="margin-top:10px; font-size:0.9rem;">Rugged fitness landscape with many local optima</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Developmental Strategy Visualization -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">Developmental Strategies</h2>
+                    </div>
+                    <p>Evolution of time-sensitive exploration strategies:</p>
+                    <div style="border: 1px solid rgba(var(--text-color-rgb), 0.1); border-radius:8px; padding:15px; background-color:rgba(var(--text-color-rgb), 0.02);">
+                        <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:space-around;">
+                            <div style="text-align:center; min-width:200px;">
+                                <h4>Early Life (High Exploration)</h4>
+                                <svg width="150" height="100" viewBox="0 0 150 100">
+                                    <rect x="10" y="10" width="130" height="80" rx="5" fill="none" stroke="rgba(var(--text-color-rgb), 0.2)" stroke-width="1" stroke-dasharray="4"/>
+                                    <!-- Random exploration paths -->
+                                    <path d="M75,50 L90,30 L60,20 L100,40 L70,70 L110,60 L85,80" stroke="var(--focus-color)" stroke-width="2" fill="none"/>
+                                    <circle cx="75" cy="50" r="5" fill="var(--focus-color)"/>
+                                    <circle cx="85" cy="80" r="3" fill="var(--focus-color)" opacity="0.7"/>
+                                </svg>
+                                <p style="font-size:0.8rem; margin-top:5px;">High randomness, discovering environment</p>
+                            </div>
+                            <div style="text-align:center; min-width:200px;">
+                                <h4>Mid Life (Transition)</h4>
+                                <svg width="150" height="100" viewBox="0 0 150 100">
+                                    <rect x="10" y="10" width="130" height="80" rx="5" fill="none" stroke="rgba(var(--text-color-rgb), 0.2)" stroke-width="1" stroke-dasharray="4"/>
+                                    <!-- More directed exploration -->
+                                    <path d="M75,50 L90,40 L100,30 L110,25 L120,20" stroke="var(--focus-color)" stroke-width="2" fill="none"/>
+                                    <path d="M75,50 L65,60 L60,70 L50,75" stroke="var(--focus-color)" stroke-width="2" fill="none" opacity="0.5"/>
+                                    <circle cx="75" cy="50" r="5" fill="var(--focus-color)"/>
+                                    <circle cx="120" cy="20" r="3" fill="var(--focus-color)" opacity="0.7"/>
+                                </svg>
+                                <p style="font-size:0.8rem; margin-top:5px;">More directed exploration, using knowledge</p>
+                            </div>
+                            <div style="text-align:center; min-width:200px;">
+                                <h4>Late Life (Exploitation)</h4>
+                                <svg width="150" height="100" viewBox="0 0 150 100">
+                                    <rect x="10" y="10" width="130" height="80" rx="5" fill="none" stroke="rgba(var(--text-color-rgb), 0.2)" stroke-width="1" stroke-dasharray="4"/>
+                                    <!-- Exploitation of best path -->
+                                    <path d="M75,50 L85,40 L95,30 L105,25 L115,20 L125,15" stroke="var(--focus-color)" stroke-width="3" fill="none"/>
+                                    <circle cx="75" cy="50" r="5" fill="var(--focus-color)"/>
+                                    <circle cx="125" cy="15" r="4" fill="var(--focus-color)"/>
+                                </svg>
+                                <p style="font-size:0.8rem; margin-top:5px;">Exploiting optimal solution found</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Key Features</h2>
+            <div class="feature-cards">
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>NK Fitness Landscape Implementation</h3>
+                    <p>Created a flexible implementation of NK fitness landscapes with variable parameters to model environments of different complexity levels for evolutionary simulations.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Time-Sensitive Developmental Strategy Model</h3>
+                    <p>Developed a computational framework that allows organisms to change their exploration-exploitation balance throughout their lifetime, mimicking real developmental phases.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>CUDA-Accelerated Simulations</h3>
+                    <p>Implemented parallel processing using CUDA to accelerate simulations, allowing us to test thousands of generations across multiple parameter settings efficiently.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Multi-Parameter Analysis Framework</h3>
+                    <p>Built a comprehensive analysis framework to measure the impact of various parameters on evolutionary outcomes, including environment complexity, mutation rates, and selection pressure.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Data Visualization Tools</h3>
+                    <p>Created custom visualization tools using Matplotlib to represent complex multidimensional data from evolutionary simulations in an intuitive and informative way.</p>
+                </div>
+            </div>
+
+            <!-- Research Findings Visualization -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">Research Findings</h2>
+                    </div>
+                    <div style="border: 1px solid rgba(var(--text-color-rgb), 0.1); border-radius:8px; padding:20px; background-color:rgba(var(--text-color-rgb), 0.02); margin-top:15px;">
+                        <div style="display:flex; flex-direction:column; gap:15px;">
+                            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                                <div style="min-width:60px; width:60px; height:60px; border-radius:50%; background-color:rgba(var(--accent-color-rgb), 0.1); display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:bold; color:var(--focus-color);">1</div>
+                                <div style="flex:1; min-width:200px;">
+                                    <h3 style="margin:0; font-size:1.1rem;">Environmental Complexity Drives Development</h3>
+                                    <p style="margin:5px 0 0 0; font-size:0.9rem;">Higher environmental complexity (K value) leads to the evolution of more sophisticated developmental strategies with distinct phases.</p>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                                <div style="min-width:60px; width:60px; height:60px; border-radius:50%; background-color:rgba(var(--accent-color-rgb), 0.1); display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:bold; color:var(--focus-color);">2</div>
+                                <div style="flex:1; min-width:200px;">
+                                    <h3 style="margin:0; font-size:1.1rem;">Adaptive Exploration Patterns</h3>
+                                    <p style="margin:5px 0 0 0; font-size:0.9rem;">Organisms evolved to explore more early in life and exploit more later in life, with the transition timing optimized based on environment complexity.</p>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                                <div style="min-width:60px; width:60px; height:60px; border-radius:50%; background-color:rgba(var(--accent-color-rgb), 0.1); display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:bold; color:var(--focus-color);">3</div>
+                                <div style="flex:1; min-width:200px;">
+                                    <h3 style="margin:0; font-size:1.1rem;">Sensitive Periods Emerge Naturally</h3>
+                                    <p style="margin:5px 0 0 0; font-size:0.9rem;">Distinct sensitive periods for learning emerged from our simulations, resembling critical developmental windows observed in nature.</p>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+                                <div style="min-width:60px; width:60px; height:60px; border-radius:50%; background-color:rgba(var(--accent-color-rgb), 0.1); display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:bold; color:var(--focus-color);">4</div>
+                                <div style="flex:1; min-width:200px;">
+                                    <h3 style="margin:0; font-size:1.1rem;">Look-Before-Walk Strategies</h3>
+                                    <p style="margin:5px 0 0 0; font-size:0.9rem;">Organisms evolved to invest in information gathering ("looking") before taking actions ("walking") in complex environments, balancing exploration costs and benefits.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Research Team</h2>
+            <div class="collaborators-section" style="margin:1rem 0 2rem;">
+                <div style="display:flex; flex-wrap:wrap; gap:15px;">
+                    <div style="padding:10px 15px; border-radius:8px; background-color:rgba(var(--accent-color-rgb), 0.05); border:1px solid rgba(var(--text-color-rgb), 0.1);">
+                        <p style="margin:0; font-weight:500;">Jacob Ashworth</p>
+                    </div>
+                    <div style="padding:10px 15px; border-radius:8px; background-color:rgba(var(--accent-color-rgb), 0.05); border:1px solid rgba(var(--text-color-rgb), 0.1);">
+                        <p style="margin:0; font-weight:500;">Yujung Lee</p>
+                    </div>
+                    <div style="padding:10px 15px; border-radius:8px; background-color:rgba(var(--accent-color-rgb), 0.05); border:1px solid rgba(var(--text-color-rgb), 0.1);">
+                        <p style="margin:0; font-weight:500;">Jackson Shen</p>
+                    </div>
+                    <div style="padding:10px 15px; border-radius:8px; background-color:rgba(var(--accent-color-rgb), 0.05); border:1px solid rgba(var(--text-color-rgb), 0.1);">
+                        <p style="margin:0; font-weight:500;">Edward Kim</p>
+                    </div>
+                    <div style="padding:10px 15px; border-radius:8px; background-color:rgba(var(--accent-color-rgb), 0.05); border:1px solid rgba(var(--text-color-rgb), 0.1);">
+                        <p style="margin:0; font-weight:500;">Dr. Jason Yoder</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-header" style="margin-top: 2rem;">
+                <a href="../index.html" class="font-medium" style="text-decoration: none;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Portfolio
+                    </span>
+                </a>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Lightbox for image preview -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-close" onclick="closeLightbox()">×</div>
+        <img src="" alt="" class="lightbox-img" id="lightbox-img" />
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fix image paths if needed (replace with relative paths)
+            document.querySelectorAll('img').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('/')) {
+                    img.setAttribute('src', src.substring(1));
+                }
+            });
+            
+            // Carousel setup
+            setupCarousel();
+            
+            // Setup image lightbox
+            setupLightbox();
+            
+            // Intersection Observer for elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe elements
+            document.querySelectorAll('.feature-card, .tech-pill, .visualization-content, .carousel').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Carousel functionality
+        let currentSlide = 0;
+        const totalSlides = document.querySelectorAll('.carousel-item').length;
+        
+        function setupCarousel() {
+            // Make carousel items clickable to open lightbox
+            document.querySelectorAll('.carousel-img').forEach((img, index) => {
+                img.addEventListener('click', () => {
+                    openLightbox(img.src, img.alt);
+                });
+            });
+            
+            // Update the carousel display
+            updateCarousel();
+        }
+        
+        function moveCarousel(direction) {
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+        
+        function updateCarousel() {
+            const carousel = document.getElementById('carousel');
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+        
+        // Lightbox functionality
+        function setupLightbox() {
+            document.querySelectorAll('.carousel-img').forEach(img => {
+                img.addEventListener('click', function() {
+                    openLightbox(this.src, this.alt);
+                });
+            });
+        }
+        
+        function openLightbox(src, alt) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            
+            lightboxImg.src = src;
+            lightboxCaption.textContent = alt;
+            lightbox.classList.add('active');
+            
+            // Close lightbox when clicking outside the image
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                }
+            });
+        }
+        
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        // Toggle feature card expansion
+        function toggleFeature(element) {
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
+            } else {
+                document.querySelectorAll('.feature-card.active').forEach(card => {
+                    card.classList.remove('active');
+                });
+                element.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html> 

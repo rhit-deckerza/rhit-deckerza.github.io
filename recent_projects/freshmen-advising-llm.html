@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <meta name="theme-color" content="#000000"/>
+    <title>Project - Freshmen Advising LLM</title>
+    <meta name="description" content="AI-powered academic advising system at Rose-Hulman Institute of Technology"/>
+    <link rel="icon" href="../favicon.ico"/>
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <style>
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .screenshot {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.5s ease;
+        }
+        
+        .screenshot-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            margin: 1.5rem 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .screenshot-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .screenshot-item {
+            min-width: 250px;
+            height: 180px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .screenshot-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .screenshot-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .screenshot-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .feature-card {
+            position: relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            background-color: rgba(var(--text-color-rgb), 0.03);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            background-color: rgba(var(--text-color-rgb), 0.07);
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card.active p {
+            opacity: 1;
+            max-height: 200px;
+            margin-top: 0.5rem;
+        }
+        
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-pill {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: rgba(var(--text-color-rgb), 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-pill:hover {
+            background-color: var(--focus-color);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        .workflow {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 2rem;
+        }
+        
+        .workflow::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: rgba(var(--text-color-rgb), 0.2);
+        }
+        
+        .workflow-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            transition: opacity 0.3s ease;
+        }
+        
+        .workflow-step, .workflow-description {
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .workflow-item:hover .workflow-step,
+        .workflow-item:hover .workflow-description {
+            opacity: 1;
+        }
+        
+        .workflow-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--focus-color);
+            transform: translateX(-50%);
+        }
+        
+        .workflow-step {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        
+        .workflow-description {
+            font-size: 0.9rem;
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .slide-in {
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.8s forwards;
+        }
+        
+        @keyframes slideIn {
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* For dark/light mode compatibility with dark red accents */
+        html.dark {
+            --text-color-rgb: 255, 255, 255;
+            --focus-color: #dc2626;
+            --accent-color-rgb: 220, 38, 38;
+        }
+        
+        html.light {
+            --text-color-rgb: 26, 26, 26;
+            --focus-color: #b91c1c;
+            --accent-color-rgb: 185, 28, 28;
+        }
+        
+        /* Carousel styles */
+        .carousel {
+            position: relative;
+            width: 100%;
+            margin: 2rem 0;
+            overflow: hidden;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 350px;
+        }
+        
+        .carousel-item {
+            min-width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0;
+        }
+        
+        .carousel-img {
+            max-width: 100%;
+            max-height: 300px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .carousel-arrow:hover {
+            background-color: rgba(var(--accent-color-rgb), 0.7);
+        }
+        
+        .carousel-arrow-left {
+            left: 10px;
+        }
+        
+        .carousel-arrow-right {
+            right: 10px;
+        }
+        
+        /* Lightbox styles */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 80%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        
+        .lightbox-caption {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(var(--text-color-rgb), 0.1);
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--focus-color);
+            transition: width 1.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased inconsolata-yes">
+    <div class="container max-w-700px mx-auto p-container" style="margin-bottom: 0;">
+        <main>
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title">
+                    Freshmen Advising LLM
+                </h1>
+                
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex justify-between items-center mt-header mb-header">
+                <p class="date font-medium m-0">AI Academic Advising - Winter 2023</p>
+                <div class="flex gap-3 items-center mr-10px">
+                    <a href="../index.html" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Project Overview</h2>
+            <p class="font-medium">
+                The Freshmen Advising LLM project was developed to enhance academic advising resources at Rose-Hulman Institute of Technology. This specialized language model was designed to understand and answer questions about the institution's academic policies, course offerings, and advising best practices. The system helps faculty members provide consistent guidance to students while giving freshmen direct access to accurate information about academic requirements and policies.
+            </p>
+            <p class="font-medium">
+                The project involved collecting and structuring data from various academic resources including the student handbook, course catalog, academic rules and procedures, and advising materials. We implemented a Retrieval-Augmented Generation (RAG) system to provide accurate, contextual responses backed by official documentation. The model was fine-tuned to maintain the tone and style appropriate for an academic advising context.
+            </p>
+            
+            <h2 style="padding-bottom: 0;">Screenshots</h2>
+            <div class="carousel fade-in">
+                <div class="carousel-container" id="carousel">
+                    <div class="carousel-item">
+                        <img src="../images/CourseRegistrationMockup.png" alt="Freshmen Advising LLM interface showing policy questions and answers" class="carousel-img" />
+                        <div class="carousel-caption">Freshmen Advising LLM interface showing policy questions and answers</div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="../images/CourseRegistrationDiagram.png" alt="Diagram of the Freshmen Advising LLM system" class="carousel-img" />
+                        <div class="carousel-caption">Diagram of the Freshmen Advising LLM system</div>
+                    </div>
+                </div>
+                <div class="carousel-arrow carousel-arrow-left" onclick="moveCarousel(-1)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </div>
+                <div class="carousel-arrow carousel-arrow-right" onclick="moveCarousel(1)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Technologies</h2>
+            <div class="tech-pills slide-in">
+                <div class="tech-pill">Python</div>
+                <div class="tech-pill">Hugging Face</div>
+                <div class="tech-pill">LangChain</div>
+                <div class="tech-pill">Vector Databases</div>
+                <div class="tech-pill">Reranking</div>
+                <div class="tech-pill">Retrieval</div>
+                <div class="tech-pill">Artificial Intelligence</div>
+                <div class="tech-pill">Natural Language Processing</div>
+                <div class="tech-pill">Prompt Engineering</div>
+                <div class="tech-pill">Fine-tuning</div>
+                <div class="tech-pill">RAG</div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Key Features</h2>
+            <div class="feature-cards">
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Accurate academic policy information retrieval</h3>
+                    <p>System combines vector search and semantic understanding to accurately retrieve and present relevant academic policies from institutional documentation.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Question answering system for freshmen advising</h3>
+                    <p>Intuitive natural language interface that allows students to ask questions about course requirements, registration procedures, and academic policies in conversational language.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Fine-tuned language model with academic context</h3>
+                    <p>Custom-trained model that understands Rose-Hulman specific terminology, course codes, and academic structures to provide institution-specific guidance.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Web interface for easy access and use</h3>
+                    <p>User-friendly web application that allows both students and faculty to access the advising system from any device without specialized technical knowledge.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Performance metrics for continuous improvement</h3>
+                    <p>Built-in evaluation system that measures answer accuracy, relevance, and helpfulness to continuously refine and improve the model over time.</p>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Workflow</h2>
+            <div class="workflow slide-in" style="animation-delay: 0.4s">
+                <div class="workflow-item">
+                    <div class="workflow-step">Data Collection</div>
+                    <div class="workflow-description">Gathering academic resources and policies from various Rose-Hulman sources</div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step">Data Preparation</div>
+                    <div class="workflow-description">Processing documents into embeddings and organizing them in vector databases for efficient retrieval</div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step">Model Tuning</div>
+                    <div class="workflow-description">Fine-tuning LLM parameters, optimizing hyperparameters, and developing prompt engineering strategies</div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step">Performance Evaluation</div>
+                    <div class="workflow-description">Creating metrics to measure accuracy and relevance of responses</div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step">Interface Development</div>
+                    <div class="workflow-description">Building user-friendly web interface for student and faculty access</div>
+                </div>
+            </div>
+
+            <!-- <h2 style="padding-bottom: 0;">Impact and Results</h2>
+            <div class="stats-grid slide-in">
+                <div class="stat-card">
+                    <div class="stat-value">87%</div>
+                    <div class="stat-label">Question Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">3.5h</div>
+                    <div class="stat-label">Weekly Faculty Time Saved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Availability</div>
+                </div>
+            </div>
+            
+            <p class="font-medium">
+                We developed performance metrics to evaluate the system's effectiveness compared to existing FAQ resources, focusing on accuracy, relevance, and helpfulness of responses. Testing showed that the LLM-powered system correctly answered 87% of common freshman advising questions, compared to 64% for the existing search-based FAQ system.
+            </p>
+            
+            <div class="comparison-container slide-in" style="margin: 2rem 0;">
+                <div style="margin-bottom: 0.8rem; font-weight: 500;">System Accuracy Comparison</div>
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                    <div style="width: 120px; font-size: 0.9rem;">LLM System</div>
+                    <div class="progress-container" style="flex: 1;">
+                        <div class="progress-bar" id="llm-progress" style="width: 87%; background-color: var(--focus-color);"></div>
+                    </div>
+                    <div style="width: 40px; text-align: right; font-size: 0.9rem; font-weight: 500;">87%</div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 120px; font-size: 0.9rem;">FAQ Search</div>
+                    <div class="progress-container" style="flex: 1;">
+                        <div class="progress-bar" id="faq-progress" style="width: 64%; background-color: rgba(var(--text-color-rgb), 0.4);"></div>
+                    </div>
+                    <div style="width: 40px; text-align: right; font-size: 0.9rem; font-weight: 500;">64%</div>
+                </div>
+            </div>
+            
+            <p class="font-medium">
+                Faculty advisors reported saving an average of 3.5 hours per week during peak advising periods by directing students to the system for common questions. The project culminated in a hosted interface that allows users to interact with the system and a technical report documenting our approach and findings. The solution has been integrated into the freshman orientation process at Rose-Hulman, providing 24/7 access to accurate academic advising information.
+            </p> -->
+
+            <div class="flex justify-between items-center mt-header" style="margin-top: 2rem;">
+                <a href="../index.html" class="font-medium" style="text-decoration: none;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Portfolio
+                    </span>
+                </a>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Lightbox for image preview -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-close" onclick="closeLightbox()">×</div>
+        <img src="" alt="" class="lightbox-img" id="lightbox-img" />
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+
+    <script src="../script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Carousel setup
+            setupCarousel();
+            
+            // Setup image lightbox
+            setupLightbox();
+            
+            // Intersection Observer for elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe elements
+            document.querySelectorAll('.feature-card, .tech-pill, .workflow-item, .carousel, .stat-card, .comparison-container').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Carousel functionality
+        let currentSlide = 0;
+        const totalSlides = document.querySelectorAll('.carousel-item').length;
+        
+        function setupCarousel() {
+            // Make carousel items clickable to open lightbox
+            document.querySelectorAll('.carousel-img').forEach((img, index) => {
+                img.addEventListener('click', () => {
+                    openLightbox(img.src, img.alt);
+                });
+            });
+            
+            // Update the carousel display
+            updateCarousel();
+        }
+        
+        function moveCarousel(direction) {
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            updateCarousel();
+        }
+        
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateCarousel();
+        }
+        
+        function updateCarousel() {
+            const carousel = document.getElementById('carousel');
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+        
+        // Lightbox functionality
+        function setupLightbox() {
+            document.querySelectorAll('.carousel-img').forEach(img => {
+                img.addEventListener('click', function() {
+                    openLightbox(this.src, this.alt);
+                });
+            });
+        }
+        
+        function openLightbox(src, alt) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            
+            // Create a new image to get the natural dimensions
+            const img = new Image();
+            img.onload = function() {
+                // Now we have the natural dimensions, set up the lightbox
+                lightboxImg.src = src;
+                lightboxCaption.textContent = alt;
+                lightbox.classList.add('active');
+            };
+            img.src = src;
+            
+            // Close lightbox when clicking outside the image or when pressing ESC
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                }
+            });
+        }
+        
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        // Toggle feature card expansion
+        function toggleFeature(element) {
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
+            } else {
+                document.querySelectorAll('.feature-card.active').forEach(card => {
+                    card.classList.remove('active');
+                });
+                element.classList.add('active');
+            }
+        }
+
+        // Animate progress bars
+        setTimeout(() => {
+            const llmProgress = document.getElementById('llm-progress');
+            const faqProgress = document.getElementById('faq-progress');
+            
+            if (llmProgress) llmProgress.style.width = '87%';
+            if (faqProgress) faqProgress.style.width = '64%';
+        }, 1000);
+    </script>
+</body>
+</html> 

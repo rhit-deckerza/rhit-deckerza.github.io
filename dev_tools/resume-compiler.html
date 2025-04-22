@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <meta name="theme-color" content="#000000"/>
+    <title>Resume Compiler - Zachary Decker</title>
+    <meta name="description" content="Compile and format professional resumes"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    
+    <!-- Special styles for this page -->
+    <style>
+        .resume-container {
+            width: 100%;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+        
+        .info-box {
+            border: 1px solid var(--text-color);
+            padding: 1rem;
+            /* margin-bottom: 1.5rem; */
+            border-radius: 8px;
+        }
+        
+        .info-boxes-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            font-family: var(--font-family);
+            background: none;
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            border-radius: 6px;
+        }
+        
+        .btn:hover {
+            background-color: var(--button-hover);
+        }
+        
+        .btn-primary {
+            background-color: var(--text-color);
+            color: var(--background-color);
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        
+        .btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #666;
+            color: #ccc;
+            border-color: #666;
+        }
+        
+        .resume-editor {
+            display: flex;
+            gap: 1.5rem;
+            height: calc(100vh - 450px);
+            min-height: 350px;
+            margin-top: 1.5rem;
+        }
+        
+        .json-editor {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--text-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .preview-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--text-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .preview-panel {
+            flex: 1;
+            overflow: auto;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .header-panel {
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--text-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--background-color);
+        }
+        
+        .textarea-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0.75rem;
+            border: none;
+            background-color: transparent;
+            color: var(--text-color);
+            font-family: 'Inconsolata', monospace;
+            resize: none;
+            outline: none;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .error-message {
+            color: #e53935;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        /* Resume styling */
+        .resume {
+            width: 100%;
+            max-width: 8.5in;
+            margin: 0;
+            padding: 0.5in;
+            box-sizing: border-box;
+            font-family: "EB Garamond", serif;
+            font-size: 10pt;
+            line-height: 1.0;
+            background-color: white;
+            color: black;
+            height: auto;
+            min-height: 11in;
+            /* transform: scale(0.9); */
+            transform-origin: top center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+
+        .resume h1 {
+            margin: 0;
+            font-size: 16pt;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: black;
+            display: block;
+        }
+
+        .resume h2 {
+            text-transform: uppercase;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 3px;
+            margin-bottom: 6px;
+            margin-top: 10px;
+            font-size: 10pt;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            color: black;
+        }
+
+        .resume p {
+            margin: 3px 0;
+            color: black;
+        }
+
+        .resume .contact-info {
+            line-height: 1;
+        }
+
+        .resume .date-range {
+            float: right;
+        }
+
+        .resume ul {
+            margin: 0;
+            padding-left: 32px;
+            list-style-type: disc;
+        }
+
+        .resume li {
+            margin-bottom: 2px;
+            line-height: 1.1;
+        }
+
+        .resume strong {
+            font-weight: 600;
+        }
+
+        .skills-container {
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            grid-gap: 2px 20px;
+            width: 100%;
+        }
+
+        .skill-category-title {
+            font-weight: 600;
+            padding-right: 5px;
+        }
+
+        .skill-items {
+            padding-left: 0;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: var(--background-color);
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid var(--text-color);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-button {
+            color: var(--text-color);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            opacity: 0.8;
+        }
+
+        /* For dark/light mode */
+        html.dark .json-editor, 
+        html.dark .preview-container,
+        html.dark .header-panel {
+            background-color: var(--background-color);
+        }
+        
+        html.light .json-editor, 
+        html.light .preview-container,
+        html.light .header-panel {
+            background-color: var(--background-color);
+        }
+
+        .snackbar {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+        }
+
+        .snackbar.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+    </style>
+</head>
+<body class="antialiased inconsolata-yes">
+    <div class="container p-container" style="max-width: none; width: 100%; padding: 1rem 3rem; box-sizing: border-box; overflow-x: hidden;">
+        <main>
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title">
+                    Resume Compiler
+                </h1>
+                
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="resume-container">
+                <div class="info-boxes-container">
+                    <div class="info-box">
+                        <h3 style="margin-top: 0; margin-bottom: 0.75rem;">How to Use This Tool</h3>
+                        <p class="font-medium" style="margin-bottom: 0.75rem;">
+                            This simple tool helps you create and format professional resumes:
+                        </p>
+                        <ol style="margin-left: 1.5rem; margin-bottom: 0.75rem;">
+                            <li>Edit the JSON structure in the editor to customize your resume content</li>
+                            <li>Watch the preview update in real-time with your changes</li>
+                            <li>Download your resume as a PDF when you're satisfied with the result</li>
+                        </ol>
+                        <p class="font-medium" style="font-style: italic; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                            The resume automatically formats with professional typography and spacing optimized for readability.
+                        </p>
+                    </div>
+                    
+                    <div class="info-box">
+                        <h3 style="margin-top: 0; margin-bottom: 0.75rem;">AI Compatibility</h3>
+                        <p class="font-medium" style="margin-bottom: 0.75rem;">
+                            This resume compiler is designed to work seamlessly with AI language models.
+                        </p>
+                        <p class="font-medium" style="margin-bottom: 1rem;">
+                            Need help with your resume? Use this prompt template with any AI assistant:
+                        </p>
+                        <button id="view-prompt" class="btn" style="margin-right: 0.5rem;">
+                            <span class="icon">👁️</span> View Prompt
+                        </button>
+                        <button id="copy-prompt" class="btn">
+                            <span class="icon">📋</span> Copy Prompt
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="error-container" class="error-message hidden"></div>
+                
+                <div class="resume-editor" style="margin-bottom: 1.5rem;">
+                    <div class="json-editor">
+                        <div class="header-panel">
+                            <span>JSON Editor</span>
+                            <div>
+                                <button id="format-json" class="btn" title="Format JSON">
+                                    Format
+                                </button>
+                                <button id="copy-json" class="btn" title="Copy JSON">
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                        <div class="textarea-container">
+                            <textarea id="json-input" placeholder="Enter your resume JSON here"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-container">
+                        <div class="header-panel">
+                            <span>Resume Preview</span>
+                            <div>
+                                <button id="preview-btn" class="btn" title="Fullscreen Preview">
+                                    <span class="icon">👁️</span> Preview
+                                </button>
+                                <button id="download-pdf" class="btn btn-primary" title="Download as PDF">
+                                    <span class="icon">📄</span> Download PDF
+                                </button>
+                            </div>
+                        </div>
+                        <div class="preview-panel">
+                            <div id="resume-preview" class="resume">
+                                <!-- Resume preview will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Fullscreen Preview Modal -->
+                <div id="preview-modal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <h3>Resume Preview</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <span>Preview in full size (8.5 x 11 inches)</span>
+                            <button id="modal-download-pdf" class="btn btn-primary">
+                                <span class="icon">📄</span> Download PDF
+                            </button>
+                        </div>
+                        <div style="display: flex; justify-content: center; background-color: #f0f0f0; padding: 2rem; border-radius: 8px;">
+                            <div id="modal-resume-preview" class="resume" style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
+                                <!-- Modal resume preview will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Prompt Template Modal -->
+                <div id="prompt-modal" class="modal">
+                    <div class="modal-content" style="max-width: 800px;">
+                        <span class="close-button prompt-close">&times;</span>
+                        <h3>AI Resume Prompt Template</h3>
+                        <p style="margin-bottom: 1rem;">
+                            Copy and paste this prompt to an AI assistant like ChatGPT or Claude to get help with your resume:
+                        </p>
+                        <div style="background-color: #000000; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; white-space: pre-wrap; font-family: 'Inconsolata', monospace; max-height: 400px; overflow-y: auto;">
+                            <code id="prompt-template">
+I'd like help with my professional resume in JSON format. Here's the current JSON structure:
+
+[Paste your resume JSON here]
+
+The JSON needs to follow this structure to work with my resume compiler:
+
+- "name": Your full name
+- "location": City, State
+- "phone": Phone number
+- "email": Email address
+- "website": Personal website (optional)
+
+- "education": Array of education objects with:
+  - "institution": University name
+  - "location": City, State
+  - "graduationDate": "Month Year"
+  - "degree": Degree program
+  - "gpa": GPA (optional)
+  - "coursework": Array of relevant courses (optional)
+
+- "technicalSkills": Array of skill categories (typically formatted as "Category: item1, item2, item3")
+
+- "experience": Array of job objects with:
+  - "title": Job title
+  - "company": Company name
+  - "location": City, State
+  - "dateRange": Employment period
+  - "bullets": Array of accomplishment statements
+
+- "projects": Array of project objects with:
+  - "name": Project name (can use **bold** with double asterisks)
+  - "dateRange": Project timeframe
+  - "bullets": Array of description/accomplishment statements
+
+- "publications": Array of publication objects (optional) with:
+  - "title": Publication title (can use **bold** with double asterisks)
+  - "citation": Publication citation
+  - "bullets": Array of contribution statements
+
+IMPORTANT FORMATTING TIPS:
+
+1. You can add **bold text** in any field by surrounding text with double asterisks. For example:
+   - "Developed **award-winning** application" will make only "award-winning" bold
+   - "**Project Name** (JavaScript, React)" will make only "Project Name" bold
+   - This works in project names, publication titles, bullet points, and more
+
+2. For bullet points, focus on accomplishments with this structure:
+   - Action verb + what you did + result/impact (with metrics when possible)
+   - Example: "Redesigned authentication system, reducing login failures by **40%**"
+
+Here's a simplified example of the JSON structure:
+
+```json
+{
+  "name": "ALEX SMITH",
+  "location": "San Francisco, CA",
+  "phone": "555-123-4567",
+  "email": "alex@example.com",
+  "website": "alexsmith.dev",
+  "technicalSkills": [
+    "Languages: JavaScript, Python, Java",
+    "Tools: React, Node.js, AWS"
+  ],
+  "education": [
+    {
+      "institution": "University of California",
+      "location": "Berkeley, CA",
+      "graduationDate": "May 2023",
+      "degree": "BS in Computer Science"
+    }
+  ],
+  "experience": [
+    {
+      "title": "Software Engineer",
+      "company": "Tech Company",
+      "location": "San Francisco, CA",
+      "dateRange": "June 2023 - Present",
+      "bullets": [
+        "Developed **scalable** microservices architecture, improving system throughput by **35%**",
+        "Implemented CI/CD pipeline, reducing deployment time from hours to **minutes**"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "**Portfolio Website** (React, Next.js)",
+      "dateRange": "Jan 2023 - Mar 2023",
+      "bullets": [
+        "Built responsive portfolio site showcasing technical projects",
+        "Implemented light/dark theme and content management system"
+      ]
+    }
+  ]
+}
+```
+
+Please help me [improve specific aspects or request specific help with your resume].
+
+After making changes to my resume, please:
+
+1. LIST ALL CHANGES: Provide a clear, itemized list of every change you made to the resume content and why.
+
+2. DESCRIBE ASSUMPTIONS: Explicitly state any assumptions you made about my experience, skills, or background.
+
+3. HIGHLIGHT IMPROVEMENTS: Explain how these changes strengthen my resume and better showcase my qualifications.
+
+4. PROVIDE ONLY THE UPDATED JSON: Return the complete, updated JSON structure so I can paste it directly into my resume compiler.
+                            </code>
+                        </div>
+                        <button id="modal-copy-prompt" class="btn btn-primary">
+                            <span class="icon">📋</span> Copy Prompt
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Snackbar for notifications -->
+                <div id="snackbar" class="snackbar"></div>
+            </div>
+            
+            <div class="flex justify-between items-center mt-header" style="margin-top: 2rem;">
+                <a href="../index.html" class="font-medium" style="text-decoration: none;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Portfolio
+                    </span>
+                </a>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Sample resume data in JSON format -->
+    <script>
+    const sampleResumeData = {
+      "name": "ZACHARY DECKER",
+      "location": "New York, NY",
+      "phone": "714-475-8849",
+      "email": "zad25@cornell.edu",
+      "website": "https://zacharydecker.com",
+      "technicalSkills": [
+        "Languages: Python, JavaScript, TypeScript, C++, SQL, HTML/CSS",
+        "Tools: PyTorch, Hugging Face, AWS, CI/CD",
+        "OS: Windows, Linux, UNIX"
+      ],
+      "education": [
+        {
+          "institution": "Cornell Tech (Cornell University)",
+          "location": "New York, NY",
+          "graduationDate": "May 2025 (Expected)",
+          "degree": "Master of Engineering in Computer Science, GPA: 4.0",
+          "coursework": ["Startup Studio", "Deep Learning", "Applied Machine Learning", "Natural Language Processing"]
+        },
+        {
+          "institution": "Rose-Hulman Institute of Technology",
+          "location": "Terre Haute, IN",
+          "graduationDate": "May 2024",
+          "degree": "Bachelor of Science in Computer Science and Software Engineering, GPA: 3.71",
+          "coursework": ["Software Design", "Web Development", "Database Systems", "Generative AI", "Software Requirements Engineering"]
+        }
+      ],
+      "experience": [
+        {
+          "title": "Research Engineer",
+          "company": "DEKA Research & Development",
+          "location": "Manchester, NH",
+          "dateRange": "Fall 2022 - Spring 2024",
+          "bullets": [
+            "Researched, designed, and implemented robotics terrain mapping algorithms in Python and C++ to improve path planning",
+            "Collaborated across teams to integrate systems and ensure reliability of production code",
+            "Built documentation for complex technical systems used by both engineers and non-technical stakeholders"
+          ]
+        },
+        {
+          "title": "Engineering Intern",
+          "company": "AON Devices",
+          "location": "Irvine, CA",
+          "dateRange": "Summer 2022",
+          "bullets": [
+            "Built data pipelines in python for processing and analyzing large datasets from multiple sources",
+            "Generated research reports on state of the art low-power transformer models"
+          ]
+        }
+      ],
+      "projects": [
+        {
+          "name": "**PolyRook** (JavaScript, Three.js, WebGL)",
+          "dateRange": "Winter 2024 - Present",
+          "bullets": [
+            "Developed AI 3D environment generator built on open-source JavaScript voxel editors",
+            "Implemented ray tracing voxelization method, significantly enhancing visual fidelity",
+            "Designed API integration layer connecting frontend editors with AI model generation services"
+          ]
+        },
+        {
+          "name": "**AI Actual** (TypeScript, Flask)",
+          "dateRange": "Spring 2024",
+          "bullets": [
+            "Enhanced personal finance app with TypeScript frontend and Flask backend",
+            "Implemented NLP-powered chat interface for natural language queries about financial data",
+            "Developed custom API layer connecting frontend interface with the backend database structure and LLM models",
+            "Compared different models and selected stack for low cost while optimizing functionality"
+          ]
+        },
+        {
+          "name": "**Course Registration Chatbot** (Python, LangChain, Node.js)",
+          "dateRange": "Spring 2024",
+          "bullets": [
+            "Created AI chatbot for school-specific course registration information",
+            "Tested various RAG methods and prompt engineering methods to maxixmize output quality",
+            "Implemented event tracking and logging system to capture user interaction patterns for continuous improvement"
+          ]
+        },
+        {
+          "name": "**Organize My Life** (React Native, AWS)",
+          "dateRange": "Fall 2023 - Spring 2024",
+          "bullets": [
+            "Developed cross-platform mobile app with React Native frontend and serverless backend",
+            "Built infrastructure using AWS Lambda, DynamoDB, and S3 for scalable storage",
+            "Implemented CI/CD pipelines using GitHub Actions for automated testing and deployment",
+            "Managed complete product lifecycle from initial architecture to production-ready application"
+          ]
+        }
+      ],
+      "publications": [
+        {
+          "title": "**Evolution of Developmental Strategies in NK Fitness Landscapes**",
+          "citation": "Ashworth, J., Lee, Y., Shen, J., Kim, E., Decker, Z., & Yoder, J. (2022). ALIFE 2022: The 2022 Conference on Artificial Life, 59.",
+          "bullets": [
+            "Designed an abstract computational model integrating NK fitness landscapes with genotype-encoded developmental programs to simulate organism trajectories and developmental processes",
+            "Presented findings indicating evolved developmental strategies mirror biological phenomena such as sensitive periods, providing insights into the evolutionary origins of complex developmental patterns"
+          ]
+        }
+      ]
+    };
+    </script>
+
+    <!-- Resume compiler script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const jsonInput = document.getElementById('json-input');
+        const resumePreview = document.getElementById('resume-preview');
+        const modalResumePreview = document.getElementById('modal-resume-preview');
+        const previewModal = document.getElementById('preview-modal');
+        const promptModal = document.getElementById('prompt-modal');
+        const closeButton = document.querySelector('.close-button');
+        const promptCloseButton = document.querySelector('.prompt-close');
+        const previewBtn = document.getElementById('preview-btn');
+        const viewPromptBtn = document.getElementById('view-prompt');
+        const copyPromptBtn = document.getElementById('copy-prompt');
+        const modalCopyPromptBtn = document.getElementById('modal-copy-prompt');
+        const promptTemplate = document.getElementById('prompt-template');
+        const downloadPdfBtn = document.getElementById('download-pdf');
+        const modalDownloadPdfBtn = document.getElementById('modal-download-pdf');
+        const formatJsonBtn = document.getElementById('format-json');
+        const copyJsonBtn = document.getElementById('copy-json');
+        const errorContainer = document.getElementById('error-container');
+        const snackbar = document.getElementById('snackbar');
+        
+        // Toggle dark mode
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function() {
+                const html = document.documentElement;
+                if (html.classList.contains('dark')) {
+                    html.classList.remove('dark');
+                    html.classList.add('light');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    html.classList.remove('light');
+                    html.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        }
+        
+        // Initialize theme based on local storage or default to dark
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const html = document.documentElement;
+            
+            if (savedTheme === 'light') {
+                html.classList.remove('dark');
+                html.classList.add('light');
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+            }
+        }
+        
+        // Initialize theme on page load
+        initializeTheme();
+        
+        // Load sample data
+        jsonInput.value = JSON.stringify(sampleResumeData, null, 2);
+        
+        // Parse JSON and update resume preview
+        function updateResumePreview() {
+            try {
+                const resumeData = JSON.parse(jsonInput.value);
+                
+                // Update both the main and modal preview
+                [resumePreview, modalResumePreview].forEach(preview => {
+                    // Clear existing content
+                    preview.innerHTML = '';
+                    
+                    // Header - name and contact info
+                    const headerDiv = document.createElement('div');
+                    headerDiv.style.textAlign = 'center';
+                    headerDiv.style.paddingBottom = '4px';
+                    headerDiv.style.marginBottom = '8px';
+                    
+                    const nameHeading = document.createElement('h1');
+                    nameHeading.textContent = resumeData.name;
+                    nameHeading.style.margin = '0';
+                    nameHeading.style.fontSize = '16pt';
+                    nameHeading.style.fontWeight = '600';
+                    nameHeading.style.letterSpacing = '0.5px';
+                    nameHeading.style.textAlign = 'center';
+                    nameHeading.style.width = '100%';
+                    
+                    const contactInfo = document.createElement('p');
+                    contactInfo.className = 'contact-info';
+                    contactInfo.style.margin = '3px 0';
+                    contactInfo.style.fontSize = '10pt';
+                    contactInfo.style.lineHeight = '1';
+                    
+                    const locationSpan = document.createElement('span');
+                    locationSpan.textContent = resumeData.location;
+                    
+                    const phoneSpan = document.createElement('span');
+                    phoneSpan.textContent = resumeData.phone;
+                    
+                    const emailSpan = document.createElement('span');
+                    emailSpan.textContent = resumeData.email;
+                    
+                    contactInfo.appendChild(locationSpan);
+                    contactInfo.appendChild(document.createTextNode(' | '));
+                    contactInfo.appendChild(phoneSpan);
+                    contactInfo.appendChild(document.createTextNode(' | '));
+                    contactInfo.appendChild(emailSpan);
+                    
+                    headerDiv.appendChild(nameHeading);
+                    headerDiv.appendChild(contactInfo);
+                    
+                    // Website if provided
+                    if (resumeData.website) {
+                        const websitePara = document.createElement('p');
+                        websitePara.style.margin = '2px 0';
+                        websitePara.style.fontSize = '10pt';
+                        websitePara.style.lineHeight = '1';
+                        websitePara.textContent = resumeData.website;
+                        headerDiv.appendChild(websitePara);
+                    }
+                    
+                    preview.appendChild(headerDiv);
+                    
+                    // Education Section
+                    if (resumeData.education && resumeData.education.length > 0) {
+                        const educationSection = renderEducationSection(resumeData.education);
+                        preview.appendChild(educationSection);
+                    }
+                    
+                    // Technical Skills Section
+                    if (resumeData.technicalSkills && resumeData.technicalSkills.length > 0) {
+                        const skillsSection = renderSkillsSection(resumeData.technicalSkills);
+                        preview.appendChild(skillsSection);
+                    }
+                    
+                    // Experience Section
+                    if (resumeData.experience && resumeData.experience.length > 0) {
+                        const experienceSection = renderExperienceSection(resumeData.experience);
+                        preview.appendChild(experienceSection);
+                    }
+                    
+                    // Projects Section
+                    if (resumeData.projects && resumeData.projects.length > 0) {
+                        const projectsSection = renderProjectsSection(resumeData.projects);
+                        preview.appendChild(projectsSection);
+                    }
+                    
+                    // Publications Section (if exists)
+                    if (resumeData.publications && resumeData.publications.length > 0) {
+                        const publicationsSection = renderPublicationsSection(resumeData.publications);
+                        preview.appendChild(publicationsSection);
+                    }
+                });
+                
+                // Hide error message if parsing was successful
+                errorContainer.classList.add('hidden');
+            } catch (error) {
+                // Show error message
+                errorContainer.textContent = "Invalid JSON format: " + error.message;
+                errorContainer.classList.remove('hidden');
+                console.error("Error parsing JSON:", error);
+            }
+        }
+        
+        // Render the education section
+        function renderEducationSection(education) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            section.style.marginBottom = '12px';
+            
+            const heading = document.createElement('h2');
+            heading.textContent = 'EDUCATION';
+            section.appendChild(heading);
+            
+            const educationList = document.createElement('div');
+            educationList.id = 'educationList';
+            
+            education.forEach(edu => {
+                const eduEntry = document.createElement('div');
+                eduEntry.style.marginBottom = '10px';
+                
+                const mainInfo = document.createElement('p');
+                
+                const institution = document.createElement('strong');
+                
+                // Parse institution name for potential bold formatting
+                if (edu.institution.includes('**')) {
+                    parseBulletText(institution, edu.institution);
+                } else {
+                    institution.textContent = edu.institution;
+                }
+                
+                mainInfo.appendChild(institution);
+                mainInfo.appendChild(document.createTextNode(', ' + edu.location));
+                
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'date-range';
+                dateSpan.textContent = edu.graduationDate;
+                mainInfo.appendChild(dateSpan);
+                
+                mainInfo.appendChild(document.createElement('br'));
+                mainInfo.appendChild(document.createTextNode(edu.degree));
+                
+                if (edu.gpa) {
+                    mainInfo.appendChild(document.createTextNode(' | GPA: ' + edu.gpa));
+                }
+                
+                eduEntry.appendChild(mainInfo);
+                
+                // Add coursework if provided
+                if (edu.coursework && edu.coursework.length > 0) {
+                    const courseworkPara = document.createElement('p');
+                    courseworkPara.style.marginTop = '3px';
+                    courseworkPara.style.marginBottom = '0';
+                    courseworkPara.textContent = 'Relevant Coursework: ' + edu.coursework.join(', ');
+                    eduEntry.appendChild(courseworkPara);
+                }
+                
+                educationList.appendChild(eduEntry);
+            });
+            
+            section.appendChild(educationList);
+            return section;
+        }
+        
+        // Render the technical skills section
+        function renderSkillsSection(skills) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            section.style.marginBottom = '12px';
+            
+            const heading = document.createElement('h2');
+            heading.textContent = 'TECHNICAL SKILLS';
+            section.appendChild(heading);
+            
+            const skillsList = document.createElement('div');
+            skillsList.id = 'technicalSkillsList';
+            skillsList.className = 'skills-container';
+            
+            // Group skills by category if using Category: format
+            const skillsByCategory = {};
+            
+            skills.forEach(skill => {
+                const parts = skill.split(':');
+                if (parts.length === 2) {
+                    const category = parts[0].trim();
+                    const items = parts[1].split(',').map(item => item.trim());
+                    
+                    if (!skillsByCategory[category]) {
+                        skillsByCategory[category] = [];
+                    }
+                    
+                    skillsByCategory[category].push(...items);
+                } else {
+                    // For backward compatibility, put uncategorized skills in "Other"
+                    if (!skillsByCategory['Other']) {
+                        skillsByCategory['Other'] = [];
+                    }
+                    skillsByCategory['Other'].push(skill);
+                }
+            });
+            
+            // If no categorized skills, just list them all
+            if (Object.keys(skillsByCategory).length === 0) {
+                skillsByCategory['Skills'] = skills;
+            }
+            
+            Object.entries(skillsByCategory).forEach(([category, categorySkills]) => {
+                const categoryTitle = document.createElement('div');
+                categoryTitle.className = 'skill-category-title';
+                categoryTitle.textContent = category + ':';
+                
+                const skillItems = document.createElement('div');
+                skillItems.className = 'skill-items';
+                skillItems.textContent = categorySkills.join(', ');
+                
+                skillsList.appendChild(categoryTitle);
+                skillsList.appendChild(skillItems);
+            });
+            
+            section.appendChild(skillsList);
+            return section;
+        }
+        
+        // Render the experience section
+        function renderExperienceSection(experience) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            section.style.marginBottom = '12px';
+            
+            const heading = document.createElement('h2');
+            heading.textContent = 'EXPERIENCE';
+            section.appendChild(heading);
+            
+            const experienceList = document.createElement('div');
+            experienceList.id = 'experienceList';
+            
+            experience.forEach(job => {
+                const jobEntry = document.createElement('div');
+                jobEntry.style.marginBottom = '8px';
+                
+                const mainInfo = document.createElement('p');
+                
+                const company = document.createElement('strong');
+                
+                // Parse company name for potential bold formatting
+                if (job.company.includes('**')) {
+                    parseBulletText(company, job.company);
+                } else {
+                    company.textContent = job.company;
+                }
+                
+                const title = document.createElement('span');
+                title.className = 'job-title';
+                
+                // Parse job title for potential bold formatting
+                if (job.title.includes('**')) {
+                    parseBulletText(title, job.title);
+                } else {
+                    title.textContent = job.title;
+                }
+                
+                mainInfo.appendChild(company);
+                mainInfo.appendChild(document.createTextNode(', '));
+                mainInfo.appendChild(title);
+                mainInfo.appendChild(document.createTextNode(', ' + job.location));
+                
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'date-range';
+                dateSpan.textContent = job.dateRange;
+                mainInfo.appendChild(dateSpan);
+                
+                jobEntry.appendChild(mainInfo);
+                
+                // Add bullets if provided
+                if (job.bullets && job.bullets.length > 0) {
+                    const bulletList = document.createElement('ul');
+                    
+                    job.bullets.forEach(bulletText => {
+                        const bullet = document.createElement('li');
+                        
+                        // Handle formatting for bold text (** markdown style)
+                        parseBulletText(bullet, bulletText);
+                        
+                        bulletList.appendChild(bullet);
+                    });
+                    
+                    jobEntry.appendChild(bulletList);
+                }
+                
+                experienceList.appendChild(jobEntry);
+            });
+            
+            section.appendChild(experienceList);
+            return section;
+        }
+        
+        // Render the projects section
+        function renderProjectsSection(projects) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            section.style.marginBottom = '12px';
+            
+            const heading = document.createElement('h2');
+            heading.textContent = 'PROJECTS';
+            section.appendChild(heading);
+            
+            const projectsList = document.createElement('div');
+            projectsList.id = 'projectsList';
+            
+            projects.forEach(project => {
+                const projectEntry = document.createElement('div');
+                projectEntry.style.marginBottom = '8px';
+                
+                const mainInfo = document.createElement('p');
+                
+                const projectName = document.createElement('span');
+                projectName.className = 'project-title';
+                
+                // Parse the project name for potential bold formatting
+                if (project.name.includes('**')) {
+                    parseBulletText(projectName, project.name);
+                } else {
+                    projectName.textContent = project.name;
+                }
+                
+                mainInfo.appendChild(projectName);
+                
+                const dateSpan = document.createElement('span');
+                dateSpan.className = 'date-range';
+                dateSpan.textContent = project.dateRange;
+                mainInfo.appendChild(dateSpan);
+                
+                projectEntry.appendChild(mainInfo);
+                
+                // Add bullets if provided
+                if (project.bullets && project.bullets.length > 0) {
+                    // First bullet becomes a subtitle (if present)
+                    if (project.bullets.length > 0) {
+                        const subtitle = document.createElement('p');
+                        subtitle.className = 'project-subtitle';
+                        parseBulletText(subtitle, project.bullets[0]);
+                        projectEntry.appendChild(subtitle);
+                        
+                        // Remaining bullets as a list
+                        if (project.bullets.length > 1) {
+                            const bulletList = document.createElement('ul');
+                            
+                            project.bullets.slice(1).forEach(bulletText => {
+                                const bullet = document.createElement('li');
+                                parseBulletText(bullet, bulletText);
+                                bulletList.appendChild(bullet);
+                            });
+                            
+                            projectEntry.appendChild(bulletList);
+                        }
+                    }
+                }
+                
+                projectsList.appendChild(projectEntry);
+            });
+            
+            section.appendChild(projectsList);
+            return section;
+        }
+        
+        // Render the publications section (if applicable)
+        function renderPublicationsSection(publications) {
+            const section = document.createElement('div');
+            section.className = 'section';
+            section.style.marginBottom = '12px';
+            
+            const heading = document.createElement('h2');
+            heading.textContent = 'PUBLICATIONS';
+            section.appendChild(heading);
+            
+            const pubList = document.createElement('div');
+            pubList.id = 'publicationsList';
+            
+            publications.forEach(pub => {
+                const pubEntry = document.createElement('div');
+                
+                const mainInfo = document.createElement('p');
+                
+                const title = document.createElement('span');
+                title.className = 'publication-title';
+                
+                // Parse publication title for potential bold formatting
+                if (pub.title.includes('**')) {
+                    parseBulletText(title, pub.title);
+                } else {
+                    title.textContent = pub.title;
+                }
+                
+                mainInfo.appendChild(title);
+                mainInfo.appendChild(document.createTextNode(', ' + pub.citation));
+                
+                pubEntry.appendChild(mainInfo);
+                
+                // Add bullets if provided
+                if (pub.bullets && pub.bullets.length > 0) {
+                    const bulletList = document.createElement('ul');
+                    
+                    pub.bullets.forEach(bulletText => {
+                        const bullet = document.createElement('li');
+                        parseBulletText(bullet, bulletText);
+                        bulletList.appendChild(bullet);
+                    });
+                    
+                    pubEntry.appendChild(bulletList);
+                }
+                
+                pubList.appendChild(pubEntry);
+            });
+            
+            section.appendChild(pubList);
+            return section;
+        }
+        
+        // Parse bullet text with bold formatting (text inside ** will be bolded)
+        function parseBulletText(element, text) {
+            if (!text.includes('**')) {
+                element.textContent = text;
+                return;
+            }
+            
+            const parts = text.split(/(\*\*.*?\*\*)/g);
+            
+            parts.forEach(part => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                    const boldText = part.slice(2, -2); // Remove the ** markers
+                    const strong = document.createElement('strong');
+                    strong.textContent = boldText;
+                    element.appendChild(strong);
+                } else {
+                    element.appendChild(document.createTextNode(part));
+                }
+            });
+        }
+        
+        // Format JSON with proper indentation
+        function formatJson() {
+            try {
+                const parsedJson = JSON.parse(jsonInput.value);
+                jsonInput.value = JSON.stringify(parsedJson, null, 2);
+                errorContainer.classList.add('hidden');
+                showSnackbar("JSON formatted successfully");
+            } catch (error) {
+                errorContainer.textContent = "Invalid JSON format: " + error.message;
+                errorContainer.classList.remove('hidden');
+                console.error("Error formatting JSON:", error);
+            }
+        }
+        
+        // Copy JSON to clipboard
+        function copyToClipboard() {
+            navigator.clipboard.writeText(jsonInput.value)
+                .then(() => {
+                    showSnackbar("JSON copied to clipboard");
+                })
+                .catch(err => {
+                    console.error('Could not copy text: ', err);
+                    showSnackbar("Failed to copy to clipboard", "error");
+                });
+        }
+        
+        // Copy prompt template to clipboard
+        function copyPromptToClipboard() {
+            navigator.clipboard.writeText(promptTemplate.textContent.trim())
+                .then(() => {
+                    showSnackbar("Prompt copied to clipboard");
+                })
+                .catch(err => {
+                    console.error('Could not copy prompt: ', err);
+                    showSnackbar("Failed to copy prompt to clipboard", "error");
+                });
+        }
+        
+        // Show snackbar notification
+        function showSnackbar(message, type = "success") {
+            snackbar.textContent = message;
+            snackbar.className = "snackbar show";
+            
+            // Change styling based on message type
+            if (type === "error") {
+                snackbar.style.backgroundColor = "#e53935";
+            } else {
+                snackbar.style.backgroundColor = "#333";
+            }
+            
+            // After 3 seconds, remove the show class
+            setTimeout(() => { 
+                snackbar.className = snackbar.className.replace("show", ""); 
+            }, 3000);
+        }
+        
+        // Generate and download PDF
+        function downloadPdf() {
+            showSnackbar("Preparing PDF...");
+            
+            // Use setTimeout to allow the snackbar to show before heavy processing
+            setTimeout(() => {
+                import('https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js')
+                    .then(() => import('https://unpkg.com/html2canvas@latest/dist/html2canvas.min.js'))
+                    .then(() => {
+                        const { jsPDF } = window.jspdf;
+                        
+                        // Create a temporary, full-size copy of the resume with proper dimensions for PDF export
+                        const tempDiv = document.createElement('div');
+                        tempDiv.className = 'resume';
+                        tempDiv.style.width = '8.5in';
+                        tempDiv.style.height = 'auto'; // Allow height to adjust to content
+                        tempDiv.style.maxHeight = '11in'; // Limit height to standard letter size
+                        tempDiv.style.overflow = 'hidden'; // Prevent content from exceeding max height
+                        tempDiv.style.position = 'absolute';
+                        tempDiv.style.left = '-9999px';  // Position off-screen
+                        tempDiv.style.fontFamily = '"EB Garamond", serif';
+                        tempDiv.style.padding = '0.5in';
+                        tempDiv.style.boxSizing = 'border-box';
+                        tempDiv.style.backgroundColor = 'white';
+                        tempDiv.style.color = 'black';
+                        tempDiv.style.transform = 'none'; // Remove scaling for PDF generation
+                        
+                        // Copy content from modal preview
+                        tempDiv.innerHTML = modalResumePreview.innerHTML;
+                        
+                        // Add additional styles for PDF export
+                        const styleElem = document.createElement('style');
+                        styleElem.textContent = `
+                            /* Base resume styling */
+                            .resume {
+                                font-family: "EB Garamond", "Garamond", serif !important;
+                                font-size: 10pt !important;
+                                line-height: 1 !important;
+                                color: #000000 !important;
+                            }
+                            
+                            /* List styling */
+                            ul { 
+                                margin: 0 !important;
+                                padding-left: 32px !important;
+                                list-style-type: disc !important;
+                                font-size: 10.5pt !important;
+                            }
+                            
+                            li {
+                                margin-bottom: 2px !important;
+                                line-height: 1 !important;
+                                padding-left: 24px !important;
+                                text-indent: -24px !important;
+                            }
+                            
+                            li strong {
+                                font-weight: 600 !important;
+                            }
+                            
+                            /* Job, project, and publication titles */
+                            .job-title, .project-title, .publication-title {
+                                font-weight: normal !important;
+                                font-size: 10pt !important;
+                            }
+                            
+                            /* Header spacing */
+                            div[style*="text-align: center"] {
+                                margin-bottom: 8px !important;
+                                padding-bottom: 4px !important;
+                            }
+                            
+                            /* Section headings */
+                            .section h2 {
+                                text-transform: uppercase !important;
+                                border-bottom: 1px solid #000000 !important;
+                                padding-bottom: 3px !important;
+                                margin-bottom: 8px !important;
+                                margin-top: 15px !important;
+                                font-size: 10pt !important;
+                                letter-spacing: 0.5px !important;
+                                font-weight: 600 !important;
+                            }
+                            
+                            /* Contact info spacing */
+                            .contact-info span {
+                                margin: 0 5px !important;
+                            }
+                            
+                            .contact-info span:first-child {
+                                margin-left: 0 !important;
+                            }
+                            
+                            .contact-info span:last-child {
+                                margin-right: 0 !important;
+                            }
+                            
+                            /* Technical skills spacing */
+                            .skills-container {
+                                display: grid !important;
+                                grid-template-columns: max-content 1fr !important;
+                                grid-gap: 2px 120px !important;
+                                width: 100% !important;
+                            }
+                            
+                            .skill-category-title {
+                                font-weight: 600 !important;
+                                padding-right: 5px !important;
+                            }
+                            
+                            .skill-items {
+                                padding-left: 0 !important;
+                            }
+                        `;
+                        tempDiv.appendChild(styleElem);
+                        
+                        document.body.appendChild(tempDiv);
+                        
+                        try {
+                            // Get resume data for name
+                            const resumeData = JSON.parse(jsonInput.value);
+                            const resumeName = resumeData.name || 'Resume';
+                            
+                            // Capture the full-size resume
+                            html2canvas(tempDiv, {
+                                scale: 4, // Increased from 2 to 4 for higher resolution
+                                useCORS: true,
+                                logging: false,
+                                windowWidth: 816, // 8.5in in pixels at 96dpi
+                                windowHeight: 1056 // 11in in pixels at 96dpi
+                            }).then(canvas => {
+                                const imgData = canvas.toDataURL('image/jpeg', 1.0); // Increased quality from 0.95 to 1.0
+                                
+                                // Create PDF with correct dimensions (8.5 x 11 inches)
+                                const pdf = new jsPDF({
+                                    orientation: 'portrait',
+                                    unit: 'in',
+                                    format: 'letter' // Standard US letter size
+                                });
+                                
+                                // Calculate aspect ratio to maintain proportions
+                                const imgWidth = 8.5;
+                                const pageHeight = 11;
+                                
+                                // Calculate proportional height but cap at 11 inches
+                                const rawImgHeight = (canvas.height * imgWidth) / canvas.width;
+                                const imgHeight = Math.min(rawImgHeight, pageHeight);
+                                
+                                // Add the image to the PDF, fitting to page dimensions properly
+                                pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                                
+                                // Save the PDF
+                                pdf.save(`${resumeName.replace(/[^a-z0-9]/gi, '_')}_Resume.pdf`);
+                                
+                                showSnackbar("PDF downloaded successfully");
+                            });
+                        } catch (error) {
+                            console.error("Error generating PDF:", error);
+                            showSnackbar("Error generating PDF", "error");
+                        } finally {
+                            // Clean up - remove temp div
+                            document.body.removeChild(tempDiv);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error loading PDF libraries:", error);
+                        showSnackbar("Error loading PDF generation libraries", "error");
+                    });
+            }, 100);
+        }
+        
+        // Event Listeners
+        
+        // Update preview when JSON changes
+        jsonInput.addEventListener('input', function() {
+            updateResumePreview();
+        });
+        
+        // Format JSON button
+        formatJsonBtn.addEventListener('click', formatJson);
+        
+        // Copy JSON button
+        copyJsonBtn.addEventListener('click', copyToClipboard);
+        
+        // Open modal for fullscreen preview
+        previewBtn.addEventListener('click', function() {
+            previewModal.style.display = 'block';
+        });
+        
+        // Close modal
+        closeButton.addEventListener('click', function() {
+            previewModal.style.display = 'none';
+        });
+        
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            if (event.target === previewModal) {
+                previewModal.style.display = 'none';
+            }
+        });
+        
+        // Download PDF from main view
+        downloadPdfBtn.addEventListener('click', downloadPdf);
+        
+        // Download PDF from modal
+        modalDownloadPdfBtn.addEventListener('click', downloadPdf);
+        
+        // View prompt modal
+        viewPromptBtn.addEventListener('click', function() {
+            promptModal.style.display = 'block';
+        });
+        
+        // Close prompt modal
+        promptCloseButton.addEventListener('click', function() {
+            promptModal.style.display = 'none';
+        });
+        
+        // Copy prompt buttons
+        copyPromptBtn.addEventListener('click', copyPromptToClipboard);
+        modalCopyPromptBtn.addEventListener('click', copyPromptToClipboard);
+        
+        // Close prompt modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            if (event.target === promptModal) {
+                promptModal.style.display = 'none';
+            }
+        });
+        
+        // Initialize the page
+        updateResumePreview();
+    });
+    </script>
+</body>
+</html>

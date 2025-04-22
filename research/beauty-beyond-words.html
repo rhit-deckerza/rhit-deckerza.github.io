@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <meta name="theme-color" content="#000000"/>
+    <title>Project - Beauty Beyond Words II</title>
+    <meta name="description" content="Research applying transformer-based architectures to analyze beauty product ingredients"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles from other projects */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .screenshot {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.5s ease;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background-color: rgba(var(--text-color-rgb), 0.02);
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            background-color: rgba(var(--text-color-rgb), 0.03);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .feature-card {
+            position: relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+            background-color: rgba(var(--text-color-rgb), 0.02);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card.active p {
+            opacity: 1;
+            max-height: 200px;
+            margin-top: 0.5rem;
+        }
+        
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-pill {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .tech-pill:hover {
+            background-color: rgba(var(--accent-color-rgb), 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .slide-in {
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.8s forwards;
+        }
+        
+        @keyframes slideIn {
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* For dark/light mode compatibility with rich purple accents */
+        html.dark {
+            --text-color-rgb: 255, 255, 255;
+            --focus-color: #a78bfa;
+            --accent-color-rgb: 167, 139, 250;
+        }
+        
+        html.light {
+            --text-color-rgb: 26, 26, 26;
+            --focus-color: #7c3aed;
+            --accent-color-rgb: 124, 58, 237;
+        }
+        
+        /* Custom visualization styles */
+        .visualization {
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: rgba(var(--text-color-rgb), 0.02);
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+        }
+        
+        .visualization-title {
+            border-bottom: 1px solid rgba(var(--text-color-rgb), 0.1);
+            color: var(--text-color);
+            padding: 0.8rem 1rem;
+            font-weight: 600;
+        }
+        
+        .visualization-content {
+            padding: 0rem;
+        }
+        
+        html.dark .visualization {
+            background-color: #1a1a1a;
+        }
+        
+        html.dark .visualization-content {
+            color: var(--text-color);
+        }
+        
+        html.dark text {
+            fill: var(--text-color);
+        }
+
+        /* Update visualization section headers */
+        .visualization .visualization-content h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Additional dark mode styles */
+        html.dark .stat-value,
+        html.dark .stat-label,
+        html.dark h1,
+        html.dark h2,
+        html.dark h3,
+        html.dark h4,
+        html.dark p,
+        html.dark .tech-pill,
+        html.dark .feature-card h3,
+        html.dark .feature-card p,
+        html.dark .date {
+            color: var(--text-color);
+        }
+        
+        html.dark .visualization-content svg text {
+            fill: var(--text-color);
+        }
+        
+        /* Fix for SVG elements in dark mode */
+        html.dark svg {
+            color: var(--text-color);
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-toggle-btn:hover {
+            opacity: 0.7;
+        }
+        
+        .theme-toggle-btn:focus {
+            outline: none;
+        }
+
+        /* Matrix visualization styles */
+        .matrices-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .confusion-matrix {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1rem;
+            min-width: 260px;
+            max-width: 300px;
+        }
+        
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.25rem;
+        }
+        
+        .matrix-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            height: 6rem;
+            width: 6rem;
+            position: relative;
+        }
+        
+        .true-positive, .true-negative {
+            background-color: rgba(var(--accent-color-rgb), 0.15);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.3);
+        }
+        
+        .false-positive, .false-negative {
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+        }
+        
+        .cell-content {
+            text-align: center;
+        }
+        
+        .value {
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .label {
+            font-size: 0.75rem;
+            color: var(--text-color);
+        }
+        
+        .percentage {
+            font-size: 0.7rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="antialiased inconsolata-yes">
+    <div class="container max-w-700px mx-auto p-container" style="margin-bottom: 0;">
+        <main>
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title">
+                    Beauty Beyond Words II
+                </h1>
+                
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex justify-between items-center mt-header mb-header">
+                <p class="date font-medium m-0">Ingredient-Attribute Research - Fall 2023</p>
+                <div class="flex gap-3 items-center mr-10px">
+                    <a href="/docs/final_project_DL.pdf" target="_blank" rel="noopener noreferrer" aria-label="Research Paper" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </a>
+                    <a href="../index.html" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Project Overview</h2>
+            <p class="font-medium">
+                This research addresses the beauty industry's need for transparent and explainable methods to map product ingredients to skin-related attributes. We developed a BERT-based machine learning model that achieved a balanced F1 score of 0.61 and precision of 0.75 for predicting product attributes from ingredients and descriptions.
+            </p>
+            <p class="font-medium">
+                Our approach combined explicit model architectures with advanced explainability techniques, including Integrated Gradients, SHAP, and LIME, to uncover the relationships between ingredients and product attributes. By utilizing publicly available Amazon product metadata and reviews alongside a curated skincare glossary, we developed a scalable pipeline to extract and analyze ingredient-attribute relationships in beauty products.
+            </p>
+            <p class="font-medium">
+                The model successfully identified key attributes such as acne, hydration, and sensitive skin with high precision, while explainability methods revealed significant ingredients like salicylic acid for acne treatment and petroleum jelly for hydration. This work contributes to developing more transparent and effective tools for beauty product analysis and recommendation systems.
+            </p>
+
+
+            <!-- Confusion Matrix Visualization -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">Model Performance: Confusion Matrices</h2>
+                    </div>
+                    <p>Classification performance for key skin attributes:</p>
+                    
+                    <div class="matrices-container">
+                        <!-- Acne Matrix -->
+                        <div class="confusion-matrix">
+                            <h3 style="margin-bottom: 10px;">Acne</h3>
+                            <div class="matrix-grid">
+                                <div class="matrix-cell true-positive">
+                                    <div class="cell-content">
+                                        <div class="value">680</div>
+                                        <div class="label">True Positive</div>
+                                        <div class="percentage">35.4%</div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell false-positive">
+                                    <div class="cell-content">
+                                        <div class="value">87</div>
+                                        <div class="label">False Positive</div>
+                                        <div class="percentage">4.5%</div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell false-negative">
+                                    <div class="cell-content">
+                                        <div class="value">405</div>
+                                        <div class="label">False Negative</div>
+                                        <div class="percentage">21.1%</div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell true-negative">
+                                    <div class="cell-content">
+                                        <div class="value">748</div>
+                                        <div class="label">True Negative</div>
+                                        <div class="percentage">39.0%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Oily Skin Matrix -->
+                        <div class="confusion-matrix">
+                            <h3 style="margin-bottom: 10px;">Oily Skin</h3>
+                            <div class="matrix-grid">
+                                <div class="matrix-cell true-positive">
+                                    <div class="cell-content">
+                                        <div class="value">641</div>
+                                        <div class="label">True Positive</div>
+                                        <div class="percentage">31.7%</div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell false-positive">
+                                    <div class="cell-content">
+                                        <div class="value">140</div>
+                                        <div class="label">False Positive</div>
+                                        <div class="percentage">6.9%</div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell false-negative">
+                                    <div class="cell-content">
+                                        <div class="value">444</div>
+                                        <div class="label">False Negative</div>
+                                        <div class="percentage">22.0%</div>
+                                    </div>
+                                </div>
+                                <div class="matrix-cell true-negative">
+                                    <div class="cell-content">
+                                        <div class="value">795</div>
+                                        <div class="label">True Negative</div>
+                                        <div class="percentage">39.4%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 10px;">Performance Metrics</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-around; margin-top: 15px;">
+                            <div style="flex: 1; min-width: 200px; text-align: center;">
+                                <div style="font-size: 2.5rem; font-weight: 700; color: var(--focus-color);">0.75</div>
+                                <div style="font-weight: 600;">Precision</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Accuracy of positive predictions</div>
+                            </div>
+                            <div style="flex: 1; min-width: 200px; text-align: center;">
+                                <div style="font-size: 2.5rem; font-weight: 700; color: var(--focus-color);">0.61</div>
+                                <div style="font-weight: 600;">F1 Score</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Balance of precision and recall</div>
+                            </div>
+                            <div style="flex: 1; min-width: 200px; text-align: center;">
+                                <div style="font-size: 2.5rem; font-weight: 700; color: var(--focus-color);">0.63</div>
+                                <div style="font-weight: 600;">Recall</div>
+                                <div style="font-size: 0.9rem; opacity: 0.8;">Coverage of actual positives</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explainability Analysis Visualization -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">Explainability Analysis</h2>
+                    </div>
+                    <p>Compare ingredient importance across different explainability methods:</p>
+                    
+                    <div class="explainability-tabs">
+                        <div class="tab-headers" style="display: flex; border-bottom: 1px solid rgba(var(--text-color-rgb), 0.1); margin-bottom: 15px;">
+                            <button id="limeTab" class="tab-btn active" style="padding: 10px 15px; background: none; border: none; border-bottom: 2px solid var(--focus-color); color: var(--focus-color); font-weight: 600; cursor: pointer;">LIME Analysis</button>
+                            <button id="shapTab" class="tab-btn" style="padding: 10px 15px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-color); opacity: 0.7; font-weight: 600; cursor: pointer;">SHAP Analysis</button>
+                            <button id="igTab" class="tab-btn" style="padding: 10px 15px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-color); opacity: 0.7; font-weight: 600; cursor: pointer;">Integrated Gradients</button>
+                        </div>
+                        
+                        <!-- LIME Content -->
+                        <div id="limeContent" class="tab-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                            <div style="padding: 15px; border-radius: 8px; border: 1px solid rgba(var(--text-color-rgb), 0.1); background-color: rgba(var(--text-color-rgb), 0.02);">
+                                <h3 style="margin-bottom: 15px;">LIME: Top Ingredients for Acne</h3>
+                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Salicylic Acid</span>
+                                            <span style="font-weight: 600;">0.825</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 82.5%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Glycolic Acid</span>
+                                            <span style="font-weight: 600;">0.753</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 75.3%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Benzoyl Peroxide</span>
+                                            <span style="font-weight: 600;">0.701</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 70.1%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Tea Tree Oil</span>
+                                            <span style="font-weight: 600;">0.654</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 65.4%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Sulfur</span>
+                                            <span style="font-weight: 600;">0.612</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 61.2%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="padding: 15px; border-radius: 8px; border: 1px solid rgba(var(--text-color-rgb), 0.1); background-color: rgba(var(--text-color-rgb), 0.02);">
+                                <h3 style="margin-bottom: 15px;">LIME: Top Ingredients for Hydration</h3>
+                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Hyaluronic Acid</span>
+                                            <span style="font-weight: 600;">0.871</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 87.1%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Shea Butter</span>
+                                            <span style="font-weight: 600;">0.786</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 78.6%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Glycerin</span>
+                                            <span style="font-weight: 600;">0.742</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 74.2%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Ceramides</span>
+                                            <span style="font-weight: 600;">0.689</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 68.9%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Squalane</span>
+                                            <span style="font-weight: 600;">0.652</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 65.2%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- SHAP Content (initially hidden) -->
+                        <div id="shapContent" class="tab-content" style="display: none; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                            <!-- SHAP content similar to LIME but with different data and styles -->
+                            <div style="padding: 15px; border-radius: 8px; border: 1px solid rgba(var(--text-color-rgb), 0.1); background-color: rgba(var(--text-color-rgb), 0.02);">
+                                <h3 style="margin-bottom: 15px;">SHAP: Top Ingredients for Acne</h3>
+                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Cyclopentasiloxane</span>
+                                            <span style="font-weight: 600;">0.274</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 27.4%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Doxycycline</span>
+                                            <span style="font-weight: 600;">0.229</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 22.9%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Pycnogenol</span>
+                                            <span style="font-weight: 600;">0.209</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 20.9%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="padding: 15px; border-radius: 8px; border: 1px solid rgba(var(--text-color-rgb), 0.1); background-color: rgba(var(--text-color-rgb), 0.02);">
+                                <h3 style="margin-bottom: 15px;">SHAP: Top Ingredients for Hydration</h3>
+                                <div style="display: flex; flex-direction: column; gap: 10px;">
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Pycnogenol</span>
+                                            <span style="font-weight: 600;">0.134</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 13.4%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Caffeine</span>
+                                            <span style="font-weight: 600;">0.115</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 11.5%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                            <span style="font-weight: 500;">Panthenol</span>
+                                            <span style="font-weight: 600;">0.114</span>
+                                        </div>
+                                        <div style="width: 100%; height: 8px; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 4px; overflow: hidden;">
+                                            <div style="height: 100%; width: 11.4%; background-color: var(--focus-color);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Integrated Gradients Content (initially hidden) -->
+                        <div id="igContent" class="tab-content" style="display: none;">
+                            <div style="padding: 15px; border-radius: 8px; border: 1px solid rgba(var(--text-color-rgb), 0.1); background-color: rgba(var(--text-color-rgb), 0.02); margin-bottom: 20px;">
+                                <h3 style="margin-bottom: 15px;">Integrated Gradients: Acne</h3>
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.1);">
+                                            <th style="text-align: left; padding: 8px; font-size: 0.85rem; color: var(--text-color); opacity: 0.7;">Token</th>
+                                            <th style="text-align: left; padding: 8px; font-size: 0.85rem; color: var(--text-color); opacity: 0.7;">Attribution Score</th>
+                                            <th style="text-align: left; padding: 8px; font-size: 0.85rem; color: var(--text-color); opacity: 0.7;">Ingredient</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.05);">
+                                            <td style="padding: 10px 8px; font-weight: 500;">##tino</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">0.8290</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">Retinol (from retino)</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.05);">
+                                            <td style="padding: 10px 8px; font-weight: 500;">sulfur</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">0.4662</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">Sulfur</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.05);">
+                                            <td style="padding: 10px 8px; font-weight: 500;">##eth</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">0.4478</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">Ethanol</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.05);">
+                                            <td style="padding: 10px 8px; font-weight: 500;">zinc</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">0.4271</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">Zinc</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div style="padding: 15px; border-radius: 8px; border: 1px solid rgba(var(--text-color-rgb), 0.1); background-color: rgba(var(--text-color-rgb), 0.02);">
+                                <h3 style="margin-bottom: 15px;">Integrated Gradients: Hydration</h3>
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.1);">
+                                            <th style="text-align: left; padding: 8px; font-size: 0.85rem; color: var(--text-color); opacity: 0.7;">Token</th>
+                                            <th style="text-align: left; padding: 8px; font-size: 0.85rem; color: var(--text-color); opacity: 0.7;">Attribution Score</th>
+                                            <th style="text-align: left; padding: 8px; font-size: 0.85rem; color: var(--text-color); opacity: 0.7;">Ingredient</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.05);">
+                                            <td style="padding: 10px 8px; font-weight: 500;">##eth</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">0.9065</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">Ethanol</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.05);">
+                                            <td style="padding: 10px 8px; font-weight: 500;">##anu</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">0.5271</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">Manuka (honey)</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.05);">
+                                            <td style="padding: 10px 8px; font-weight: 500;">petroleum</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">0.4896</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">Petroleum</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid rgba(var(--text-color-rgb), 0.05);">
+                                            <td style="padding: 10px 8px; font-weight: 500;">jelly</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">0.3519</td>
+                                            <td style="padding: 10px 8px; opacity: 0.9;">Petroleum jelly</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const tabs = {
+                                    lime: { tab: document.getElementById('limeTab'), content: document.getElementById('limeContent') },
+                                    shap: { tab: document.getElementById('shapTab'), content: document.getElementById('shapContent') },
+                                    ig: { tab: document.getElementById('igTab'), content: document.getElementById('igContent') }
+                                };
+                                
+                                function activateTab(tabKey) {
+                                    // Hide all content
+                                    Object.values(tabs).forEach(tab => {
+                                        tab.content.style.display = 'none';
+                                        tab.tab.classList.remove('active');
+                                        tab.tab.style.borderBottomColor = 'transparent';
+                                        tab.tab.style.color = 'var(--text-color)';
+                                        tab.tab.style.opacity = '0.7';
+                                    });
+                                    
+                                    // Show selected content
+                                    tabs[tabKey].content.style.display = tabKey === 'ig' ? 'block' : 'grid';
+                                    tabs[tabKey].tab.classList.add('active');
+                                    tabs[tabKey].tab.style.borderBottomColor = 'var(--focus-color)';
+                                    tabs[tabKey].tab.style.color = 'var(--focus-color)';
+                                    tabs[tabKey].tab.style.opacity = '1';
+                                }
+                                
+                                // Add click handlers
+                                tabs.lime.tab.addEventListener('click', () => activateTab('lime'));
+                                tabs.shap.tab.addEventListener('click', () => activateTab('shap'));
+                                tabs.ig.tab.addEventListener('click', () => activateTab('ig'));
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pipeline Architecture Visualization -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">Pipeline Architecture</h2>
+                    </div>
+                    <p>Flowchart representing the multi-stage pipeline for extracting ingredients and attributes:</p>
+                    
+                    <div style="margin: 20px 0; text-align: center;">
+                        <img src="../images/beauty_flowchart.png" alt="Ingredient-attribute pipeline architecture flowchart" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Takeaways Section -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">Key Takeaways</h2>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">0.75</div>
+                            <div class="stat-label">Precision on Attribute Prediction</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">Explainability Methods Compared</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">100+</div>
+                            <div class="stat-label">Key Ingredients Identified</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">10K+</div>
+                            <div class="stat-label">Products Analyzed</div>
+                        </div>
+                    </div>
+                    
+                    <ul style="margin-top: 20px; padding-left: 20px;">
+                        <li style="margin-bottom: 8px;">Developed a scalable, interpretable machine learning pipeline for analyzing beauty product ingredients and their attributes</li>
+                        <li style="margin-bottom: 8px;">Demonstrated that transformer-based models can effectively predict product attributes with high precision (0.75) and reasonable F1 scores (0.61)</li>
+                        <li style="margin-bottom: 8px;">Applied multiple explainability techniques to uncover meaningful connections between ingredients and skin benefits</li>
+                        <li style="margin-bottom: 8px;">Identified opportunities for improving recommendation systems through transparent ingredient-attribute mapping</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Collaborators Section -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">Collaborators</h2>
+                    </div>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px;">
+                        <div style="background-color: rgba(var(--accent-color-rgb), 0.08); padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(var(--accent-color-rgb), 0.2);">
+                            <div style="font-weight: 600;">Shreya Sriram</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">NLP & Models</div>
+                        </div>
+                        <div style="background-color: rgba(var(--accent-color-rgb), 0.08); padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(var(--accent-color-rgb), 0.2);">
+                            <div style="font-weight: 600;">Priyanshi Gupta</div>
+                            <div style="font-size: 0.85rem; opacity: 0.8;">Explainability Analysis</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-header" style="margin-top: 2rem;">
+                <a href="../index.html" class="font-medium" style="text-decoration: none;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Portfolio
+                    </span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fix image paths if needed
+            document.querySelectorAll('img').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('/')) {
+                    img.setAttribute('src', src.substring(1));
+                }
+            });
+            
+            // Intersection Observer for elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe elements
+            document.querySelectorAll('.feature-card, .tech-pill, .visualization-content, .stats-grid').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Toggle feature card expansion
+        function toggleFeature(element) {
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
+            } else {
+                document.querySelectorAll('.feature-card.active').forEach(card => {
+                    card.classList.remove('active');
+                });
+                element.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html> 

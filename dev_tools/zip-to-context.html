@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <meta name="theme-color" content="#000000"/>
+    <title>ZIP to Context Converter - Zachary Decker</title>
+    <meta name="description" content="Convert code ZIP files to context for LLMs"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <!-- Special styles for this page -->
+    <style>
+        .zip-container {
+            width: 100%;
+            padding: 0 1rem;
+            box-sizing: border-box;
+        }
+        
+        .info-box {
+            border: 1px solid var(--text-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            font-family: var(--font-family);
+            background: none;
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            border-radius: 6px;
+        }
+        
+        .btn:hover {
+            background-color: var(--button-hover);
+        }
+        
+        .btn-primary {
+            background-color: var(--text-color);
+            color: var(--background-color);
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        
+        .btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #666;
+            color: #ccc;
+            border-color: #666;
+        }
+        
+        .file-system {
+            display: flex;
+            gap: 1.5rem;
+            height: calc(100vh - 400px);
+            min-height: 400px;
+            margin-top: 1.5rem;
+        }
+        
+        .file-tree {
+            flex: 0 0 400px;
+            overflow-y: auto;
+            border: 1px solid var(--text-color);
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+        
+        .content-view {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--text-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .content-header {
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--text-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content-editor {
+            flex: 1;
+            padding: 0.75rem;
+            background-color: var(--background-color);
+        }
+        
+        .file-item {
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            transition: background-color 0.2s ease;
+            position: relative;
+            padding-left: 1.8rem;
+        }
+        
+        .file-item:hover {
+            background-color: var(--button-hover);
+        }
+        
+        .file-item.selected {
+            background-color: rgba(var(--text-color-rgb), 0.1);
+        }
+        
+        /* Selection indicator styles */
+        .selection-indicator {
+            position: absolute;
+            left: 0.4rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1rem;
+            height: 1rem;
+            border: 1px solid var(--text-color);
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .selection-indicator.selected {
+            background-color: var(--text-color);
+            color: var(--background-color);
+        }
+        
+        textarea {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0.75rem;
+            border: none;
+            background-color: transparent;
+            color: var(--text-color);
+            font-family: var(--font-family);
+            resize: none;
+            outline: none;
+        }
+        
+        .error-message {
+            color: #e53935;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+        }
+        
+        .icon {
+            margin-right: 0.4rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .file-note {
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+        
+        .text-color-error {
+            color: #e53935;
+        }
+        
+        .text-color-warning {
+            color: #ff9800;
+        }
+        
+        /* Dark/light mode specific overrides */
+        html.dark .content-view, 
+        html.dark .file-tree {
+            background-color: var(--background-color);
+        }
+        
+        html.light .content-view, 
+        html.light .file-tree {
+            background-color: var(--background-color);
+        }
+    </style>
+</head>
+<body class="antialiased inconsolata-yes">
+    <div class="container p-container" style="max-width: none; width: 100%; padding: 1rem 3rem; box-sizing: border-box; overflow-x: hidden;">
+        <main>
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title">
+                    ZIP to Context Converter
+                </h1>
+                
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                    </svg>
+                </button>
+            </div>
+
+            
+            <div class="zip-container">
+                <div class="info-box">
+                    <h3 style="margin-top: 0; margin-bottom: 0.75rem;">How to Use This Tool</h3>
+                    <p class="font-medium" style="margin-bottom: 0.75rem;">
+                        This tool helps you easily provide code context to Large Language Models (LLMs) like ChatGPT, Claude, or Gemini:
+                    </p>
+                    <ol style="margin-left: 1.5rem; margin-bottom: 0.75rem;">
+                        <li>Upload a ZIP file containing your codebase or project files</li>
+                        <li>Browse and select the files you want to include as context</li>
+                        <li>Edit the generated context text if needed</li>
+                        <li>Download the context as a text file or copy it directly to your clipboard</li>
+                        <li>Paste the context into your LLM conversation for more accurate and relevant responses</li>
+                    </ol>
+                    <p class="font-medium" style="font-style: italic; font-size: 0.9rem; margin-bottom: 0;">
+                        The tool automatically formats your code files with clear headers and skips binary or unsupported files to ensure optimal context quality.
+                    </p>
+                    <p class="font-medium" style="font-style: italic; font-size: 0.9rem; margin-top: 0.75rem; margin-bottom: 0;">
+                        If you encounter any bugs or issues, please email me at <a href="mailto:zad25@cornell.edu">zad25@cornell.edu</a>.
+                    </p>
+                </div>
+                
+                <div class="info-box">
+                    <div class="file-upload">
+                        <button id="choose-file" class="btn">
+                            <span class="icon">📁</span> Choose File
+                        </button>
+                        <span id="file-name" style="flex: 1;"></span>
+                        <input type="file" id="file-input" accept=".zip" style="display: none;">
+                        <button id="upload-btn" class="btn btn-primary" disabled>
+                            Upload ZIP
+                        </button>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <button id="toggle-unsupported" class="btn">
+                            <span id="visibility-text">Show</span> Unsupported Files
+                        </button>
+                        <div style="font-size: 0.85rem;">
+                            <div style="margin-bottom: 0.25rem;"><span class="text-color-error">🔴</span> Red: File too large to process</div>
+                            <div style="margin-bottom: 0.25rem;"><span class="text-color-warning">🟠</span> Orange: Unsupported file format</div>
+                            <div><span style="display: inline-block; width: 14px; height: 14px; border: 1px solid var(--text-color); border-radius: 3px; text-align: center; line-height: 14px; font-size: 10px; background-color: var(--text-color); color: var(--background-color);">✓</span> Checked: File included in context</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="error-container" class="error-message hidden"></div>
+                
+                <div id="file-structure" class="hidden">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0;">File Structure</h3>
+                        <button id="download-btn" class="btn btn-primary" disabled>
+                            <span class="icon">💾</span> Download Selected Content
+                        </button>
+                    </div>
+                    
+                    <div class="file-system">
+                        <div id="file-tree" class="file-tree">
+                            <!-- File tree will be populated here -->
+                        </div>
+                        
+                        <div class="content-view">
+                            <div class="content-header">
+                                <span id="line-count">No content selected</span>
+                            </div>
+                            <div class="content-editor">
+                                <textarea id="content-area" placeholder="Select files to view their contents"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center mt-header" style="margin-top: 2rem;">
+                <a href="../index.html" class="font-medium" style="text-decoration: none;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Portfolio
+                    </span>
+                </a>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+    <script src="zip-to-context.js"></script>
+</body>
+</html> 

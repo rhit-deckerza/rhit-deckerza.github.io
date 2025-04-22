@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <meta name="theme-color" content="#000000"/>
+    <title>Project - PolyRook</title>
+    <meta name="description" content="AI-driven 3D environment generation for games and films"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <style>
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        #scene-canvas {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(var(--text-color-rgb), 0.1);
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--focus-color);
+            transition: width 1.5s ease-in-out;
+        }
+        
+        .feature-card {
+            position: relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            background-color: rgba(var(--text-color-rgb), 0.03);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            background-color: rgba(var(--text-color-rgb), 0.07);
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card.active p {
+            opacity: 1;
+            max-height: 200px;
+            margin-top: 0.5rem;
+        }
+        
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-pill {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: rgba(var(--text-color-rgb), 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-pill:hover {
+            background-color: var(--focus-color);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        .timeline {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: rgba(var(--text-color-rgb), 0.2);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            opacity: 1;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--focus-color);
+            transform: translateX(-50%);
+        }
+        
+        .timeline-date {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 0.2rem;
+        }
+        
+        .timeline-content {
+            font-size: 0.9rem;
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .slide-in {
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.8s forwards;
+        }
+        
+        @keyframes slideIn {
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* For dark/light mode compatibility */
+        html.dark {
+            --text-color-rgb: 255, 255, 255;
+            --focus-color: #3b82f6;
+            --accent-color-rgb: 59, 130, 246;
+        }
+        
+        html.light {
+            --text-color-rgb: 26, 26, 26;
+            --focus-color: #2563eb;
+            --accent-color-rgb: 37, 99, 235;
+        }
+    </style>
+</head>
+<body class="antialiased inconsolata-yes">
+    <div class="container max-w-700px mx-auto p-container" style="margin-bottom: 0;">
+        <main>
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title">
+                    PolyRook
+                </h1>
+                
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex justify-between items-center mt-header mb-header">
+                <p class="date font-medium m-0">AI 3D Environment Generation</p>
+                <div class="flex gap-3 items-center mr-10px">
+                    <a href="https://polyrook.com" target="_blank" rel="noopener noreferrer" aria-label="PolyRook website" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </a>
+                    <a href="../index.html" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="canvas-container fade-in">
+                <canvas id="scene-canvas"></canvas>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Project Overview</h2>
+            <p class="font-medium">
+                PolyRook is my Startup Studio project at Cornell Tech that uses AI to generate fully customizable 3D environments for games and films—enabling creators to build and iterate immersive worlds in seconds. Our platform will provide 1-click generation of complete 3D scenes including terrain, props, and lighting with real-time collaboration capabilities.
+            </p>
+
+
+            <h2 style="padding-bottom: 0;">Development Timeline</h2>
+            <div class="timeline slide-in" style="animation-delay: 0.4s">
+                <div class="timeline-item">
+                    <div class="timeline-date">June 2024</div>
+                    <div class="timeline-content">
+                        Rapid Environment Generation (MVP) - Roll out to 2 pilot studios<br>
+                        Ship 5 ready-to-use biome presets (urban, forest, desert, tundra, sci-fi)<br>
+                        Instrument Key Metrics - Add hooks for Game Dev Time and AI Asset Usage
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">July 2024</div>
+                    <div class="timeline-content">
+                        Feedback & Quick Wins - 2-day feedback cycles with pilots<br>
+                        Expand Procedural Terrain - Rivers, coasts, & caves, "Biome mixer" UI<br>
+                        Real-Time Collaboration - Internal alpha → beta with tracking & locked edits
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">August 2024</div>
+                    <div class="timeline-content">
+                        Performance Optimization - LOD auto-generation and texture atlasing for props<br>
+                        Public v1.0 Environment Gen - Open self-serve sign up with launch video & docs<br>
+                        API & Plugin Kit - Unity & Unreal connectors with REST endpoints
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Market Opportunity</h2>
+            <p class="font-medium">
+                Our total addressable market is $8.6B from the global 3D asset market (games, film, virtual production), with an initial serviceable obtainable market of $126M from the indie/SMB studios segment. We're targeting a growing need as 93% of surveyed studio leads expressed willingness to pay for 30% faster environment production.
+            </p>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="market-progress"></div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Team</h2>
+            <div class="team-grid slide-in" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                <div class="team-card" style="background-color: rgba(var(--text-color-rgb), 0.05); border-radius: 8px; padding: 1.2rem; transition: all 0.3s ease; display: flex; flex-direction: column;">
+                    <div class="team-name" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem;">Zachary Decker</div>
+                    <div class="team-role" style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.8rem;">Co-founder</div>
+                    <div class="team-specialty" style="font-size: 0.85rem; padding: 0.3rem 0.7rem; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 20px; display: inline-block; margin-top: auto;">Robotics & Environment Generation</div>
+                </div>
+                
+                <div class="team-card" style="background-color: rgba(var(--text-color-rgb), 0.05); border-radius: 8px; padding: 1.2rem; transition: all 0.3s ease; display: flex; flex-direction: column;">
+                    <div class="team-name" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem;">Jeremy Lu</div>
+                    <div class="team-role" style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.8rem;">Co-founder</div>
+                    <div class="team-specialty" style="font-size: 0.85rem; padding: 0.3rem 0.7rem; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 20px; display: inline-block; margin-top: auto;">Market Research & Business Development</div>
+                </div>
+                
+                <div class="team-card" style="background-color: rgba(var(--text-color-rgb), 0.05); border-radius: 8px; padding: 1.2rem; transition: all 0.3s ease; display: flex; flex-direction: column;">
+                    <div class="team-name" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem;">Ryan Lewis</div>
+                    <div class="team-role" style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.8rem;">Co-founder</div>
+                    <div class="team-specialty" style="font-size: 0.85rem; padding: 0.3rem 0.7rem; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 20px; display: inline-block; margin-top: auto;">Game Development Background</div>
+                </div>
+                
+                <div class="team-card" style="background-color: rgba(var(--text-color-rgb), 0.05); border-radius: 8px; padding: 1.2rem; transition: all 0.3s ease; display: flex; flex-direction: column;">
+                    <div class="team-name" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem;">Wentao Ye</div>
+                    <div class="team-role" style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.8rem;">Co-founder</div>
+                    <div class="team-specialty" style="font-size: 0.85rem; padding: 0.3rem 0.7rem; background-color: rgba(var(--text-color-rgb), 0.1); border-radius: 20px; display: inline-block; margin-top: auto;">Graphics Pipelines</div>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Current Status</h2>
+            <p class="font-medium">
+                PolyRook is currently in Alpha stage with some active users but no revenue yet. We've been in active development for 6 months (since October 2024) and are preparing for our next phase of growth.
+            </p>
+
+            
+            <div class="flex justify-between items-center mt-header" style="margin-top: 2rem;">
+                <a href="../index.html" class="font-medium" style="text-decoration: none;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Portfolio
+                    </span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Simple interactive 3D scene with Three.js
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if the browser supports WebGL
+            const canvas = document.getElementById('scene-canvas');
+            if (!canvas || !window.WebGLRenderingContext) {
+                canvas.parentElement.style.display = 'none';
+                return;
+            }
+
+            // Simple Three.js scene
+            try {
+                // Load Three.js from CDN if not available
+                if (typeof THREE === 'undefined') {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+                    script.onload = initScene;
+                    document.head.appendChild(script);
+                } else {
+                    initScene();
+                }
+            } catch (e) {
+                console.error('Error loading Three.js:', e);
+                canvas.parentElement.style.display = 'none';
+            }
+
+            function initScene() {
+                const width = canvas.clientWidth;
+                const height = canvas.clientHeight;
+                
+                // Create scene
+                const scene = new THREE.Scene();
+                
+                // Create camera
+                const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+                camera.position.z = 5;
+                
+                // Create renderer
+                const renderer = new THREE.WebGLRenderer({
+                    canvas: canvas,
+                    alpha: true,
+                    antialias: true
+                });
+                renderer.setSize(width, height);
+                
+                // Create terrain-like geometry
+                const geometry = new THREE.PlaneGeometry(10, 10, 30, 30);
+                
+                // Create custom displacement
+                const positionAttribute = geometry.attributes.position;
+                
+                for (let i = 0; i < positionAttribute.count; i++) {
+                    const x = positionAttribute.getX(i);
+                    const y = positionAttribute.getY(i);
+                    
+                    // Generate terrain-like height
+                    const height = 0.5 * Math.sin(x * 0.5) * Math.sin(y * 0.5);
+                    
+                    positionAttribute.setZ(i, height);
+                }
+                
+                // Create material
+                const isDarkMode = document.documentElement.classList.contains('dark');
+                const material = new THREE.MeshStandardMaterial({
+                    color: isDarkMode ? 0x444444 : 0x888888,
+                    wireframe: true,
+                    roughness: 0.8,
+                    metalness: 0.2
+                });
+                
+                // Create mesh
+                const terrain = new THREE.Mesh(geometry, material);
+                terrain.rotation.x = -Math.PI / 2;
+                scene.add(terrain);
+                
+                // Add ambient light
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+                scene.add(ambientLight);
+                
+                // Add directional light
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(5, 5, 5);
+                scene.add(directionalLight);
+                
+                // Interactive rotation
+                let isRotating = true;
+                canvas.addEventListener('click', function() {
+                    isRotating = !isRotating;
+                });
+                
+                // Animation
+                function animate() {
+                    requestAnimationFrame(animate);
+                    
+                    if (isRotating) {
+                        terrain.rotation.z += 0.0005;
+                    }
+                    
+                    renderer.render(scene, camera);
+                }
+                
+                // Handle resize
+                window.addEventListener('resize', function() {
+                    const newWidth = canvas.clientWidth;
+                    const newHeight = canvas.clientHeight;
+                    
+                    camera.aspect = newWidth / newHeight;
+                    camera.updateProjectionMatrix();
+                    
+                    renderer.setSize(newWidth, newHeight);
+                });
+
+                // Update material on theme change
+                document.getElementById('theme-toggle').addEventListener('click', function() {
+                    setTimeout(() => {
+                        const isDarkMode = document.documentElement.classList.contains('dark');
+                        material.color.set(isDarkMode ? 0x444444 : 0x888888);
+                    }, 100);
+                });
+                
+                animate();
+            }
+
+            // Animate progress bar
+            setTimeout(() => {
+                document.getElementById('market-progress').style.width = '80%';
+            }, 500);
+
+            // Intersection Observer for elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe stats and timeline
+            document.querySelectorAll('.stat-card, .feature-card, .tech-pill').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Toggle feature card expansion
+        function toggleFeature(element) {
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
+            } else {
+                document.querySelectorAll('.feature-card.active').forEach(card => {
+                    card.classList.remove('active');
+                });
+                element.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html> 

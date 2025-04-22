@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <meta name="theme-color" content="#000000"/>
+    <title>Project - AI Actual</title>
+    <meta name="description" content="Personal finance app enhanced with AI capabilities"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <style>
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        #finance-demo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.5s ease;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(var(--text-color-rgb), 0.1);
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--focus-color);
+            transition: width 1.5s ease-in-out;
+        }
+        
+        .feature-card {
+            position: relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            background-color: rgba(var(--text-color-rgb), 0.03);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            background-color: rgba(var(--text-color-rgb), 0.07);
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card.active p {
+            opacity: 1;
+            max-height: 200px;
+            margin-top: 0.5rem;
+        }
+        
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-pill {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: rgba(var(--text-color-rgb), 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .tech-pill:hover {
+            background-color: var(--focus-color);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        .workflow {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 2rem;
+        }
+        
+        .workflow::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: rgba(var(--text-color-rgb), 0.2);
+        }
+        
+        .workflow-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .workflow-item:hover {
+            opacity: 1;
+        }
+        
+        .workflow-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--focus-color);
+            transform: translateX(-50%);
+        }
+        
+        .workflow-step {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        
+        .workflow-description {
+            font-size: 0.9rem;
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .slide-in {
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.8s forwards;
+        }
+        
+        @keyframes slideIn {
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* For dark/light mode compatibility */
+        html.dark {
+            --text-color-rgb: 255, 255, 255;
+            --focus-color: #8a4fff;
+            --accent-color-rgb: 138, 79, 255;
+        }
+        
+        html.light {
+            --text-color-rgb: 26, 26, 26;
+            --focus-color: #7040e0;
+            --accent-color-rgb: 112, 64, 224;
+        }
+        
+        .team-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 1.5rem; 
+            margin: 1.5rem 0;
+        }
+        
+        .team-card {
+            background-color: rgba(var(--text-color-rgb), 0.05); 
+            border-radius: 8px; 
+            padding: 1.2rem; 
+            transition: all 0.3s ease; 
+            display: flex; 
+            flex-direction: column;
+        }
+        
+        .team-name {
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            margin-bottom: 0.4rem;
+        }
+        
+        .team-role {
+            font-size: 0.9rem; 
+            opacity: 0.8; 
+            margin-bottom: 0.8rem;
+        }
+        
+        .team-specialty {
+            font-size: 0.85rem; 
+            padding: 0.3rem 0.7rem; 
+            background-color: rgba(var(--text-color-rgb), 0.1); 
+            border-radius: 20px; 
+            display: inline-block; 
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body class="antialiased inconsolata-yes">
+    <div class="container max-w-700px mx-auto p-container" style="margin-bottom: 0;">
+        <main>
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title">
+                    AI Actual
+                </h1>
+                
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex justify-between items-center mt-header mb-header">
+                <p class="date font-medium m-0">Personal Finance App - Spring 2023</p>
+                <div class="flex gap-3 items-center mr-10px">
+                    <a href="https://github.com/rhit-deckerza/AIActual" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository for AI Actual" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <a href="../index.html" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="canvas-container fade-in">
+                <img id="finance-demo" src="C:\Users\zadec\Desktop\CS_Projects\NewPortfolio3\images\AIActualCategorization.gif" alt="AI Actual dashboard" />
+            </div>
+
+            <h2 style="padding-bottom: 0;">Project Overview</h2>
+            <p class="font-medium">
+                AI Actual is my fork of the popular open-source personal finance application Actual Budget, enhanced with artificial intelligence capabilities. The project focuses on making personal finance more accessible and intelligent through natural language interactions and automated management.
+            </p>
+
+            <h2 style="padding-bottom: 0;">Technologies</h2>
+            <div class="tech-pills slide-in">
+                <div class="tech-pill">TypeScript</div>
+                <div class="tech-pill">React</div>
+                <div class="tech-pill">Python</div>
+                <div class="tech-pill">Flask</div>
+                <div class="tech-pill">SQLite</div>
+                <div class="tech-pill">Artificial Intelligence</div>
+                <div class="tech-pill">Natural Language Processing</div>
+            </div>
+
+
+            <h2 style="padding-bottom: 0;">Workflow</h2>
+            <div class="workflow slide-in" style="animation-delay: 0.4s">
+                <div class="workflow-item">
+                    <div class="workflow-step">Data Ingestion</div>
+                    <div class="workflow-description">Import and clean bank transactions</div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step">AI Processing</div>
+                    <div class="workflow-description">Automatic categorization and payee normalization</div>
+                </div>
+                <div class="workflow-item">
+                    <div class="workflow-step">Natural Language Interface</div>
+                    <div class="workflow-description">Chat-based interaction with financial data</div>
+                </div>
+                <!-- <div class="workflow-item">
+                    <div class="workflow-step">Privacy Protection</div>
+                    <div class="workflow-description">Secure data with local-first approach and encryption</div>
+                </div> -->
+            </div>
+
+            <h2 style="padding-bottom: 0;">Future Development</h2>
+            <p class="font-medium">
+                Future development plans include integrated AI budget planning, predictive financial forecasting, and local model support for enhanced privacy. By improving upon an already solid open-source foundation, AI Actual demonstrates how machine learning can make financial tools more intelligent and personalized while respecting user privacy.
+            </p>
+
+            <div class="flex justify-between items-center mt-header" style="margin-top: 2rem;">
+                <a href="../index.html" class="font-medium" style="text-decoration: none;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Portfolio
+                    </span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bar if exists
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                setTimeout(() => {
+                    progressBar.style.width = '80%';
+                }, 500);
+            }
+
+            // Intersection Observer for elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe elements
+            document.querySelectorAll('.feature-card, .tech-pill').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Toggle feature card expansion
+        function toggleFeature(element) {
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
+            } else {
+                document.querySelectorAll('.feature-card.active').forEach(card => {
+                    card.classList.remove('active');
+                });
+                element.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

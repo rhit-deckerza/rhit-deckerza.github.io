@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <meta name="theme-color" content="#000000"/>
+    <title>Project - Enhanced Calendar Assistant</title>
+    <meta name="description" content="Research project improving an LLM-powered calendar assistant"/>
+    <link rel="icon" href="/favicon.ico"/>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles from other projects */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .screenshot {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.5s ease;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-card {
+            background-color: rgba(var(--text-color-rgb), 0.02);
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            background-color: rgba(var(--text-color-rgb), 0.03);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .feature-card {
+            position: relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+            background-color: rgba(var(--text-color-rgb), 0.02);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .feature-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card.active p {
+            opacity: 1;
+            max-height: 200px;
+            margin-top: 0.5rem;
+        }
+        
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .tech-pill {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .tech-pill:hover {
+            background-color: rgba(var(--accent-color-rgb), 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .workflow {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 2rem;
+        }
+        
+        .workflow::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: rgba(var(--text-color-rgb), 0.2);
+        }
+        
+        .workflow-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .workflow-item:hover {
+            opacity: 1;
+        }
+        
+        .workflow-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--focus-color);
+            transform: translateX(-50%);
+        }
+        
+        .workflow-step {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+        
+        .workflow-description {
+            font-size: 0.9rem;
+        }
+        
+        /* Animation classes */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .slide-in {
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideIn 0.8s forwards;
+        }
+        
+        @keyframes slideIn {
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* For dark/light mode compatibility with green accents */
+        html.dark {
+            --text-color-rgb: 255, 255, 255;
+            --focus-color: #22c55e;
+            --accent-color-rgb: 34, 197, 94;
+        }
+        
+        html.light {
+            --text-color-rgb: 26, 26, 26;
+            --focus-color: #16a34a;
+            --accent-color-rgb: 22, 163, 74;
+        }
+        
+        /* Progress bar styles */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(var(--text-color-rgb), 0.1);
+            border-radius: 3px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--focus-color);
+            transition: width 1.5s ease-in-out;
+        }
+        
+        /* Add iframe container styles */
+        .iframe-container {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+            background-color: #f7f9fc;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .iframe-container iframe {
+            width: 100%;
+            border: none;
+        }
+        
+        /* Custom visualization styles */
+        .visualization {
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: rgba(var(--text-color-rgb), 0.02);
+            border: 1px solid rgba(var(--text-color-rgb), 0.1);
+        }
+        
+        .visualization-title {
+            border-bottom: 1px solid rgba(var(--text-color-rgb), 0.1);
+            color: var(--text-color);
+            padding: 0.8rem 1rem;
+            font-weight: 600;
+        }
+        
+        .visualization-content {
+            padding: 0rem;
+        }
+        
+        html.dark .visualization {
+            background-color: #1a1a1a;
+        }
+        
+        html.dark .visualization-content {
+            color: var(--text-color);
+        }
+        
+        html.dark text {
+            fill: var(--text-color);
+        }
+
+        /* Update visualization section headers */
+        .visualization .visualization-content h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        /* Calendar Interface Visualization */
+        .visualization .visualization-content div div:first-child {
+            margin-bottom: 10px;
+        }
+
+        /* Additional dark mode styles */
+        html.dark .stat-value,
+        html.dark .stat-label,
+        html.dark h1,
+        html.dark h2,
+        html.dark h3,
+        html.dark h4,
+        html.dark p,
+        html.dark .tech-pill,
+        html.dark .feature-card h3,
+        html.dark .feature-card p,
+        html.dark .date {
+            color: var(--text-color);
+        }
+        
+        html.dark .visualization-content svg text {
+            fill: var(--text-color);
+        }
+        
+        /* Fix for SVG elements in dark mode */
+        html.dark svg {
+            color: var(--text-color);
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .theme-toggle-btn:hover {
+            opacity: 0.7;
+        }
+        
+        .theme-toggle-btn:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body class="antialiased inconsolata-yes">
+    <div class="container max-w-700px mx-auto p-container" style="margin-bottom: 0;">
+        <main>
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title">
+                    Enhanced Calendar Assistant
+                </h1>
+                
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex justify-between items-center mt-header mb-header">
+                <p class="date font-medium m-0">Prompt Engineering Research - Spring 2024</p>
+                <div class="flex gap-3 items-center mr-10px">
+                    <a href="C:\Users\zadec\Desktop\CS_Projects\NewPortfolio3\GENAI_report.pdf" target="_blank" rel="noopener noreferrer" aria-label="Research Paper" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </a>
+                    <a href="../index.html" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <h2 style="padding-bottom: 0;">Project Overview</h2>
+            <p class="font-medium">
+                This project expanded upon a previous prototype of an LLM-powered calendar assistant, focusing on enhancing its capabilities through systematic application of prompt engineering techniques. I created an improved interface using React and Node.js, then implemented and evaluated various prompting strategies including self-consistency, chain-of-thought, few-shot, template, and persona approaches.
+            </p>
+            <p class="font-medium">
+                The research included a comprehensive analysis comparing these techniques across multiple state-of-the-art language models: GPT-4 Turbo, Mistral Large, GPT-3.5, and Mistral 7B. Results showed that combining few-shot learning with templating yielded the most significant performance improvements, with self-consistency also demonstrating strong standalone results.
+            </p>
+            <p class="font-medium">
+                A key technical contribution was the development of a simplified JSON-based calendar representation format that proved more effective than the previous ICAL approach. This research provides valuable insights into how prompt engineering can significantly enhance the performance of LLMs in structured tasks like calendar management.
+            </p>
+
+            <h2 style="padding-bottom: 0;">Technologies</h2>
+            <div class="tech-pills slide-in">
+                <div class="tech-pill">React</div>
+                <div class="tech-pill">Node.js</div>
+                <div class="tech-pill">JavaScript</div>
+                <div class="tech-pill">Large Language Models</div>
+                <div class="tech-pill">API Integration</div>
+                <div class="tech-pill">GPT-4 Turbo</div>
+                <div class="tech-pill">Mistral Large</div>
+                <div class="tech-pill">Prompt Engineering</div>
+                <div class="tech-pill">Few-shot Learning</div>
+                <div class="tech-pill">JSON</div>
+            </div>
+
+            <!-- <h2 style="padding-bottom: 0;">Key Features</h2>
+            <div class="feature-cards">
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Multi-technique prompt engineering comparison</h3>
+                    <p>Systematic evaluation of self-consistency, chain-of-thought, few-shot, template, and persona approaches across different LLM models to determine optimal performance strategies.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Simplified JSON calendar representation</h3>
+                    <p>Redesigned calendar data structure that replaced complex ICAL format with a streamlined JSON structure, making it easier for LLMs to process and understand calendar data.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Cross-model performance analysis</h3>
+                    <p>Comprehensive testing across GPT-4 Turbo, Mistral Large, GPT-3.5, and Mistral 7B models to measure how different architectures respond to various prompt engineering techniques.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>React-based interactive interface</h3>
+                    <p>Modernized user interface built with React that provides an intuitive way to interact with the calendar assistant through natural language commands.</p>
+                </div>
+                <div class="feature-card" onclick="toggleFeature(this)">
+                    <h3>Multi-metric evaluation framework</h3>
+                    <p>Custom evaluation system that assessed prompt techniques on accuracy, consistency, clarity, and completion time to provide a holistic performance measurement.</p>
+                </div>
+            </div> -->
+
+            
+            <!-- Calendar Format Improvement Visualization -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">From complex ICAL to simple JSON structure</h2>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:15px; gap:20px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:250px; padding:15px; border-radius:8px; border: 1px solid rgba(var(--text-color-rgb), 0.1);">
+                            <div style="margin-bottom:8px; display:flex; align-items:center; gap:5px;">
+                                <h4 style="margin:0;">ICAL Format (Complex)</h4>
+                            </div>
+                            <div style="font-family:monospace; font-size:0.8rem; background-color:rgba(var(--text-color-rgb), 0.03); padding:10px; border-radius:8px; white-space:pre;">BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTAMP:19970714T170000Z
+DTSTART:19970714T170000Z
+END:VEVENT
+END:VCALENDAR</div>
+                        </div>
+                        <div style="flex:1; min-width:250px; padding:15px; border-radius:8px; border: 1px solid rgba(var(--text-color-rgb), 0.1);">
+                            <div style="margin-bottom:8px; display:flex; align-items:center; gap:5px;">
+                                <h4 style="margin:0;">JSON Format (Simple)</h4>
+                            </div>
+                            <div style="font-family:monospace; font-size:0.8rem; background-color:rgba(var(--text-color-rgb), 0.03); padding:10px; border-radius:8px; white-space:pre;">{
+  "id": "event-123",
+  "title": "Meeting",
+  "start": "2024-05-05T10:00:00"
+}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prompt Engineering Comparison Visualization -->
+            
+
+            <!-- LLM Comparison Visualization -->
+            <!-- <d -->
+
+            <!-- Prompt Engineering Techniques -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">Prompt Engineering Techniques</h2>
+                    </div>
+                    <p>Click on a technique to see details:</p>
+                    <div class="prompt-options">
+                        <div class="prompt-option" style="background-color:rgba(var(--text-color-rgb), 0.05); border: 1px solid rgba(var(--text-color-rgb), 0.1); border-radius:8px;" id="naive">
+                            <h4>Naive Baseline</h4>
+                            <p>Basic task description</p>
+                            <div class="performance-indicator neutral">Baseline</div>
+                        </div>
+                        <div class="prompt-option" style="background-color:rgba(var(--accent-color-rgb), 0.05); border: 1px solid rgba(var(--text-color-rgb), 0.1); border-radius:8px;" id="fewshot">
+                            <h4>Few-Shot</h4>
+                            <p>Examples of queries</p>
+                            <div class="performance-indicator positive">+0.4 pts</div>
+                        </div>
+                        <div class="prompt-option" style="background-color:rgba(var(--accent-color-rgb), 0.1); border: 1px solid rgba(var(--text-color-rgb), 0.1); border-radius:8px;" id="selfcon">
+                            <h4>Self-Consistency</h4>
+                            <p>Multiple reasoning paths</p>
+                            <div class="performance-indicator positive">+0.6 pts</div>
+                        </div>
+                        <div class="prompt-option" style="background-color:rgba(var(--accent-color-rgb), 0.08); border: 1px solid rgba(var(--text-color-rgb), 0.1); border-radius:8px;" id="template">
+                            <h4>Template</h4>
+                            <p>Structured format</p>
+                            <div class="performance-indicator positive">+0.5 pts</div>
+                        </div>
+                        <div class="prompt-option active" style="background-color:rgba(var(--accent-color-rgb), 0.15); border: 1px solid rgba(var(--text-color-rgb), 0.2); border-radius:8px;" id="combo">
+                            <h4>Few-Shot + Template</h4>
+                            <p>Combined approach</p>
+                            <div class="performance-indicator positive pulse">+1.0 pts</div>
+                        </div>
+                    </div>
+                    <div id="details-box" class="details-box" style="background-color:rgba(var(--accent-color-rgb), 0.15); border-radius:8px; margin-top:15px; padding:15px;">
+                        <h4 style="margin-top:0;" id="details-title">Few-Shot + Template (Best)</h4>
+                        <p id="details-desc" style="margin-bottom:0;">Combined examples with structured format guidance.</p>
+                    </div>
+                </div>
+                <style>
+                    .prompt-options {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                        margin-top: 15px;
+                    }
+                    
+                    .prompt-option {
+                        flex: 1;
+                        min-width: 110px;
+                        padding: 10px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        opacity: 0.7;
+                    }
+                    
+                    .prompt-option:hover {
+                        transform: translateY(-3px);
+                        opacity: 1;
+                    }
+                    
+                    .prompt-option.active {
+                        border-color: var(--focus-color) !important;
+                        opacity: 1;
+                    }
+                    
+                    .prompt-option h4 {
+                        margin-bottom: 6px;
+                        font-size: 0.9rem;
+                    }
+                    
+                    .prompt-option p {
+                        font-size: 0.8rem;
+                    }
+                    
+                    .performance-indicator {
+                        margin-top: 8px;
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                        display: inline-block;
+                        font-weight: bold;
+                        font-size: 0.75rem;
+                    }
+                    
+                    .positive {
+                        background-color: rgba(var(--accent-color-rgb), 0.2);
+                        color: var(--text-color);
+                    }
+                    
+                    .neutral {
+                        background-color: rgba(var(--text-color-rgb), 0.1);
+                        color: var(--text-color);
+                    }
+                    
+                    @keyframes pulse {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.05); }
+                        100% { transform: scale(1); }
+                    }
+                    
+                    .pulse {
+                        animation: pulse 2s infinite;
+                    }
+                </style>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const promptDetails = {
+                            naive: { title: "Naive Baseline", desc: "Basic approach with minimal guidance for the LLM." },
+                            fewshot: { title: "Few-Shot Learning", desc: "Uses examples of calendar queries and their responses." },
+                            selfcon: { title: "Self-Consistency", desc: "Generates multiple reasoning paths then selects the most consistent answer." },
+                            template: { title: "Template", desc: "Provides structured response format with clear sections." },
+                            combo: { title: "Few-Shot + Template (Best)", desc: "Combined examples with structured format guidance." }
+                        };
+
+                        document.querySelectorAll('.prompt-option').forEach(option => {
+                            option.addEventListener('click', function() {
+                                document.querySelectorAll('.prompt-option').forEach(o => o.classList.remove('active'));
+                                this.classList.add('active');
+                                const detailsBox = document.getElementById('details-box');
+                                const detailsTitle = document.getElementById('details-title');
+                                const detailsDesc = document.getElementById('details-desc');
+                                const id = this.id;
+                                
+                                detailsBox.style.display = 'block';
+                                detailsBox.style.backgroundColor = getComputedStyle(this).backgroundColor;
+                                detailsTitle.textContent = promptDetails[id].title;
+                                detailsDesc.textContent = promptDetails[id].desc;
+                            });
+                        });
+                    });
+                </script>
+            </div>
+            
+            <!-- Results & Conclusions -->
+            <div class="visualization-content fade-in">
+                <div style="border-radius:8px;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <h2 style="padding-bottom: 0;">Results & Conclusions</h2>
+                    </div>
+                    <p>Performance across prompting techniques:</p>
+                    <div class="results-bars">
+                        <div class="result-bar">
+                            <div class="result-bar-fill" style="width:60%;background-color:rgba(var(--text-color-rgb), 0.3)"></div>
+                            <span class="result-label">Baseline</span>
+                            <span class="result-value">6.0/10</span>
+                        </div>
+                        <div class="result-bar">
+                            <div class="result-bar-fill" style="width:64%;background-color:rgba(var(--accent-color-rgb), 0.3)"></div>
+                            <span class="result-label">Few-Shot</span>
+                            <span class="result-value">6.4/10</span>
+                        </div>
+                        <div class="result-bar">
+                            <div class="result-bar-fill" style="width:66%;background-color:rgba(var(--accent-color-rgb), 0.4)"></div>
+                            <span class="result-label">Self-Consistency</span>
+                            <span class="result-value">6.6/10</span>
+                        </div>
+                        <div class="result-bar">
+                            <div class="result-bar-fill" style="width:65%;background-color:rgba(var(--accent-color-rgb), 0.35)"></div>
+                            <span class="result-label">Template</span>
+                            <span class="result-value">6.5/10</span>
+                        </div>
+                        <div class="result-bar">
+                            <div class="result-bar-fill" style="width:70%;background-color:rgba(var(--accent-color-rgb), 0.5)"></div>
+                            <span class="result-label">Few-Shot + Template</span>
+                            <span class="result-value">7.0/10</span>
+                        </div>
+                    </div>
+                    <h3 style="margin-top:15px">Key Findings</h3>
+                    <ul style="margin:10px 0 0 20px; margin-bottom:0;">
+                        <li>Combined Few-Shot + Template approach was most effective</li>
+                        <li>Self-Consistency was the best standalone technique</li>
+                        <li>JSON format significantly improved model performance vs ICAL</li>
+                        <li>GPT-4 Turbo performed best overall</li>
+                    </ul>
+                </div>
+                <style>
+                    .results-bars {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                        margin-top: 15px;
+                    }
+                    
+                    .result-bar {
+                        height: 20px;
+                        background-color: rgba(var(--text-color-rgb), 0.05);
+                        border-radius: 6px;
+                        overflow: hidden;
+                        position: relative;
+                    }
+                    
+                    .result-bar-fill {
+                        height: 100%;
+                        border-radius: 6px;
+                        transition: width 1s ease-out;
+                    }
+                    
+                    .result-label {
+                        position: absolute;
+                        top: 0;
+                        left: 10px;
+                        line-height: 20px;
+                        color: var(--text-color);
+                        font-weight: bold;
+                        font-size: 0.8rem;
+                    }
+                    
+                    .result-value {
+                        position: absolute;
+                        top: 0;
+                        right: 10px;
+                        line-height: 20px;
+                        color: var(--text-color);
+                        font-weight: bold;
+                        font-size: 0.8rem;
+                    }
+                </style>
+            </div>
+
+            
+
+
+            <div class="flex justify-between items-center mt-header" style="margin-top: 2rem;">
+                <a href="../index.html" class="font-medium" style="text-decoration: none;">
+                    <span style="display: inline-flex; align-items: center; gap: 5px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Portfolio
+                    </span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fix image paths if needed
+            document.querySelectorAll('img').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('/')) {
+                    img.setAttribute('src', src.substring(1));
+                }
+            });
+            
+            // Intersection Observer for elements
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe elements
+            document.querySelectorAll('.feature-card, .tech-pill, .visualization, .stats-grid').forEach(el => {
+                observer.observe(el);
+            });
+        });
+
+        // Toggle feature card expansion
+        function toggleFeature(element) {
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
+            } else {
+                document.querySelectorAll('.feature-card.active').forEach(card => {
+                    card.classList.remove('active');
+                });
+                element.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html> 
