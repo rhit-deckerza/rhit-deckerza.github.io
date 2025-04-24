@@ -467,11 +467,13 @@ The JSON needs to follow this structure to work with my resume compiler:
   - "location": City, State
   - "dateRange": Employment period
   - "bullets": Array of accomplishment statements
+    NOTE: The first bullet will be displayed as a subtitle without a bullet point, remaining bullets will be in a bulleted list
 
 - "projects": Array of project objects with:
   - "name": Project name (can use **bold** with double asterisks)
   - "dateRange": Project timeframe
   - "bullets": Array of description/accomplishment statements
+    NOTE: The first bullet will be displayed as a subtitle without a bullet point, remaining bullets will be in a bulleted list
 
 - "publications": Array of publication objects (optional) with:
   - "title": Publication title (can use **bold** with double asterisks)
@@ -488,6 +490,7 @@ IMPORTANT FORMATTING TIPS:
 2. For bullet points, focus on accomplishments with this structure:
    - Action verb + what you did + result/impact (with metrics when possible)
    - Example: "Redesigned authentication system, reducing login failures by **40%**"
+   - Remember that the first bullet in experience and project sections will display as a subtitle without a bullet point
 
 Here's a simplified example of the JSON structure:
 
@@ -1011,18 +1014,26 @@ After making changes to my resume, please:
                 
                 // Add bullets if provided
                 if (job.bullets && job.bullets.length > 0) {
-                    const bulletList = document.createElement('ul');
-                    
-                    job.bullets.forEach(bulletText => {
-                        const bullet = document.createElement('li');
+                    // First bullet becomes a subtitle (if present)
+                    if (job.bullets.length > 0) {
+                        const subtitle = document.createElement('p');
+                        subtitle.className = 'job-subtitle';
+                        parseBulletText(subtitle, job.bullets[0]);
+                        jobEntry.appendChild(subtitle);
                         
-                        // Handle formatting for bold text (** markdown style)
-                        parseBulletText(bullet, bulletText);
-                        
-                        bulletList.appendChild(bullet);
-                    });
-                    
-                    jobEntry.appendChild(bulletList);
+                        // Remaining bullets as a list
+                        if (job.bullets.length > 1) {
+                            const bulletList = document.createElement('ul');
+                            
+                            job.bullets.slice(1).forEach(bulletText => {
+                                const bullet = document.createElement('li');
+                                parseBulletText(bullet, bulletText);
+                                bulletList.appendChild(bullet);
+                            });
+                            
+                            jobEntry.appendChild(bulletList);
+                        }
+                    }
                 }
                 
                 experienceList.appendChild(jobEntry);
