@@ -351,7 +351,7 @@ p {
 /* Project/Education list items */
 div[class^=">"], div:not([class]):not(h2) + div:not([class]) {
   position: relative;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 /* Fix for bullet spacing - target all divs containing bullet links */

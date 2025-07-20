@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Prefetch detail pages for faster navigations -->
+    <link rel="prefetch" href="recent_projects/polyrook.html" as="document">
+    <link rel="prefetch" href="recent_projects/actual.html" as="document">
+    <link rel="prefetch" href="recent_projects/organize.html" as="document">
+    <link rel="prefetch" href="recent_projects/freshmen-advising-llm.html" as="document">
+    <link rel="prefetch" href="research/enhanced-calendar-assistant.html" as="document">
+    <link rel="prefetch" href="research/beauty-beyond-words.html" as="document">
+    <link rel="prefetch" href="research/evolution-development.html" as="document">
+    <link rel="prefetch" href="dev_tools/zip-to-context.html" as="document">
+    <link rel="prefetch" href="dev_tools/resume-compiler.html" as="document">
+
     <meta name="theme-color" content="#000000"/>
     <title>Zachary Decker</title>
     <meta name="description" content="Discover people through shared experiences."/>
@@ -26,279 +38,110 @@
     <link rel="icon" href="C:\Users\zadec\Desktop\CS_Projects\NewPortfolio3\favicon.ico"/>
     <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
-<style>
-    .project-polyrook:hover {
-        color: #3b82f6 !important;
-    }
-    
-    .project-actual:hover {
-        color: #8a4fff !important;
-    }
-    
-    .project-organize:hover {
-        color: #ec4899 !important;
-    }
-    
-    .project-freshmen:hover {
-        color: #dc2626 !important;
-    }
-    
-    .project-calendar:hover {
-        color: #22c55e !important;
-    }
-    
-    .project-polyrook:hover::before {
-        color: #3b82f6 !important;
-    }
-    
-    .project-actual:hover::before {
-        color: #8a4fff !important;
-    }
-    
-    .project-organize:hover::before {
-        color: #ec4899 !important;
-    }
-    
-    .project-freshmen:hover::before {
-        color: #dc2626 !important;
-    }
-    
-    .project-calendar:hover::before {
-        color: #22c55e !important;
-    }
-    
-    .project-beauty:hover {
-        color: #a78bfa !important;
-    }
-    
-    .project-beauty:hover::before {
-        color: #a78bfa !important;
-    }
-    
-    .project-evolution:hover {
-        color: #3b82f6 !important;
-    }
-    
-    .project-evolution:hover::before {
-        color: #3b82f6 !important;
-    }
-    
-    .project-zipcontext {
-        color: inherit;
-    }
-    
-    .project-zipcontext:hover {
-        color: #eab308 !important;
-    }
-    
-    .project-zipcontext:hover::before {
-        color: #eab308 !important;
-    }
-    
-    .project-resume:hover {
-        color: #06b6d4 !important;
-    }
-    
-    .project-resume:hover::before {
-        color: #06b6d4 !important;
-    }
-</style>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <style>
+        .project-polyrook:hover {
+            color: #3b82f6 !important;
+        }
+        .project-actual:hover {
+            color: #8a4fff !important;
+        }
+        .project-organize:hover {
+            color: #ec4899 !important;
+        }
+        .project-freshmen:hover {
+            color: #dc2626 !important;
+        }
+        .project-calendar:hover {
+            color: #22c55e !important;
+        }
+        .project-polyrook:hover::before {
+            color: #3b82f6 !important;
+        }
+        .project-actual:hover::before {
+            color: #8a4fff !important;
+        }
+        .project-organize:hover::before {
+            color: #ec4899 !important;
+        }
+        .project-freshmen:hover::before {
+            color: #dc2626 !important;
+        }
+        .project-calendar:hover::before {
+            color: #22c55e !important;
+        }
+        .project-beauty:hover {
+            color: #a78bfa !important;
+        }
+        .project-beauty:hover::before {
+            color: #a78bfa !important;
+        }
+        .project-evolution:hover {
+            color: #3b82f6 !important;
+        }
+        .project-evolution:hover::before {
+            color: #3b82f6 !important;
+        }
+        .project-zipcontext {
+            color: inherit;
+        }
+        .project-zipcontext:hover {
+            color: #eab308 !important;
+        }
+        .project-zipcontext:hover::before {
+            color: #eab308 !important;
+        }
+        .project-resume:hover {
+            color: #06b6d4 !important;
+        }
+        .project-resume:hover::before {
+            color: #06b6d4 !important;
+        }
+    </style>
 </head>
 <body class="antialiased inconsolata-yes">
     <div class="container max-w-700px mx-auto p-container" style="margin-bottom: 0;">
         <main>
             <div class="flex justify-between items-center">
                 <h1 class="flex items-center gap-2 title" style="margin-bottom: 0;">
-                    <!-- <div class="w-28px h-28px relative">
-                        <img alt="Linkd Logo" class="object-contain" src="/favicon.ico" width="28" height="28"/>
-                    </div> -->
                     Zachary Decker
                 </h1>
-                
                 <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
-                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
-                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
-                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
-                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
-                    </svg>
+                    <!-- theme toggle svg -->
                 </button>
             </div>
             <a href="#" class="copy-email cursor-pointer text-inherit no-underline transition-opacity hover-opacity hover-no-underline inline-flex items-center gap-5px" aria-label="Copy email address: founders@linkd.inc" role="button">
                 <b>zad25@cornell.edu</b>
-                <svg class="copy-icon w-14px h-14px opacity-60 transition-opacity" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
+                <!-- copy icon svg -->
             </a>
             <div class="flex justify-between items-center mt-header mb-header">
-                <p class="date font-medium m-0">April 25, 2025</p>
+                <p class="date font-medium m-0">July 20, 2025</p>
                 <div class="flex gap-3 items-center mr-10px">
-                    <a href="https://www.linkedin.com/in/zachary-decker-b1347922b/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile for Linkd Inc" class="text-icon hover-opacity transition-opacity">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"></path>
-                        </svg>
-                    </a>
-                    <a href="https://github.com/rhit-deckerza" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile for Zachary Decker" class="text-icon hover-opacity transition-opacity">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                    </a>
-                    <a href="resume.pdf" target="_blank" rel="noopener noreferrer" class="text-icon hover-opacity transition-opacity" aria-label="View Resume">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="12" y1="18" x2="12" y2="12"></line>
-                            <polyline points="9 15 12 18 15 15"></polyline>
-                        </svg>
-                    </a>
+                    <!-- social icons -->
                 </div>
             </div>
-            <h2 style="padding-bottom: 0;">Education</h2>
+            <h2>Education</h2>
             <div>Cornell Tech MEng in CS, 2025</div>
             <div>Rose-Hulman BS in CS, 2024</div>
-            <h2 style="padding-bottom: 0;">Experience</h2>
-            <div>DEKA Research & Development: Computer Vision Engineer</div>
-            <div>AON Devices: Data Science Intern</div>
-            <h2 style="padding-bottom: 0;">Recent Projects</h2>
+            <h2>Experience</h2>
+            <div style="margin-bottom: 0px;">Scale AI: Strategic Project Lead (laid off after 2 months)</div>
+            <div style="margin-bottom: 0px;">DEKA Research & Development: Computer Vision Intern (year and a half)</div>
+            <div style="margin-bottom: 5px;">AON Devices: Data Science Intern (3 months)</div>
+            <h2>Recent Projects</h2>
             <div><a href="recent_projects/polyrook.html" class="bullet-link project-polyrook">PolyRook: AI 3D Generation Marketplace</a></div>
             <div><a href="recent_projects/actual.html" class="bullet-link project-actual">AI Actual: LLM-Powered Extension of Open-Source Personal Finance Assistant</a></div>
             <div><a href="recent_projects/organize.html" class="bullet-link project-organize">Organize My Life: Cross-Platform File Organization</a></div>
             <div><a href="recent_projects/freshmen-advising-llm.html" class="bullet-link project-freshmen">Freshmen Advising LLM: AI-powered Academic Advising System</a></div>
-            <h2 style="padding-bottom: 0;">Research </h2>
+            <h2>Research</h2>
             <div><a href="research/enhanced-calendar-assistant.html" class="bullet-link project-calendar">Enhanced Calendar Assistant Prompt Engineering</a></div>
             <div><a href="research/beauty-beyond-words.html" class="bullet-link project-beauty">Beauty Beyond Words II: Leveraging Attention for Ingredient-Attribute Insights</a></div>
             <div><a href="research/evolution-development.html" class="bullet-link project-evolution">Evolution of Developmental Strategies in NK Fitness Landscapes</a></div>
-            <h2 style="padding-bottom: 0;">Developer Tools</h2>
+            <h2>Developer Tools</h2>
             <div><a href="dev_tools/zip-to-context.html" class="bullet-link project-zipcontext">ZIP to Context Converter</a></div>
             <div><a href="dev_tools/resume-compiler.html" class="bullet-link project-resume">Resume Compiler</a></div>
-            
-            <!-- <p class="font-medium">We're here to find out.</p>
-            <p class="font-medium">
-                Our team is building the world's first search algorithm designed around human interactions. Social networks should be centered on our <em>experiences</em>.
-            </p>
-            <p class="font-medium">
-                It's called <b>Linkd.</b>
-            </p>
-            <p class="announcement font-medium">
-                <em>
-                    &gt;If you're a <u>company</u>
-                    interested in people search for social platforms, recruiting, or leads, please directly contact us below.
-                </em>
-            </p>
-            <h2>About alumni.</h2>
-            <p class="font-medium">
-                We've began experimenting with this new medium by working with one of the most powerful forms of connections: <b>Alumni Networks.</b>
-                Begin by searching for people who've experienced your education.
-            </p>
-            <p class="font-medium">Links to try out our current beta schools:</p>
-            <div class="schools-list mb-22px text-center">
-                <p>
-                    <a href="https://berkeley.uselinkd.com/" target="_blank" rel="noopener noreferrer" class="school-link">
-                        <b>
-                            <u>berkeley</u>
-                        </b>
-                    </a>
-                    | 
-                    <a href="https://stanford.uselinkd.com/" target="_blank" rel="noopener noreferrer" class="school-link">
-                        <b>
-                            <u>stanford</u>
-                        </b>
-                    </a>
-                    | 
-                    <a href="https://yale.uselinkd.com/" target="_blank" rel="noopener noreferrer" class="school-link">
-                        <b>
-                            <u>yale</u>
-                        </b>
-                    </a>
-                    | 
-                    <a href="https://columbia.uselinkd.com/" target="_blank" rel="noopener noreferrer" class="school-link">
-                        <b>
-                            <u>columbia</u>
-                        </b>
-                    </a>
-                    | 
-                    <a href="https://utoronto.uselinkd.com/" target="_blank" rel="noopener noreferrer" class="school-link">
-                        <b>
-                            <u>utoronto</u>
-                        </b>
-                    </a>
-                    | 
-                    <a href="https://upenn-frontend-production.up.railway.app/" target="_blank" rel="noopener noreferrer" class="school-link">
-                        <b>
-                            <u>upenn</u>
-                        </b>
-                    </a>
-                    | 
-                    <b>
-                        <u>waterloo (next!)</u>
-                    </b>
-                </p>
-            </div>
-            <div class="signup-section mt-085rem mb-175rem">
-                <p class="font-medium">
-                    <b>Want this at your school?</b>
-                    Most signups is next and UCLA is in the lead.
-                </p>
-                <form class="signup-form flex flex-col gap-5px mt-06rem">
-                    <div class="form-row flex gap-6px sm-flex-row flex-col">
-                        <input type="text" id="name" placeholder="Full name" required class="flex-1 p-input border rounded font-input text-085rem bg-input transition-colors focus-outline-none focus-border-focus h-23px font-medium" name="name" value=""/>
-                        <input type="email" id="email" placeholder="School email (.edu preferred)" required class="flex-1 p-input border rounded font-input text-085rem bg-input transition-colors focus-outline-none focus-border-focus h-23px font-medium" name="email" value=""/>
-                    </div>
-                    <div class="form-row flex gap-6px sm-flex-row flex-col">
-                        <input type="text" id="school" placeholder="University/College name" required class="flex-1 p-input border rounded font-input text-085rem bg-input transition-colors focus-outline-none focus-border-focus h-23px font-medium" name="school" value=""/>
-                        <input type="text" id="linked V  in" placeholder="LinkedIn URL (optional)" class="flex-1 p-input border rounded font-input text-085rem bg-input transition-colors focus-outline-none focus-border-focus h-23px font-medium" name="linkedin" value=""/>
-                    </div>
-                    <button type="submit" class="submit-button self-start mt-2px p-button bg-button text-button border-15px border-button rounded font-button text-08rem cursor-pointer transition-all hover-bg-button-hover font-semibold">Submit Request</button>
-                </form>
-                <p class="form-message mt-04rem text-085rem font-medium" style="color:inherit"></p>
-            </div>
-            <p class="signature mb-14rem mt-06rem font-medium">
-                - 
-                <a href="https://www.linkedin.com/in/eric-mao/" target="_blank" rel="noopener noreferrer" class="name-link hover-opacity">
-                    <b>Eric</b>
-                </a>
-                &
-                <a href="https://tomzheng.dev" target="_blank" rel="noopener noreferrer" class="name-link hover-opacity">
-                    <b>Tom</b>
-                </a>
-            </p>
-            <p class="mb-05rem font-medium">
-                business & general: 
-                <a href="#" class="copy-email cursor-pointer text-inherit no-underline transition-opacity hover-opacity hover-no-underline inline-flex items-center gap-5px" aria-label="Copy email address: founders@linkd.inc" role="button">
-                    <b>founders@linkd.inc</b>
-                    <svg class="copy-icon w-14px h-14px opacity-60 transition-opacity" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                </a>
-            </p>
-            <div class="investor-link-container mt-02rem mb-05rem">
-                <p class="font-medium">
-                    for interested investors: 
-                    <a href="https://forms.gle/GqVntDRGpTAGo4XN9" class="investor-link inline-flex items-center gap-5px no-underline transition-opacity hover-opacity" target="_blank" rel="noopener noreferrer" aria-label="Contact form for potential investors">
-                        <b>intro us here</b>
-                        <svg class="share-icon w-14px h-14px opacity-60 transition-all" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
-                    </a>
-                </p>
-            </div> -->
-            <!-- </div> -->
         </main>
     </div>
     <script src="script.js"></script>
 </body>
-</html> 
+</html>
