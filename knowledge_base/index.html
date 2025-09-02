@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="../styles.css">
+
+    <meta name="theme-color" content="#000000"/>
+    <title>Knowledge Base - Zachary Decker</title>
+    <meta name="description" content="Personal knowledge base with notes on various topics, including computer science data structures and sorting algorithms with visualizations."/>
+    <meta property="og:title" content="Knowledge Base"/>
+    <meta property="og:description" content="Personal knowledge base with notes on various topics, including computer science data structures and sorting algorithms with visualizations."/>
+    <meta property="og:url" content="https://yourportfolio.com/knowledge_base/index.html"/>
+    <meta property="og:site_name" content="Zachary Decker Portfolio"/>
+    <meta property="og:image" content="https://yourportfolio.com/logo.png"/>
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <meta property="og:image:alt" content="Knowledge Base Preview"/>
+    <meta property="og:type" content="website"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:site" content="@yourtwitter"/>
+    <meta name="twitter:creator" content="@yourtwitter"/>
+    <meta name="twitter:title" content="Knowledge Base"/>
+    <meta name="twitter:description" content="Personal knowledge base with notes on various topics, including computer science data structures and sorting algorithms with visualizations."/>
+    <meta name="twitter:image" content="https://yourportfolio.com/logo.png"/>
+    <link rel="icon" href="../favicon.ico"/>
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        #toc ul { list-style-type: none; padding-left: 20px; }
+        #toc ul ul { padding-left: 20px; }
+        .toggle-btn { cursor: pointer; margin-right: 5px; }
+        .sub-list { display: none; }
+        .sub-list.open { display: block; }
+        #content img { max-width: 100%; height: auto; }
+        #content h1 + h2 { margin-top: 0; }
+    </style>
+</head>
+<body class="antinliased inconsolata-yes">
+    <div class="container max-w-700px mx-auto p-container" style="margin-bottom: 0;">
+        <main>
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title" style="margin-bottom: 0;">
+                    Knowledge Base
+                </h1>
+                <div class="flex items-center gap-3">
+                    <a href="../index.html" class="text-sm opacity-60 hover-opacity hover-no-underline transition-opacity no-underline">
+                        Back to Portfolio
+                    </a>
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                            <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                            <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                            <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                            <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mt-header mb-header">
+                <p class="date font-medium m-0">August 05, 2025</p>
+                <div class="flex gap-3 items-center mr-10px">
+                </div>
+            </div>
+            <nav id="toc">
+                <h2 style="margin-bottom: 0;">Table of Contents</h2>
+                <ul style="margin-top: 0;">
+                </ul>
+            </nav>
+            <div id="content"></div>
+        </main>
+    </div>
+    <script src="../script.js"></script>
+    <script>
+        const mdFiles = ['sorting_algorithms.md', 'data_structures.md', 'RLHF.md'];
+        const tocUl = document.querySelector('#toc ul');
+        const contentDiv = document.getElementById('content');
+
+        async function loadAndRenderMD() {
+            let allHeaders = [];
+            
+            for (const file of mdFiles) {
+                console.log(`Loading ${file}`);
+                try {
+                    const response = await fetch(`./${file}`);
+                    console.log(`Response status: ${response.status}`);
+                    if (!response.ok) {
+                        console.warn(`File ${file} not found, skipping...`);
+                        continue;
+                    }
+                    
+                    const mdText = await response.text();
+                    console.log(`MD text: ${mdText.substring(0, 100)}`);
+                    const html = marked.parse(mdText);
+                    // Create a temporary div to parse the HTML and extract headers
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = html;
+                    
+                    // Add IDs to headers if they don't have them
+                    const headers = tempDiv.querySelectorAll('h1, h2');
+                    headers.forEach(h => {
+                        if (!h.id) {
+                            h.id = h.innerText.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                        }
+                    });
+                    
+                    // Append the content
+                    contentDiv.appendChild(tempDiv);
+                    allHeaders.push(...Array.from(headers));
+                    
+                } catch (err) {
+                    console.error(`Error loading ${file}:`, err);
+                }
+            }
+            
+            // Generate Table of Contents
+            generateTOC(allHeaders);
+        }
+
+        function generateTOC(headers) {
+            tocUl.innerHTML = '';
+            let currentH1Li = null;
+            
+            headers.forEach(header => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${header.id}`;
+                a.textContent = header.innerText.trim();
+                
+                if (header.tagName === 'H1') {
+                    // Create toggle button for H1
+                    const toggleBtn = document.createElement('span');
+                    toggleBtn.className = 'toggle-btn';
+                    toggleBtn.textContent = '▶ ';
+                    toggleBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const subList = li.querySelector('.sub-list');
+                        if (subList) {
+                            subList.classList.toggle('open');
+                            toggleBtn.textContent = subList.classList.contains('open') ? '▼ ' : '▶ ';
+                        }
+                    });
+                    
+                    li.appendChild(toggleBtn);
+                    li.appendChild(a);
+                    tocUl.appendChild(li);
+                    currentH1Li = li;
+                } else if (header.tagName === 'H2' && currentH1Li) {
+                    // Create or get sub-list for H2 under H1
+                    if (!currentH1Li.querySelector('.sub-list')) {
+                        const subUl = document.createElement('ul');
+                        subUl.className = 'sub-list';
+                        currentH1Li.appendChild(subUl);
+                    }
+                    const subLi = document.createElement('li');
+                    subLi.appendChild(a);
+                    currentH1Li.querySelector('.sub-list').appendChild(subLi);
+                }
+            });
+        }
+
+        // Load content when page loads
+        window.addEventListener('load', loadAndRenderMD);
+    </script>
+</body>
+</html>
