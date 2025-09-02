@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="../styles.css">
+    <meta name="theme-color" content="#000000"/>
+    <title>Project - Connect Bench</title>
+    <meta name="description" content="Benchmarking LLMs on the NYT Connections game"/>
+    <link rel="icon" href="../favicon.ico"/>
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Shared components copied/adapted to match other pages */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: auto;
+            min-height: 400px;
+            margin: 1.5rem 0;
+            overflow: visible;
+            border-radius: 8px;
+            cursor: default;
+            background-color: rgba(var(--text-color-rgb), 0.03);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background-color: rgba(var(--text-color-rgb), 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            text-align: center;
+        }
+
+        .tech-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .tech-pill {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background-color: rgba(var(--text-color-rgb), 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .tech-pill:hover {
+            background-color: var(--focus-color);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .feature-card {
+            position: relative;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            background-color: rgba(var(--text-color-rgb), 0.03);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            background-color: rgba(var(--text-color-rgb), 0.07);
+        }
+
+        .feature-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card.active p {
+            opacity: 1;
+            max-height: 200px;
+            margin-top: 0.5rem;
+        }
+
+        .workflow {
+            position: relative;
+            margin: 2rem 0;
+            padding-left: 2rem;
+        }
+
+        .workflow::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: rgba(var(--text-color-rgb), 0.2);
+        }
+
+        .workflow-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .workflow-item:hover {
+            opacity: 1;
+        }
+
+        .workflow-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--focus-color);
+            transform: translateX(-50%);
+        }
+
+        .workflow-step {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .workflow-description {
+            font-size: 0.9rem;
+        }
+
+        /* Animation */
+        .fade-in { opacity: 0; animation: fadeIn 1s forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .slide-in { transform: translateY(20px); opacity: 0; animation: slideIn 0.8s forwards; }
+        @keyframes slideIn { to { transform: translateY(0); opacity: 1; } }
+
+        /* Accent colors unique to this page (green) */
+        html.dark {
+            --text-color-rgb: 255, 255, 255;
+            --focus-color: #22c55e; /* green-500 */
+            --accent-color-rgb: 34, 197, 94;
+        }
+
+        html.light {
+            --text-color-rgb: 26, 26, 26;
+            --focus-color: #16a34a; /* green-600 */
+            --accent-color-rgb: 22, 163, 74;
+        }
+
+        /* Chart */
+        .chart-container { padding: 1rem; }
+        .bar-chart { display: grid; gap: 0.6rem; }
+        .bar { display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 0.75rem; }
+        .bar-label { font-size: 0.9rem; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .bar-fill-wrap { background-color: rgba(var(--text-color-rgb), 0.08); border-radius: 999px; overflow: hidden; height: 28px; display:flex; align-items:center; }
+        .bar-fill { height: 100%; display:flex; align-items:center; justify-content:flex-end; padding-right: 10px; color: #fff; font-weight: 600; border-radius: 999px; width: 0; background-color: var(--focus-color); transition: width 1.2s ease; }
+
+        /* Back link */
+        .text-icon { display: inline-flex; align-items: center; gap: 6px; }
+        .hover-opacity { opacity: 0.85; }
+        .hover-opacity:hover { opacity: 1; }
+        .transition-opacity { transition: opacity 0.3s ease; }
+    </style>
+</head>
+<body class="antialiased inconsolata-yes">
+    <div class="container max-w-700px mx-auto p-container" style="margin-bottom: 0;">
+        <main>
+            <!-- Header -->
+            <div class="flex justify-between items-center">
+                <h1 class="flex items-center gap-2 title">
+                    Connect Bench
+                </h1>
+
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle color theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" class="moon-icon"></path>
+                        <circle cx="12" cy="12" r="5" class="sun-icon"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3" class="sun-icon"></line>
+                        <line x1="12" y1="21" x2="12" y2="23" class="sun-icon"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" class="sun-icon"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" class="sun-icon"></line>
+                        <line x1="1" y1="12" x2="3" y2="12" class="sun-icon"></line>
+                        <line x1="21" y1="12" x2="23" y2="12" class="sun-icon"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" class="sun-icon"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" class="sun-icon"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="flex justify-between items-center mt-header mb-header">
+                <p class="date font-medium m-0">AI Benchmarking Tool - Summer 2025</p>
+                <div class="flex gap-3 items-center mr-10px">
+                    <a href="https://github.com/rhit-deckerza/ConnectBench.git" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository for AI Actual" class="text-icon hover-opacity transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <a href="../index.html" class="text-icon hover-opacity transition-opacity" aria-label="Back to portfolio">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Overview -->
+            <h2 style="padding-bottom: 0;">Project Overview</h2>
+            <p class="font-medium">
+                Connect Bench is a benchmarking tool designed to evaluate Large Language Models (LLMs) on the New York Times <em>Connections</em> game. The system tests how well different models can group 16 words into 4 categories based on shared themes, simulating expert gameplay.
+            </p>
+            <p class="font-medium">
+                The pipeline loads daily puzzles, prompts each model through the OpenRouter API, parses the responses, and scores performance against the ground truth groupings. This reveals capabilities in semantic understanding, pattern recognition, and reasoning under uncertainty.
+            </p>
+
+            <!-- Performance Visualization -->
+            <h2 style="padding-bottom: 0;">Performance Visualization</h2>
+            <div class="canvas-container fade-in">
+                <div class="chart-container">
+                    <div class="bar-chart" id="barChart">
+                        <!-- Bars injected by JS below to animate widths -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid slide-in" style="animation-delay: 0.1s;">
+                <div class="stat-card">
+                    <div class="stat-value" id="models-tested">13</div>
+                    <div class="stat-label">Models Tested</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="puzzles-run">256</div>
+                    <div class="stat-label">Puzzles Evaluated</div>
+                </div>
+            </div>
+
+            <!-- Technologies -->
+            <h2 style="padding-bottom: 0;">Technologies</h2>
+            <div class="tech-pills slide-in">
+                <div class="tech-pill">Python</div>
+                <div class="tech-pill">Requests</div>
+                <div class="tech-pill">JSON</div>
+                <div class="tech-pill">OpenRouter API</div>
+                <div class="tech-pill">Benchmarking</div>
+                <div class="tech-pill">LLMs</div>
+                <div class="tech-pill">NLP</div>
+            </div>
+
+            <!-- Future -->
+            <h2 style="padding-bottom: 0;">Future Development</h2>
+            <p class="font-medium">
+                Next steps include expanding the dataset, adding richer metrics (e.g., error types, near-miss partial credit), and shipping a web dashboard for interactive drill-downs.
+            </p>
+        </main>
+    </div>
+
+    <script>
+        // Feature toggle
+        function toggleFeature(el){ el.classList.toggle('active'); }
+
+        // Simple theme toggle (in case styles.css doesn't handle it)
+        (function(){
+            const btn = document.getElementById('theme-toggle');
+            if(!btn) return;
+            btn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                document.documentElement.classList.toggle('light');
+            });
+        })();
+
+        // Populate chart bars and animate
+        const data = [
+            { label: 'openai/gpt-5', score: 1.0 },
+            { label: 'openai/o3', score: 1.0 },
+            { label: 'x-ai/grok-4', score: 1.0 },
+            { label: 'openai/gpt-5-mini', score: 0.921875 },
+            { label: 'google/gemini-2.5-pro', score: 0.84375 },
+            { label: 'qwen/qwen3-235b-a22b-thinking-2507', score: 0.625 },
+            { label: 'openai/gpt-oss-120b', score: 0.6166666666666667 },
+            { label: 'anthropic/claude-opus-4.1', score: 0.484375 },
+            { label: 'anthropic/claude-sonnet-4', score: 0.390625 },
+            { label: 'deepseek/deepseek-chat-v3.1:free', score: 0.25 },
+            { label: 'openai/gpt-4.1', score: 0.203125 },
+            { label: 'meta-llama/llama-4-maverick', score: 0.203125 },
+            { label: 'google/gemini-2.5-flash', score: 0.1875 },
+        ];
+
+        const container = document.getElementById('barChart');
+        data.forEach(d => {
+            const row = document.createElement('div');
+            row.className = 'bar';
+
+            const label = document.createElement('div');
+            label.className = 'bar-label';
+            label.textContent = d.label;
+
+            const wrap = document.createElement('div');
+            wrap.className = 'bar-fill-wrap';
+
+            const fill = document.createElement('div');
+            fill.className = 'bar-fill';
+            fill.textContent = d.score.toFixed(3);
+            fill.style.width = '0%'; // start collapsed
+
+            wrap.appendChild(fill);
+            row.appendChild(label);
+            row.appendChild(wrap);
+            container.appendChild(row);
+
+            // Trigger animation after insertion
+            requestAnimationFrame(() => {
+                fill.style.width = (d.score * 100) + '%';
+            });
+        });
+    </script>
+</body>
+</html>
